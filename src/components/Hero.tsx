@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const roles = [
@@ -13,6 +13,7 @@ const Hero = () => {
   const [displayText, setDisplayText] = useState("");
   const [roleIndex, setRoleIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+  const reduceMotion = useReducedMotion();
   
   useEffect(() => {
     const currentRole = roles[roleIndex];
@@ -42,8 +43,72 @@ const Hero = () => {
 
   return (
     <section className="min-h-screen min-h-[100svh] flex items-center justify-center relative overflow-hidden pt-20">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_hsl(var(--primary)/0.1)_0%,_transparent_70%)]" />
+      {/* Background (tech grid + glow + scanline) */}
+      <div className="pointer-events-none absolute inset-0">
+        {/* Glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_hsl(var(--primary)/0.10)_0%,_transparent_70%)]" />
+
+        {/* Grid */}
+        <motion.div
+          className="absolute inset-0 opacity-40"
+          style={{
+            backgroundImage:
+              "linear-gradient(to right, hsl(var(--border) / 0.22) 1px, transparent 1px), linear-gradient(to bottom, hsl(var(--border) / 0.22) 1px, transparent 1px)",
+            backgroundSize: "56px 56px",
+            maskImage: "radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.0) 72%)",
+            WebkitMaskImage:
+              "radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.0) 72%)",
+          }}
+          animate={
+            reduceMotion
+              ? undefined
+              : {
+                  backgroundPosition: ["0px 0px", "56px 56px"],
+                }
+          }
+          transition={
+            reduceMotion
+              ? undefined
+              : {
+                  duration: 10,
+                  repeat: Infinity,
+                  ease: "linear",
+                }
+          }
+        />
+
+        {/* Floating particles */}
+        {!reduceMotion && (
+          <>
+            {Array.from({ length: 14 }).map((_, i) => (
+              <motion.span
+                // eslint-disable-next-line react/no-array-index-key
+                key={i}
+                className="absolute rounded-full"
+                style={{
+                  left: `${(i * 7) % 100}%`,
+                  top: `${(i * 11) % 100}%`,
+                  width: i % 3 === 0 ? 2 : 1,
+                  height: i % 3 === 0 ? 2 : 1,
+                  backgroundColor: i % 4 === 0 ? "hsl(var(--code-green))" : "hsl(var(--code-blue))",
+                  opacity: 0.22,
+                }}
+                animate={{
+                  y: [0, i % 2 === 0 ? -18 : 18, 0],
+                  x: [0, i % 2 === 0 ? 10 : -10, 0],
+                  opacity: [0.12, 0.28, 0.12],
+                }}
+                transition={{
+                  duration: 6 + (i % 5),
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: i * 0.15,
+                }}
+              />
+            ))}
+          </>
+        )}
+      </div>
       
       {/* Floating code snippets */}
       <motion.div

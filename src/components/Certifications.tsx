@@ -49,9 +49,10 @@ const DEFAULT_VISIBLE_BY_CATEGORY: Record<(typeof CATEGORY_ORDER)[number], numbe
 
 type CertificationsProps = {
   forceShowAll?: boolean;
+  backgroundVariant?: "muted" | "none";
 };
 
-const Certifications = ({ forceShowAll }: CertificationsProps) => {
+const Certifications = ({ forceShowAll, backgroundVariant = "muted" }: CertificationsProps) => {
   const navigate = useNavigate();
 
   const sectionPaddingClassName = forceShowAll ? "pt-6 pb-12" : "py-20";
@@ -81,8 +82,10 @@ const Certifications = ({ forceShowAll }: CertificationsProps) => {
 
   const hasAnyHidden = hiddenCountTotal > 0;
 
+  const backgroundClassName = backgroundVariant === "muted" ? "bg-muted/30" : "";
+
   return (
-    <section id="certifications" className={`${sectionPaddingClassName} bg-muted/30`}>
+    <section id="certifications" className={`${sectionPaddingClassName} ${backgroundClassName}`.trim()}>
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

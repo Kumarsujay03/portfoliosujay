@@ -15,9 +15,10 @@ type SkillsData = {
 
 type SkillsProps = {
   hideLabel?: boolean;
+  backgroundVariant?: "muted" | "none";
 };
 
-const Skills = ({ hideLabel }: SkillsProps) => {
+const Skills = ({ hideLabel, backgroundVariant = "muted" }: SkillsProps) => {
   const ref = useRef(null);
   const codeRef = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -130,8 +131,10 @@ const Skills = ({ hideLabel }: SkillsProps) => {
     return parts;
   };
 
+  const backgroundClassName = backgroundVariant === "muted" ? "bg-muted/20" : "";
+
   return (
-    <section id="skills" className={`${sectionPaddingClassName} bg-muted/20 relative`}>
+    <section id="skills" className={`${sectionPaddingClassName} ${backgroundClassName} relative`}>
       <div className="container mx-auto px-6">
         <motion.div
           ref={ref}

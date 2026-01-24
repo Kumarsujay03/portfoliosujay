@@ -91,7 +91,7 @@ const Footer = ({ showSocialLinks }: FooterProps) => {
               <span className="text-foreground">=</span>{" "}
             </motion.span>
             <motion.a
-              href="#"
+              href="/about"
               className="text-primary hover:underline"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}

@@ -1,6 +1,7 @@
 import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import aboutData from "../data/about.json";
+import { RotateCcw } from "lucide-react";
 
 type AboutTextSegment = {
   text: string;
@@ -28,6 +29,14 @@ const About = ({ hideLabel }: AboutProps) => {
   const [isTyping, setIsTyping] = useState(false);
 
   const { paragraphs, codeLines } = aboutData as unknown as AboutData;
+
+  const restartTyping = () => {
+    setDisplayedLines([]);
+    setCurrentLineIndex(0);
+    setCurrentCharIndex(0);
+    setIsTyping(true);
+  };
+
   useEffect(() => {
     if (isCodeInView && !isTyping) {
       setIsTyping(true);
@@ -185,15 +194,26 @@ const About = ({ hideLabel }: AboutProps) => {
                 <div className="terminal-dot bg-accent" />
                 <div className="terminal-dot bg-code-green" />
                 <span className="ml-4 font-mono text-xs text-muted-foreground">about.js</span>
-                {isTyping && currentLineIndex < codeLines.length && (
-                  <motion.span 
-                    className="ml-auto font-mono text-xs text-code-green"
-                    animate={{ opacity: [1, 0.5, 1] }}
-                    transition={{ duration: 0.5, repeat: Infinity }}
+                <div className="ml-auto flex items-center gap-2">
+                  {isTyping && currentLineIndex < codeLines.length && (
+                    <motion.span
+                      className="font-mono text-xs text-code-green"
+                      animate={{ opacity: [1, 0.5, 1] }}
+                      transition={{ duration: 0.5, repeat: Infinity }}
+                    >
+                      typing...
+                    </motion.span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={restartTyping}
+                    className="inline-flex items-center justify-center rounded p-1 text-muted-foreground hover:text-primary hover:bg-muted/40 transition-colors"
+                    aria-label="Restart typing animation"
+                    title="Restart typing"
                   >
-                    typing...
-                  </motion.span>
-                )}
+                    <RotateCcw className="h-3.5 w-3.5" />
+                  </button>
+                </div>
               </div>
               <div className="terminal-body min-h-[320px]">
                 <pre className="text-sm">

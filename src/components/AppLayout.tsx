@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import RouteScrollToTop from "@/components/RouteScrollToTop";
 import { Outlet } from "react-router-dom";
 import { Suspense } from "react";
+import CustomCursor from "@/components/CustomCursor";
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center px-6">
@@ -22,6 +23,7 @@ const PageLoader = () => (
 const AppLayout = () => {
   return (
     <>
+      <CustomCursor />
       <RouteScrollToTop />
       <Header />
       <Suspense fallback={<PageLoader />}>
