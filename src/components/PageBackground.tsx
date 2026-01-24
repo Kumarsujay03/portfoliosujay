@@ -31,7 +31,7 @@ const variantConfig: Record<
 > = {
   about: {
     gridSizePx: 70,
-    gridOpacity: 0.2,
+    gridOpacity: 0.15,
     particleCount: 9,
     glowOpacity: 0.09,
     glowPosition: "left",
@@ -39,7 +39,7 @@ const variantConfig: Record<
   },
   projects: {
     gridSizePx: 64,
-    gridOpacity: 0.23,
+    gridOpacity: 0.18,
     particleCount: 11,
     glowOpacity: 0.1,
     glowPosition: "center",
@@ -47,7 +47,7 @@ const variantConfig: Record<
   },
   skills: {
     gridSizePx: 76,
-    gridOpacity: 0.18,
+    gridOpacity: 0.2,
     particleCount: 8,
     glowOpacity: 0.08,
     glowPosition: "top",
@@ -55,7 +55,7 @@ const variantConfig: Record<
   },
   certs: {
     gridSizePx: 80,
-    gridOpacity: 0.19,
+    gridOpacity: 0.17,
     particleCount: 8,
     glowOpacity: 0.085,
     glowPosition: "right",
@@ -63,7 +63,7 @@ const variantConfig: Record<
   },
   work: {
     gridSizePx: 68,
-    gridOpacity: 0.22,
+    gridOpacity: 0.19,
     particleCount: 10,
     glowOpacity: 0.095,
     glowPosition: "bottom",
