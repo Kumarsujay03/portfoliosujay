@@ -1,0 +1,81 @@
+[
+  {
+    "id": 1,
+    "title": "College Fest Website & Entry System",
+    "description": "Developed a dynamic college fest website with real-time event and sponsor updates using Firebase. Built a secure QR-based entry verification system to streamline event access and on-ground management.",
+    "tech": ["HTML", "CSS", "TypeScript", "Firebase", "QR Verification"],
+    "github": "",
+    "live": "",
+    "featured": true,
+    "isDemo": false,
+    "view": true,
+    "image": "jnanagni.png"
+  },
+  {
+    "id": 2,
+    "title": "MindTrack – Productivity & Habit Tracking App",
+    "description": "Built a cross-platform productivity application (Web + Mobile) with secure authentication, habit tracking, streaks, and leaderboards. Implemented cross-device synchronization and privacy-focused server-side data handling.",
+    "tech": ["React", "TypeScript", "Tailwind CSS", "Firebase", "Turso (libSQL)"],
+    "github": "",
+    "live": "",
+    "featured": true,
+    "isDemo": false,
+    "view": true,
+    "image": "mind_track.png"
+  },
+  {
+    "id": 3,
+    "title": "TaskFlow",
+    "description": "A simple task and productivity manager focused on clean UI and smooth user experience.",
+    "tech": ["React", "JavaScript", "CSS"],
+    "github": "",
+    "live": "",
+    "featured": false,
+    "isDemo": true,
+    "view": true
+  },
+  {
+    "id": 4,
+    "title": "API Monitor",
+    "description": "A lightweight tool to monitor API response times and log basic performance metrics.",
+    "tech": ["Node.js", "Express", "MongoDB"],
+    "github": "",
+    "live": "",
+    "featured": false,
+    "isDemo": true,
+    "view": true
+  },
+  {
+    "id": 5,
+    "title": "Expense Tracker",
+    "description": "Personal finance tracker to log expenses and visualize spending patterns.",
+    "tech": ["React", "Chart.js", "Firebase"],
+    "github": "",
+    "live": "",
+    "featured": false,
+    "isDemo": true,
+    "view": true
+  },
+  {
+    "id": 6,
+    "title": "ML Practice Notebooks",
+    "description": "A collection of machine learning practice notebooks covering data preprocessing and basic models.",
+    "tech": ["Python", "Pandas", "NumPy", "Scikit-learn"],
+    "github": "",
+    "live": "",
+    "featured": false,
+    "isDemo": true,
+    "view": true
+  },
+  {
+    "id": 7,
+    "title": "Text Classification Demo",
+    "description": "A basic NLP project experimenting with text preprocessing and text classification techniques.",
+    "tech": ["Python", "Machine Learning", "NLP"],
+    "github": "",
+    "live": "",
+    "featured": false,
+    "isDemo": true,
+    "view": true
+  }
+]

@@ -1,0 +1,101 @@
+[
+  {
+    "id": 1,
+    "role": "Web Developer",
+    "company": "Yathaarth Sangam Foundation (NPO)",
+    "startDate": "2024-11",
+    "endDate": "2025-06",
+    "isCurrent": false,
+    "isVolunteer": false,
+    "description": "Developed a responsive web application using React and Firebase. Optimized Firestore data handling and implemented Firebase Authentication for secure admin access.",
+    "technologies": ["React", "Firebase", "Firestore"]
+  },
+  {
+    "id": 2,
+    "role": "Project Intern",
+    "company": "Aryabhatta Research Institute of Observational Sciences",
+    "startDate": "2024-08",
+    "endDate": "2024-10",
+    "isCurrent": false,
+    "isVolunteer": false,
+    "description": "Built a MongoDB-based web application using React and FastAPI, improving data processing efficiency and UI responsiveness for research workflows.",
+    "technologies": ["React", "FastAPI", "MongoDB", "Python"]
+  },
+  {
+    "id": 3,
+    "role": "Contributor",
+    "company": "GirlScript Summer of Code",
+    "startDate": "2024-10",
+    "endDate": "2024-12",
+    "isCurrent": false,
+    "isVolunteer": true,
+    "description": "Contributing to open-source projects through feature development, collaboration, and code reviews.",
+    "technologies": ["Open Source", "Git"]
+  },
+  {
+    "id": 4,
+    "role": "Lead Web Developer",
+    "company": "Gurukula Kangri Vishwavidyalaya",
+    "startDate": "2023-10",
+    "endDate": "2023-11",
+    "isCurrent": false,
+    "isVolunteer": false,
+    "description": "Led the redesign of the Jnanagni Fest website using TypeScript and Firebase, delivering a dynamic platform with real-time event data and secure authentication.",
+    "technologies": ["TypeScript", "React", "Firebase"]
+  },
+  {
+    "id": 5,
+    "role": "Volunteer",
+    "company": "Google Developer Student Clubs",
+    "startDate": "2022-01",
+    "endDate": "2024-08",
+    "isCurrent": false,
+    "isVolunteer": true,
+    "description": "Participated in developer community initiatives, peer learning sessions, and technical events.",
+    "technologies": ["Community", "Peer Learning"]
+  },
+  {
+    "id": 6,
+    "role": "Head of Events",
+    "company": "Charabanc, FET, GK(DU)",
+    "startDate": "2022-01",
+    "endDate": "2023-07",
+    "isCurrent": false,
+    "isVolunteer": true,
+    "description": "Led planning and execution of technical and cultural events, coordinating teams and managing logistics.",
+    "technologies": ["Leadership", "Event Management"]
+  },
+  {
+    "id": 7,
+    "role": "Internshala Student Partner",
+    "company": "Internshala",
+    "startDate": "2022-01",
+    "endDate": "2022-11",
+    "isCurrent": false,
+    "isVolunteer": true,
+    "description": "Worked on student outreach and promotion of learning programs.",
+    "technologies": ["Communication", "Outreach"]
+  },
+  {
+    "id": 8,
+    "role": "Club Coordinator",
+    "company": "E-Club",
+    "startDate": "2022-01",
+    "endDate": "2022-11",
+    "isCurrent": false,
+    "isVolunteer": true,
+    "description": "Coordinated club activities and supported member engagement.",
+    "technologies": ["Coordination", "Teamwork"]
+  },
+  {
+    "id": 9,
+    "role": "Human Resources Core Team",
+    "company": "Project C Foundation – We Care For Your Mental Health",
+    "startDate": "2022-05",
+    "endDate": "2022-11",
+    "isCurrent": false,
+    "isVolunteer": true,
+    "description": "Supported volunteer coordination, internal communication, and team management activities.",
+    "technologies": ["Human Resources", "Communication"]
+  }
+]

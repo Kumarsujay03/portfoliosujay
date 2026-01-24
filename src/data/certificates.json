@@ -1,0 +1,190 @@
+{
+  "machineLearning": [
+    {
+      "id": 1,
+      "priority": 1,
+      "name": "Calculus for Machine Learning and Data Science",
+      "issuer": "DeepLearning.AI",
+      "date": "Oct 2025",
+      "credentialId": "7HLDV8C44XVZ",
+      "link": "https://coursera.org/verify/7HLDV8C44XVZ",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "id": 2,
+      "priority": 2,
+      "name": "Linear Algebra for Machine Learning and Data Science",
+      "issuer": "DeepLearning.AI",
+      "date": "Oct 2025",
+      "credentialId": "82ND8PFEZ9RQ",
+      "link": "https://coursera.org/verify/82ND8PFEZ9RQ",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "id": 3,
+      "priority": 3,
+      "name": "Probability & Statistics for Machine Learning & Data Science",
+      "issuer": "DeepLearning.AI",
+      "date": "Oct 2025",
+      "credentialId": "5TWFFG345J1M",
+      "link": "https://coursera.org/verify/5TWFFG345J1M",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "id": 4,
+      "priority": 4,
+      "name": "(Specialization) Mathematics for Machine Learning and Data Science",
+      "issuer": "DeepLearning.AI",
+      "date": "Oct 2025",
+      "credentialId": "5KWHVNPO8DVS",
+      "link": "https://coursera.org/verify/specialization/5KWHVNPO8DVS",
+      "logo": "deeplearning.jpeg"
+    }
+  ],
+
+  "softwareAndWeb": [
+    {
+      "id": 5,
+      "priority": 1,
+      "name": "Stanford Code in Place",
+      "issuer": "Stanford University",
+      "date": "Jun 2025",
+      "credentialId": "",
+      "link": "https://codeinplace.stanford.edu/cip5/certificate/zpmd3r",
+      "logo": "Stanford_logo.png"
+    },
+    {
+      "id": 6,
+      "priority": 2,
+      "name": "Programming with JavaScript",
+      "issuer": "Meta",
+      "date": "Feb 2024",
+      "credentialId": "6GFSHD3SWYYM",
+      "link": "https://coursera.org/verify/6GFSHD3SWYYM",
+      "logo": "Meta_logo.png"
+    },
+    {
+      "id": 7,
+      "priority": 3,
+      "name": "Introduction to Front-End Development",
+      "issuer": "Meta",
+      "date": "Oct 2023",
+      "credentialId": "KWEM42VWAMD6",
+      "link": "https://coursera.org/verify/KWEM42VWAMD6",
+      "logo": "Meta_logo.png"
+    },
+    {
+      "id": 8,
+      "priority": 4,
+      "name": "Certificate of Excellence in Data Structure and Algorithm (Java)",
+      "issuer": "Coding Ninjas",
+      "date": "Sep 2023",
+      "credentialId": "ee6ec1192cdaba03",
+      "link": "https://certificate.codingninjas.com/view/ee6ec1192cdaba03",
+      "logo": "coding_ninjas_logo.png"
+    },
+    {
+      "id": 9,
+      "priority": 5,
+      "name": "Certificate of Completion in Data Structure and Algorithm (Java)",
+      "issuer": "Coding Ninjas",
+      "date": "Sep 2023",
+      "credentialId": "64132e4db7bbd70e",
+      "link": "https://certificate.codingninjas.com/view/64132e4db7bbd70e",
+      "logo": "coding_ninjas_logo.png"
+    },
+    {
+      "id": 10,
+      "priority": 6,
+      "name": "Certificate of Excellence in Introduction to Java",
+      "issuer": "Coding Ninjas",
+      "date": "May 2023",
+      "credentialId": "c8cc41f8a4a0015f",
+      "link": "https://certificate.codingninjas.com/view/96263a502cd2727e",
+      "logo": "coding_ninjas_logo.png"
+    },
+    {
+      "id": 11,
+      "priority": 7,
+      "name": "Certificate of Completion in Introduction to Java",
+      "issuer": "Coding Ninjas",
+      "date": "May 2023",
+      "credentialId": "96263a502cd2727e",
+      "link": "https://certificate.codingninjas.com/view/96263a502cd2727e",
+      "logo": "coding_ninjas_logo.png"
+    },
+    {
+      "id": 12,
+      "priority": 8,
+      "name": "Java (Basic)",
+      "issuer": "HackerRank",
+      "date": "Feb 2023",
+      "credentialId": "1AAB1101366C",
+      "link": "https://www.hackerrank.com/certificates/1aab1101366c",
+      "logo": "hackerrank_logo.jpeg"
+    },
+    {
+      "id": 13,
+      "priority": 9,
+      "name": "Problem Solving (Basic)",
+      "issuer": "HackerRank",
+      "date": "Feb 2023",
+      "credentialId": "59C8E528C709",
+      "link": "https://www.hackerrank.com/certificates/59c8e528c709",
+      "logo": "hackerrank_logo.jpeg"
+    },
+    {
+      "id": 14,
+      "priority": 10,
+      "name": "Problem Solving (Intermediate)",
+      "issuer": "HackerRank",
+      "date": "Feb 2023",
+      "credentialId": "F37C0BD664D4",
+      "link": "https://www.hackerrank.com/certificates/f37c0bd664d4",
+      "logo": "hackerrank_logo.jpeg"
+    }
+  ],
+
+  "simulationsAndPrograms": [
+    {
+      "id": 15,
+      "priority": 1,
+      "name": "Software Engineering Job Simulation",
+      "issuer": "JPMorgan Chase & Co.",
+      "date": "Sep 2023",
+      "credentialId": "NudikgsviNAjQhibG",
+      "link": "https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/J.P.%20Morgan/R5iK7HMxJGBgaSbvk_J.P.%20Morgan_EBGJPBSGCGKjEuZmc_1695147562838_completion_certificate.pdf",
+      "logo": "jpmorganchase_logo.jpeg"
+    },
+    {
+      "id": 16,
+      "priority": 2,
+      "name": "Artificial Intelligence Job Simulation",
+      "issuer": "Cognizant",
+      "date": "Sep 2023",
+      "credentialId": "CztweJqtKfqPSDy65",
+      "link": "https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/Cognizant/5N2ygyhzMWjKQmgCK_Cognizant_EBGJPBSGCGKjEuZmc_1695186241872_completion_certificate.pdf",
+      "logo": "Cognizant_logo.png"
+    },
+    {
+      "id": 17,
+      "priority": 3,
+      "name": "Cyber Security Job Simulation",
+      "issuer": "Clifford Chance",
+      "date": "Sep 2023",
+      "credentialId": "LvJX5kEKnTkABbaZa",
+      "link": "https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/Clifford%20Chance/33CKX5eTKH3dXer7X_Clifford%20Chance_EBGJPBSGCGKjEuZmc_1695533317900_completion_certificate.pdf",
+      "logo": "clifford_chance_llp_logo.jpeg"
+    },
+    {
+      "id": 18,
+      "priority": 4,
+      "name": "Accenture Nordic Developer Program",
+      "issuer": "Accenture",
+      "date": "Jul 2022",
+      "credentialId": "bX5cGtS3KpnK8tKv6",
+      "link": "https://forage-uploads-prod.s3.amazonaws.com/completion-certificates/Accenture%20Nordics/PxenP4rHNE6Bh4nQz_Accenture%20Nordics_EBGJPBSGCGKjEuZmc_1657981164611_completion_certificate.pdf",
+      "logo": "Accenture_Logo.png"
+    }
+  ]
+}

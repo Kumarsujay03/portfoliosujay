@@ -1,0 +1,48 @@
+{
+  "paragraphs": [
+    [
+      { "text": "Hello! I'm " },
+      { "text": "Sujay", "className": "text-primary" },
+      {
+        "text": ", a 2025 B.Tech graduate with a strong foundation in software and web development. I enjoy breaking down complex problems and turning them into clean, scalable solutions that work reliably in real-world systems."
+      }
+    ],
+    [
+      {
+        "text": "My journey began with building full-stack web applications, which helped me develop a solid understanding of system design, APIs, and performance considerations. Today, my focus is expanding toward "
+      },
+      { "text": "machine learning", "className": "text-code-purple" },
+      { "text": ", " },
+      { "text": "data-driven systems", "className": "text-code-blue" },
+      { "text": ", and " },
+      { "text": "applied AI", "className": "text-code-green" },
+      { "text": "." }
+    ],
+    [
+      {
+        "text": "When I’m not coding or experimenting with models, I spend time refining my fundamentals, exploring new technologies, and continuously learning how to build intelligent systems that scale and evolve."
+      }
+    ]
+  ],
+  "codeLines": [
+    "const aboutMe = {",
+    "  location: \"India\",",
+    "  education: \"B.Tech (2025 Graduate)\",",
+    "  background: \"Software & Web Development\",",
+    "  focus: \"Machine Learning & Applied AI\",",
+    "  interests: [",
+    "     \"Building scalable apps\",",
+    "     \"Working with data\",",
+    "     \"Machine learning\",",
+    "     \"Clean code\"",
+    "   ],",
+    "  currentlyLearning: [",
+    "     \"Machine learning basics\",",
+    "     \"Deep learning\",",
+    "     \"Improving model accuracy\"",
+    "   ],",
+    "  fuel: \"Tea ☕\"",
+    "  funFact: \"I refactor code as often as I tune models\"",
+    "};"
+  ]
+}
