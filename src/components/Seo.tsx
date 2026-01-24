@@ -45,6 +45,7 @@ const Seo = ({
 
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />
+      <meta property="og:site_name" content={baseTitle} />
       {ogUrl && <meta property="og:url" content={ogUrl} />}
       <meta property="og:type" content="website" />
       <meta property="og:image" content={ogImage} />

@@ -1,0 +1,32 @@
+[
+  {
+    "slug": "building-scalable-apis-with-nodejs",
+    "title": "Building Scalable APIs with Node.js",
+    "date": "2024-01-15",
+    "readTime": "8 min",
+    "tags": ["nodejs", "api", "backend"],
+    "summary": "Learn how to build production-ready APIs with rate limiting, caching, and solid error handling patterns.",
+    "image": "",
+    "body": [
+      "In this post, I walk through a practical structure for Node.js APIs that scales with traffic and team size.",
+      "We’ll cover rate limiting, request validation, error handling, and a few patterns that keep your codebase maintainable.",
+      "If you’re deploying on serverless (like Vercel), we’ll also discuss cold starts and where caching belongs."
+    ],
+    "code": "// Example: rate limiting middleware\nconst rateLimit = require('express-rate-limit');\n\nconst limiter = rateLimit({\n  windowMs: 15 * 60 * 1000,\n  max: 100,\n  message: { error: 'Too many requests' }\n});\n\napp.use('/api/', limiter);"
+  },
+  {
+    "slug": "typescript-generics-deep-dive",
+    "title": "TypeScript Generics Deep Dive",
+    "date": "2024-01-08",
+    "readTime": "12 min",
+    "tags": ["typescript", "generics", "types"],
+    "summary": "A practical guide to generics with utility and conditional types — with examples you can reuse.",
+    "image": "",
+    "body": [
+      "Generics help you write reusable, type-safe code without sacrificing inference.",
+      "We’ll build a few small utility types and show how to model API responses cleanly.",
+      "By the end, you’ll be comfortable reading and writing generic helpers in real projects."
+    ],
+    "code": "// Generic utility type for API responses\ntype ApiResponse<T> = {\n  data: T;\n  status: 'success' | 'error';\n  timestamp: Date;\n};\n\nconst fetchUser = async (): Promise<ApiResponse<User>> => {\n  // implementation\n  return { data: {} as User, status: 'success', timestamp: new Date() };\n};"
+  }
+]

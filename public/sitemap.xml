@@ -32,4 +32,12 @@
     <loc>/contact</loc>
     <lastmod>2026-01-24</lastmod>
   </url>
+  <url>
+    <loc>/blog/building-scalable-apis-with-nodejs</loc>
+    <lastmod>2026-01-24</lastmod>
+  </url>
+  <url>
+    <loc>/blog/typescript-generics-deep-dive</loc>
+    <lastmod>2026-01-24</lastmod>
+  </url>
 </urlset>
