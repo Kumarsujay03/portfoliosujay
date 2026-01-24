@@ -24,7 +24,8 @@ const Seo = ({
   const siteUrl = getSiteUrl();
 
   const baseTitle = "Sujay Kumar";
-  const fullTitle = title ? `${title} | ${baseTitle}` : `${baseTitle} — Portfolio`;
+  const defaultTitle = `${baseTitle} — Portfolio`;
+  const fullTitle = pathname === "/" ? defaultTitle : title ? `${title} | ${baseTitle}` : defaultTitle;
 
   const canonicalUrl = siteUrl ? `${siteUrl}${pathname}` : null;
   const ogUrl = canonicalUrl;
