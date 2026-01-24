@@ -17,10 +17,17 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks(id) {
           if (!id.includes("node_modules")) return;
+
+          // Important: keep React core packages together to avoid cross-chunk cycles.
+          // (react-dom depends on scheduler; many other deps depend on react)
+          const isReactCore = /[\\/]node_modules[\\/](react|react-dom|scheduler|use-sync-external-store)[\\/]/.test(
+            id
+          );
+
           if (id.includes("react-router")) return "router";
           if (id.includes("framer-motion")) return "motion";
           if (id.includes("@radix-ui")) return "radix";
-          if (id.includes("react")) return "react";
+          if (isReactCore) return "react";
           return "vendor";
         },
       },

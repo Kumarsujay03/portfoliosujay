@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { HelmetProvider } from "react-helmet-async";
 import AppLayout from "@/components/AppLayout";
+import { Analytics } from "@vercel/analytics/react";
 
 const Index = lazy(() => import("./pages/Index"));
 const BlogPage = lazy(() => import("./pages/BlogPage"));
@@ -45,6 +46,7 @@ const App = () => (
               </Route>
             </Routes>
           </BrowserRouter>
+          <Analytics />
         </TooltipProvider>
       </ThemeProvider>
     </HelmetProvider>
