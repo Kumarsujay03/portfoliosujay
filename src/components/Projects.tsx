@@ -57,6 +57,8 @@ const getProjectWebpSrc = (imageFile?: string) => {
   }
 };
 
+const hasUrl = (url?: string) => Boolean(url && url.trim().length > 0);
+
 const Projects = ({ hideLabel }: ProjectsProps) => {
   const navigate = useNavigate();
   const ref = useRef(null);
@@ -265,7 +267,7 @@ const Projects = ({ hideLabel }: ProjectsProps) => {
                         index % 2 === 1 ? "md:justify-end" : ""
                       }`}
                     >
-                      {!project.isDemo && Boolean(project.github) && (
+                      {hasUrl(project.github) && (
                         <motion.a
                           href={project.github}
                           target="_blank"
@@ -276,7 +278,7 @@ const Projects = ({ hideLabel }: ProjectsProps) => {
                           <Github size={20} />
                         </motion.a>
                       )}
-                      {!project.isDemo && Boolean(project.live) && (
+                      {hasUrl(project.live) && (
                         <motion.a
                           href={project.live}
                           target="_blank"
@@ -377,18 +379,37 @@ const Projects = ({ hideLabel }: ProjectsProps) => {
                           >
                             📁
                           </motion.span>
-                          {project.isDemo ? (
-                            <span className="font-mono text-xs px-2 py-1 rounded bg-code-orange/15 text-code-orange">
-                              demo
-                            </span>
-                          ) : (
-                            <motion.div whileHover={{ scale: 1.1 }}>
-                              <Github
-                                size={18}
-                                className="text-muted-foreground group-hover:text-primary transition-colors"
-                              />
-                            </motion.div>
-                          )}
+                          <div className="flex items-center gap-2">
+                            {project.isDemo && (
+                              <span className="font-mono text-xs px-2 py-1 rounded bg-code-orange/15 text-code-orange">
+                                demo
+                              </span>
+                            )}
+                            {hasUrl(project.github) && (
+                              <motion.a
+                                href={project.github}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                whileHover={{ scale: 1.1 }}
+                                className="text-muted-foreground hover:text-primary transition-colors"
+                                aria-label={`Open GitHub for ${project.title}`}
+                              >
+                                <Github size={18} />
+                              </motion.a>
+                            )}
+                            {hasUrl(project.live) && (
+                              <motion.a
+                                href={project.live}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                whileHover={{ scale: 1.1 }}
+                                className="text-muted-foreground hover:text-primary transition-colors"
+                                aria-label={`Open live site for ${project.title}`}
+                              >
+                                <ExternalLink size={18} />
+                              </motion.a>
+                            )}
+                          </div>
                         </div>
                         <h5 className="font-semibold text-foreground mb-2">
                           {project.title}
