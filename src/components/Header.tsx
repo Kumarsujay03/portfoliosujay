@@ -1,144 +1,201 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Download } from "lucide-react";
+import { Menu, X, Download, ChevronRight } from "lucide-react";
+import { useLocation, Link } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
 
   const navItems = [
-    { label: "about()", href: "#about" },
-    { label: "skills()", href: "#skills" },
-    { label: "experience()", href: "#experience" },
-    { label: "projects()", href: "#projects" },
-    { label: "blog()", href: "#blog" },
-    { label: "contact()", href: "#contact" },
+    { label: "about", href: "#about", isAnchor: true },
+    { label: "skills", href: "#skills", isAnchor: true },
+    { label: "work", href: "#experience", isAnchor: true },
+    { label: "projects", href: "#projects", isAnchor: true },
+    { label: "blog", href: "/blog", isAnchor: false },
+    { label: "contact", href: "#contact", isAnchor: true },
   ];
 
   const handleNavClick = () => {
     setIsMenuOpen(false);
   };
 
+  const renderNavLink = (item: typeof navItems[0], index: number, isMobile = false) => {
+    const className = isMobile
+      ? "font-mono text-base text-muted-foreground hover:text-primary transition-colors flex items-center justify-between py-3 border-b border-border/30"
+      : "font-mono text-xs text-muted-foreground hover:text-primary transition-colors";
+
+    if (item.isAnchor && isHomePage) {
+      return (
+        <motion.a
+          key={item.label}
+          href={item.href}
+          onClick={handleNavClick}
+          initial={isMobile ? { opacity: 0, x: 20 } : { opacity: 0, y: -20 }}
+          animate={isMobile ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.05 + (isMobile ? 0.1 : 0.2) }}
+          className={className}
+        >
+          {item.label}()
+          {isMobile && <ChevronRight className="w-4 h-4 opacity-50" />}
+        </motion.a>
+      );
+    }
+
+    if (item.isAnchor && !isHomePage) {
+      return (
+        <motion.div key={item.label}>
+          <Link
+            to={`/${item.href}`}
+            onClick={handleNavClick}
+            className={className}
+          >
+            {item.label}()
+            {isMobile && <ChevronRight className="w-4 h-4 opacity-50" />}
+          </Link>
+        </motion.div>
+      );
+    }
+
+    return (
+      <motion.div
+        key={item.label}
+        initial={isMobile ? { opacity: 0, x: 20 } : { opacity: 0, y: -20 }}
+        animate={isMobile ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.05 + (isMobile ? 0.1 : 0.2) }}
+      >
+        <Link to={item.href} onClick={handleNavClick} className={className}>
+          {item.label}()
+          {isMobile && <ChevronRight className="w-4 h-4 opacity-50" />}
+        </Link>
+      </motion.div>
+    );
+  };
+
   return (
-    <motion.header
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md"
-    >
-      <div className="container mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
-        <a href="#" className="font-mono text-lg font-bold text-primary">
-          {"<Dev />"}
-        </a>
-        
-        {/* Desktop Navigation */}
-        <nav className="hidden xl:flex items-center gap-5">
-          {navItems.map((item, index) => (
+    <>
+      <motion.header
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md"
+      >
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+          <Link to="/" className="font-mono text-base font-bold text-primary">
+            {"<Dev />"}
+          </Link>
+          
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-4">
+            {navItems.map((item, index) => renderNavLink(item, index))}
+          </nav>
+          
+          {/* Desktop CTA Buttons */}
+          <div className="hidden md:flex items-center gap-2">
+            <ThemeToggle />
             <motion.a
-              key={item.label}
-              href={item.href}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 + 0.2 }}
-              className="font-mono text-sm text-muted-foreground hover:text-primary transition-colors"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              href="/resume.pdf"
+              download
+              className="font-mono text-xs px-3 py-2 border border-border text-muted-foreground rounded hover:border-primary hover:text-primary transition-all flex items-center gap-1.5"
             >
-              {item.label}
+              <Download className="w-3.5 h-3.5" />
+              cv
             </motion.a>
-          ))}
-        </nav>
-        
-        {/* Desktop CTA Buttons */}
-        <div className="hidden xl:flex items-center gap-3">
-          <ThemeToggle />
-          <motion.a
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            href="/resume.pdf"
-            download
-            className="font-mono text-sm px-3 py-2 border border-border text-muted-foreground rounded hover:border-primary hover:text-primary transition-all flex items-center gap-2"
-          >
-            <Download className="w-4 h-4" />
-            resume.pdf
-          </motion.a>
-          <motion.a
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            href="#contact"
-            className="font-mono text-sm px-4 py-2 border border-primary text-primary rounded hover:bg-primary hover:text-primary-foreground transition-all glow-primary"
-          >
-            hire_me()
-          </motion.a>
-        </div>
+            <motion.a
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+              href={isHomePage ? "#contact" : "/#contact"}
+              className="font-mono text-xs px-3 py-2 bg-primary text-primary-foreground rounded hover:opacity-90 transition-all"
+            >
+              hire()
+            </motion.a>
+          </div>
 
-        {/* Mobile/Tablet Controls */}
-        <div className="flex xl:hidden items-center gap-2">
-          <ThemeToggle />
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="p-2 text-muted-foreground hover:text-primary transition-colors"
-            aria-label="Toggle menu"
-          >
-            {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile Controls */}
+          <div className="flex md:hidden items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 text-muted-foreground hover:text-primary transition-colors"
+              aria-label="Toggle menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          </div>
         </div>
-      </div>
+      </motion.header>
 
-      {/* Mobile Menu */}
+      {/* Mobile Slide-in Menu */}
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3 }}
-            className="xl:hidden border-t border-border bg-background/95 backdrop-blur-md overflow-hidden"
-          >
-            <nav className="container mx-auto px-6 py-6 flex flex-col gap-4">
-              {navItems.map((item, index) => (
-                <motion.a
-                  key={item.label}
-                  href={item.href}
-                  onClick={handleNavClick}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.05 }}
-                  className="font-mono text-lg text-muted-foreground hover:text-primary transition-colors py-2 border-b border-border/50"
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setIsMenuOpen(false)}
+              className="fixed inset-0 bg-background/60 backdrop-blur-sm z-50 md:hidden"
+            />
+            
+            {/* Slide-in Panel */}
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 h-full w-72 bg-card border-l border-border z-50 md:hidden"
+            >
+              <div className="p-4 border-b border-border flex items-center justify-between">
+                <span className="font-mono text-sm text-muted-foreground">menu.tsx</span>
+                <button
+                  onClick={() => setIsMenuOpen(false)}
+                  className="p-1.5 rounded hover:bg-muted transition-colors"
                 >
-                  {item.label}
-                </motion.a>
-              ))}
-              
-              <div className="flex flex-col gap-3 pt-4">
-                <motion.a
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: navItems.length * 0.05 }}
-                  href="/resume.pdf"
-                  download
-                  onClick={handleNavClick}
-                  className="font-mono text-sm px-4 py-3 border border-border text-muted-foreground rounded hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2"
-                >
-                  <Download className="w-4 h-4" />
-                  download_resume()
-                </motion.a>
-                <motion.a
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: navItems.length * 0.05 + 0.05 }}
-                  href="#contact"
-                  onClick={handleNavClick}
-                  className="font-mono text-sm px-4 py-3 border border-primary text-primary rounded hover:bg-primary hover:text-primary-foreground transition-all glow-primary text-center"
-                >
-                  hire_me()
-                </motion.a>
+                  <X className="w-5 h-5" />
+                </button>
               </div>
-            </nav>
-          </motion.div>
+              
+              <nav className="p-4 flex flex-col">
+                {navItems.map((item, index) => renderNavLink(item, index, true))}
+                
+                <div className="flex flex-col gap-3 pt-6 mt-4 border-t border-border">
+                  <motion.a
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                    href="/resume.pdf"
+                    download
+                    onClick={handleNavClick}
+                    className="font-mono text-sm px-4 py-2.5 border border-border text-muted-foreground rounded hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2"
+                  >
+                    <Download className="w-4 h-4" />
+                    download_cv()
+                  </motion.a>
+                  <motion.a
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.45 }}
+                    href={isHomePage ? "#contact" : "/#contact"}
+                    onClick={handleNavClick}
+                    className="font-mono text-sm px-4 py-2.5 bg-primary text-primary-foreground rounded hover:opacity-90 transition-all text-center"
+                  >
+                    hire_me()
+                  </motion.a>
+                </div>
+              </nav>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
-    </motion.header>
+    </>
   );
 };
 
