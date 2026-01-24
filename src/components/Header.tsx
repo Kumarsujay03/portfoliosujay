@@ -12,6 +12,7 @@ const Header = () => {
   const navItems = [
     { label: "about", href: "#about", isAnchor: true },
     { label: "skills", href: "#skills", isAnchor: true },
+    { label: "certs", href: "#certifications", isAnchor: true },
     { label: "work", href: "#experience", isAnchor: true },
     { label: "projects", href: "#projects", isAnchor: true },
     { label: "blog", href: "/blog", isAnchor: false },
