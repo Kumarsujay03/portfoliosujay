@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import Footer from "@/components/Footer";
 import FooterBridge from "@/components/FooterBridge";
+import PageBackground from "@/components/PageBackground";
 import ScrollToTop from "@/components/ScrollToTop";
 import Seo from "@/components/Seo";
 import blogsData from "@/data/blogs.json";
@@ -64,7 +65,8 @@ const BlogPostPage = () => {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-background scroll-smooth">
+      <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
+        <PageBackground variant="blogPost" />
         <Seo title="Blog" description="Blog post not found." noIndex />
         <main className="pt-20">
           <div className="container mx-auto px-6">
@@ -101,7 +103,8 @@ const BlogPostPage = () => {
   const imageWebpSrc = getBlogWebpSrc(post.image);
 
   return (
-    <div className="min-h-screen bg-background scroll-smooth">
+    <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
+      <PageBackground variant="blogPost" />
       <Seo title={post.title} description={post.summary ?? "Blog post"} imagePath="/favicon.svg" />
       <main className="pt-20">
         <div className="container mx-auto px-6">

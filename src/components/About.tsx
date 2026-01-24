@@ -38,15 +38,16 @@ const About = ({ hideLabel }: AboutProps) => {
   };
 
   useEffect(() => {
-    if (isCodeInView && !isTyping) {
+    if (isCodeInView && !isTyping && currentLineIndex < codeLines.length) {
       setIsTyping(true);
     }
-  }, [isCodeInView, isTyping]);
+  }, [isCodeInView, isTyping, currentLineIndex, codeLines.length]);
 
   useEffect(() => {
     if (!isTyping) return;
 
     if (currentLineIndex >= codeLines.length) {
+      setIsTyping(false);
       return;
     }
 
@@ -73,6 +74,9 @@ const About = ({ hideLabel }: AboutProps) => {
       return () => clearTimeout(timeout);
     }
   }, [isTyping, currentLineIndex, currentCharIndex, codeLines]);
+
+  const isTypingActive = isTyping && currentLineIndex < codeLines.length;
+  const showRestartButton = !isTyping && displayedLines.length > 0 && currentLineIndex >= codeLines.length;
 
   const renderLine = (line: string, lineNumber: number) => {
     // Syntax highlighting
@@ -195,7 +199,7 @@ const About = ({ hideLabel }: AboutProps) => {
                 <div className="terminal-dot bg-code-green" />
                 <span className="ml-4 font-mono text-xs text-muted-foreground">about.js</span>
                 <div className="ml-auto flex items-center gap-2">
-                  {isTyping && currentLineIndex < codeLines.length && (
+                  {isTypingActive && (
                     <motion.span
                       className="font-mono text-xs text-code-green"
                       animate={{ opacity: [1, 0.5, 1] }}
@@ -204,15 +208,17 @@ const About = ({ hideLabel }: AboutProps) => {
                       typing...
                     </motion.span>
                   )}
-                  <button
-                    type="button"
-                    onClick={restartTyping}
-                    className="inline-flex items-center justify-center rounded p-1 text-muted-foreground hover:text-primary hover:bg-muted/40 transition-colors"
-                    aria-label="Restart typing animation"
-                    title="Restart typing"
-                  >
-                    <RotateCcw className="h-3.5 w-3.5" />
-                  </button>
+                  {showRestartButton && (
+                    <button
+                      type="button"
+                      onClick={restartTyping}
+                      className="inline-flex items-center justify-center rounded p-1 text-muted-foreground hover:text-primary hover:bg-muted/40 transition-colors"
+                      aria-label="Restart typing animation"
+                      title="Restart typing"
+                    >
+                      <RotateCcw className="h-3.5 w-3.5" />
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="terminal-body min-h-[320px]">
