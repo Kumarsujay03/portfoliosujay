@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "node scripts/generate-sitemap.mjs && vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
     "optimize:assets": "node scripts/optimize-assets.mjs",
+    "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },
