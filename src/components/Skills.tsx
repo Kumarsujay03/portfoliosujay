@@ -1,36 +1,137 @@
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import skillsData from "../data/skills.json";
 
-const Skills = () => {
+type SkillCategory = {
+  title: string;
+  icon: string;
+  skills: string[];
+};
+
+type SkillsData = {
+  techStackLines: string[];
+  categories: SkillCategory[];
+};
+
+type SkillsProps = {
+  hideLabel?: boolean;
+};
+
+const Skills = ({ hideLabel }: SkillsProps) => {
   const ref = useRef(null);
+  const codeRef = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isCodeInView = useInView(codeRef, { once: true, margin: "-50px" });
 
-  const skillCategories = [
-    {
-      title: "Frontend",
-      icon: "🎨",
-      skills: ["React", "TypeScript", "Next.js", "Tailwind CSS", "Framer Motion"],
-    },
-    {
-      title: "Backend",
-      icon: "⚙️",
-      skills: ["Node.js", "Python", "PostgreSQL", "Redis", "GraphQL"],
-    },
-    {
-      title: "DevOps",
-      icon: "🚀",
-      skills: ["Docker", "AWS", "CI/CD", "Kubernetes", "Terraform"],
-    },
-    {
-      title: "Tools",
-      icon: "🛠️",
-      skills: ["Git", "VS Code", "Figma", "Postman", "Linux"],
-    },
-  ];
+  const sectionPaddingClassName = hideLabel ? "pt-6 pb-12" : "py-12";
+
+  const { techStackLines, categories: skillCategories } = skillsData as unknown as SkillsData;
+
+  const [typedLines, setTypedLines] = useState<string[]>([]);
+  const [currentLineIndex, setCurrentLineIndex] = useState(0);
+  const [currentCharIndex, setCurrentCharIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    if (isCodeInView && !isTyping) {
+      setIsTyping(true);
+    }
+  }, [isCodeInView, isTyping]);
+
+  useEffect(() => {
+    if (!isTyping) return;
+    if (currentLineIndex >= techStackLines.length) return;
+
+    const currentLine = techStackLines[currentLineIndex];
+
+    if (currentCharIndex <= currentLine.length) {
+      const timeout = setTimeout(() => {
+        setTypedLines((prev) => {
+          const next = [...prev];
+          next[currentLineIndex] = currentLine.slice(0, currentCharIndex);
+          return next;
+        });
+        setCurrentCharIndex((prev) => prev + 1);
+      }, 14);
+
+      return () => clearTimeout(timeout);
+    }
+
+    const timeout = setTimeout(() => {
+      setCurrentLineIndex((prev) => prev + 1);
+      setCurrentCharIndex(0);
+    }, 45);
+
+    return () => clearTimeout(timeout);
+  }, [isTyping, currentLineIndex, currentCharIndex, techStackLines]);
+
+  const renderTechLine = (line: string) => {
+    if (line.trimStart().startsWith("//")) {
+      return <span className="syntax-comment">{line}</span>;
+    }
+
+    const parts: JSX.Element[] = [];
+    let remaining = line;
+    let key = 0;
+
+    const keywordMatch = remaining.match(/^(export const\s+)/);
+    if (keywordMatch) {
+      const kw = keywordMatch[1];
+      const exportPart = "export ";
+      const constPart = "const ";
+      parts.push(
+        <span key={key++}>
+          <span className="syntax-keyword">{exportPart}</span>
+          <span className="syntax-keyword">{constPart}</span>
+        </span>
+      );
+      remaining = remaining.slice(kw.length);
+    }
+
+    const fnMatch = remaining.match(/^(techStack)/);
+    if (fnMatch) {
+      parts.push(
+        <span key={key++} className="syntax-function">
+          {fnMatch[1]}
+        </span>
+      );
+      remaining = remaining.slice(fnMatch[1].length);
+    }
+
+    const stringRegex = /"[^"]*"/g;
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+    while ((match = stringRegex.exec(remaining)) !== null) {
+      const before = remaining.slice(lastIndex, match.index);
+      if (before) {
+        parts.push(
+          <span key={key++} className="text-foreground">
+            {before}
+          </span>
+        );
+      }
+      parts.push(
+        <span key={key++} className="syntax-string">
+          {match[0]}
+        </span>
+      );
+      lastIndex = match.index + match[0].length;
+    }
+
+    const after = remaining.slice(lastIndex);
+    if (after) {
+      parts.push(
+        <span key={key++} className="text-foreground">
+          {after}
+        </span>
+      );
+    }
+
+    return parts;
+  };
 
   return (
-    <section id="skills" className="py-24 bg-muted/20 relative">
+    <section id="skills" className={`${sectionPaddingClassName} bg-muted/20 relative`}>
       <div className="container mx-auto px-6">
         <motion.div
           ref={ref}
@@ -38,9 +139,11 @@ const Skills = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-mono text-sm text-primary mb-2">
-            {"// 02. Skills"}
-          </h2>
+          {!hideLabel && (
+            <h2 className="font-mono text-sm text-primary mb-2">
+              {"// 02. Skills"}
+            </h2>
+          )}
           <h3 className="text-3xl md:text-4xl font-bold mb-12">
             <span className="syntax-keyword">import</span>{" "}
             <span className="text-foreground">{"{"}</span>{" "}
@@ -50,7 +153,7 @@ const Skills = () => {
             <span className="syntax-string">"./experience"</span>
           </h3>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {skillCategories.map((category, categoryIndex) => (
               <motion.div
                 key={category.title}
@@ -102,25 +205,16 @@ const Skills = () => {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.5 }}
             className="mt-12 code-block max-w-2xl mx-auto"
+            ref={codeRef}
           >
-            <pre className="text-sm">
-              <span className="syntax-keyword">export const</span>{" "}
-              <span className="syntax-function">techStack</span>{" "}
-              <span className="text-foreground">= [</span>
-              <br />
-              {"  "}<span className="syntax-string">"TypeScript"</span>,{" "}
-              <span className="syntax-string">"React"</span>,{" "}
-              <span className="syntax-string">"Node.js"</span>,
-              <br />
-              {"  "}<span className="syntax-string">"PostgreSQL"</span>,{" "}
-              <span className="syntax-string">"Docker"</span>,{" "}
-              <span className="syntax-string">"AWS"</span>
-              <br />
-              <span className="text-foreground">];</span>
-              <br />
-              <br />
-              <span className="syntax-comment">// Always learning something new...</span>
-            </pre>
+          <pre className="text-sm whitespace-pre-wrap">
+            {techStackLines.map((_, i) => (
+              <span key={i}>
+                {renderTechLine(typedLines[i] ?? "")}
+                {"\n"}
+              </span>
+            ))}
+          </pre>
           </motion.div>
         </motion.div>
       </div>

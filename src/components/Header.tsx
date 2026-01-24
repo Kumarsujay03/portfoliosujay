@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Download, ChevronRight } from "lucide-react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, NavLink } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
 
 const Header = () => {
@@ -9,14 +9,36 @@ const Header = () => {
   const location = useLocation();
   const isHomePage = location.pathname === "/";
 
+  const logoText = "<Dev />";
+  const [typedLogo, setTypedLogo] = useState("");
+  const [isLogoTyping, setIsLogoTyping] = useState(true);
+
+  useEffect(() => {
+    let index = 0;
+    setTypedLogo("");
+    setIsLogoTyping(true);
+
+    const intervalId = window.setInterval(() => {
+      index += 1;
+      setTypedLogo(logoText.slice(0, index));
+
+      if (index >= logoText.length) {
+        window.clearInterval(intervalId);
+        setIsLogoTyping(false);
+      }
+    }, 90);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
   const navItems = [
-    { label: "about", href: "#about", isAnchor: true },
-    { label: "skills", href: "#skills", isAnchor: true },
-    { label: "certs", href: "#certifications", isAnchor: true },
-    { label: "work", href: "#experience", isAnchor: true },
-    { label: "projects", href: "#projects", isAnchor: true },
+    { label: "about", href: "/about", isAnchor: false },
+    { label: "skills", href: "/skills", isAnchor: false },
+    { label: "certs", href: "/certs", isAnchor: false },
+    { label: "work", href: "/work", isAnchor: false },
+    { label: "projects", href: "/projects", isAnchor: false },
     { label: "blog", href: "/blog", isAnchor: false },
-    { label: "contact", href: "#contact", isAnchor: true },
+    { label: "contact", href: "/contact", isAnchor: false },
   ];
 
   const handleNavClick = () => {
@@ -24,9 +46,16 @@ const Header = () => {
   };
 
   const renderNavLink = (item: typeof navItems[0], index: number, isMobile = false) => {
-    const className = isMobile
+    const baseClassName = isMobile
       ? "font-mono text-base text-muted-foreground hover:text-primary transition-colors flex items-center justify-between py-3 border-b border-border/30"
       : "font-mono text-xs text-muted-foreground hover:text-primary transition-colors";
+
+    const getClassName = ({ isActive }: { isActive: boolean }) => {
+      const activeGlowClassName = isActive
+        ? "text-primary drop-shadow-[0_0_10px_rgba(45,212,191,0.35)]"
+        : "";
+      return `${baseClassName} ${activeGlowClassName}`.trim();
+    };
 
     if (item.isAnchor && isHomePage) {
       return (
@@ -67,10 +96,10 @@ const Header = () => {
         animate={isMobile ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 }}
         transition={{ delay: index * 0.05 + (isMobile ? 0.1 : 0.2) }}
       >
-        <Link to={item.href} onClick={handleNavClick} className={className}>
+        <NavLink to={item.href} end onClick={handleNavClick} className={getClassName}>
           {item.label}()
           {isMobile && <ChevronRight className="w-4 h-4 opacity-50" />}
-        </Link>
+        </NavLink>
       </motion.div>
     );
   };
@@ -84,8 +113,27 @@ const Header = () => {
         className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md"
       >
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <Link to="/" className="font-mono text-base font-bold text-primary">
-            {"<Dev />"}
+          <Link to="/" className="font-mono text-base font-bold text-primary" aria-label="Home">
+            <motion.span
+              className="inline-flex items-center min-w-[7ch]"
+              animate={{
+                textShadow: [
+                  "0 0 0px rgba(45, 212, 191, 0.0)",
+                  "0 0 14px rgba(45, 212, 191, 0.35)",
+                  "0 0 0px rgba(45, 212, 191, 0.0)",
+                ],
+              }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+            >
+              {typedLogo || "\u00A0"}
+            </motion.span>
+            <motion.span
+              className="ml-1 text-primary/80"
+              animate={{ opacity: [1, 0, 1] }}
+              transition={{ duration: isLogoTyping ? 1 : 1.2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              _
+            </motion.span>
           </Link>
           
           {/* Desktop Navigation */}
@@ -100,7 +148,7 @@ const Header = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
-              href="/resume.pdf"
+              href="/Resume_Sujay.pdf"
               download
               className="font-mono text-xs px-3 py-2 border border-border text-muted-foreground rounded hover:border-primary hover:text-primary transition-all flex items-center gap-1.5"
             >
@@ -111,7 +159,7 @@ const Header = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
-              href={isHomePage ? "#contact" : "/#contact"}
+              href="/contact"
               className="font-mono text-xs px-3 py-2 bg-primary text-primary-foreground rounded hover:opacity-90 transition-all"
             >
               hire()
@@ -172,7 +220,7 @@ const Header = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.4 }}
-                    href="/resume.pdf"
+                    href="/Resume_Sujay.pdf"
                     download
                     onClick={handleNavClick}
                     className="font-mono text-sm px-4 py-2.5 border border-border text-muted-foreground rounded hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-2"
@@ -184,7 +232,7 @@ const Header = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.45 }}
-                    href={isHomePage ? "#contact" : "/#contact"}
+                    href="/contact"
                     onClick={handleNavClick}
                     className="font-mono text-sm px-4 py-2.5 bg-primary text-primary-foreground rounded hover:opacity-90 transition-all text-center"
                   >

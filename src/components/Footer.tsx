@@ -1,15 +1,18 @@
 import { motion } from "framer-motion";
-import { Github, Linkedin, Twitter, Mail, Heart, Coffee, Terminal } from "lucide-react";
+import { Coffee, Terminal, Github, Linkedin, Mail } from "lucide-react";
 
-const socialLinks = [
-  { icon: Github, href: "https://github.com", label: "GitHub" },
-  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-  { icon: Mail, href: "mailto:hello@example.com", label: "Email" },
-];
+type FooterProps = {
+  showSocialLinks?: boolean;
+};
 
-const Footer = () => {
+const Footer = ({ showSocialLinks }: FooterProps) => {
   const currentYear = new Date().getFullYear();
+
+  const socials = [
+    { icon: Github, href: "https://github.com/kumarsujay03/", label: "GitHub" },
+    { icon: Linkedin, href: "https://www.linkedin.com/in/kumarsujay03/", label: "LinkedIn" },
+    { icon: Mail, href: "mailto:mr.sujaykumar03@gmail.com", label: "Email" },
+  ];
 
   return (
     <motion.footer
@@ -17,9 +20,9 @@ const Footer = () => {
       whileInView={{ opacity: 1 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6 }}
-      className="py-12 border-t border-border relative overflow-hidden"
+      className="py-12 relative overflow-hidden"
     >
-      {/* Animated background gradient */}
+      {/* Animated background gradient - continues from contact section */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5"
         animate={{
@@ -28,7 +31,7 @@ const Footer = () => {
         transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
       />
 
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         {/* Terminal-style header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -43,33 +46,29 @@ const Footer = () => {
           </span>
         </motion.div>
 
-        {/* Social Links */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="flex justify-center gap-4 mb-8"
-        >
-          {socialLinks.map((social, index) => (
-            <motion.a
-              key={social.label}
-              href={social.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, scale: 0 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 + index * 0.1, type: "spring", stiffness: 200 }}
-              whileHover={{ y: -4, scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-10 h-10 rounded-lg border border-border bg-card/50 flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition-colors group"
-              aria-label={social.label}
-            >
-              <social.icon className="w-5 h-5 group-hover:animate-pulse" />
-            </motion.a>
-          ))}
-        </motion.div>
+        {showSocialLinks && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.25 }}
+            className="flex justify-center gap-4 pt-2 mb-8"
+          >
+            {socials.map((social) => (
+              <motion.a
+                key={social.label}
+                href={social.href}
+                target={social.href.startsWith("mailto:") ? undefined : "_blank"}
+                rel={social.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                whileHover={{ y: -2 }}
+                className="p-2 rounded-lg border border-border text-muted-foreground hover:text-primary hover:border-primary transition-all"
+                aria-label={social.label}
+              >
+                <social.icon className="h-4 w-4" />
+              </motion.a>
+            ))}
+          </motion.div>
+        )}
 
         {/* Code-style attribution */}
         <motion.div
@@ -100,7 +99,7 @@ const Footer = () => {
               transition={{ delay: 0.7 }}
               whileHover={{ scale: 1.05 }}
             >
-              "John Doe"
+              "Sujay Kumar"
             </motion.a>
             <motion.span
               className="text-foreground"
@@ -118,22 +117,16 @@ const Footer = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.9 }}
-            className="font-mono text-xs text-muted-foreground/60 flex items-center justify-center gap-2"
+            className="font-mono text-xs text-muted-foreground/60 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center px-2"
           >
             <span className="text-code-green">git commit</span>
             <span>-m</span>
-            <span className="text-code-orange flex items-center gap-1">
-              "Built with{" "}
-              <motion.span
-                animate={{ scale: [1, 1.2, 1] }}
-                transition={{ duration: 1, repeat: Infinity }}
-              >
-                <Heart className="w-3 h-3 text-destructive inline fill-destructive" />
-              </motion.span>
-              {" "}and{" "}
+            <span className="text-code-orange flex flex-wrap items-center justify-center gap-1 text-center whitespace-normal break-words">
+              "Built with curiosity and continuous learning{" "}
               <motion.span
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
+                className="inline-flex"
               >
                 <Coffee className="w-3 h-3 text-code-orange inline" />
               </motion.span>
@@ -141,26 +134,26 @@ const Footer = () => {
             </span>
           </motion.div>
 
+          {/* Decorative animated separator */}
+          <motion.div
+            className="mx-auto my-6 h-px w-64 bg-gradient-to-r from-transparent via-primary/50 to-transparent"
+            initial={{ scaleX: 0, opacity: 0 }}
+            whileInView={{ scaleX: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+          />
+
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ delay: 1 }}
-            className="font-mono text-xs text-muted-foreground/40 pt-4"
+            transition={{ delay: 1.1 }}
+            className="font-mono text-xs text-muted-foreground/40"
           >
             <span className="syntax-comment">{"// "}</span>
             © {currentYear} All rights reserved
           </motion.p>
         </motion.div>
-
-        {/* Animated bottom border */}
-        <motion.div
-          className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent"
-          initial={{ scaleX: 0, opacity: 0 }}
-          whileInView={{ scaleX: 1, opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-        />
       </div>
     </motion.footer>
   );

@@ -2,11 +2,11 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const roles = [
-  "Full-Stack Developer",
-  "React Specialist",
-  "Node.js Engineer",
-  "UI/UX Enthusiast",
-  "Problem Solver",
+  "Software Engineer",
+  "Web Application Developer",
+  "Machine Learning Practitioner",
+  "Data-Driven Problem Solver",
+  "Applied AI Enthusiast"
 ];
 
 const Hero = () => {
@@ -41,7 +41,7 @@ const Hero = () => {
   }, [displayText, isDeleting, roleIndex]);
 
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+    <section className="min-h-screen min-h-[100svh] flex items-center justify-center relative overflow-hidden pt-20">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_hsl(var(--primary)/0.1)_0%,_transparent_70%)]" />
       
@@ -53,10 +53,11 @@ const Hero = () => {
       >
         <pre className="font-mono text-xs text-primary">
           {`const developer = {
-  name: "John",
-  skills: ["React", "Node"],
-  passion: "∞"
-};`}
+              name: "Sujay Kumar",
+              skills: ["React", "Node"],
+              passion: "∞"
+            };
+          `}
         </pre>
       </motion.div>
       
@@ -67,10 +68,11 @@ const Hero = () => {
       >
         <pre className="font-mono text-xs text-secondary">
           {`function createAwesome() {
-  return ideas.map(
-    idea => implement(idea)
-  );
-}`}
+            return ideas.map(
+              idea => implement(idea)
+            );
+          }
+        `}
         </pre>
       </motion.div>
       
@@ -105,7 +107,7 @@ const Hero = () => {
               >
                 <p className="text-muted-foreground">// Hello, World! I'm</p>
                 <h1 className="text-4xl md:text-6xl font-bold mt-2">
-                  <span className="text-gradient">John Doe</span>
+                  <span className="text-gradient">Sujay Kumar</span>
                 </h1>
                 <p className="text-xl md:text-2xl text-foreground mt-2 h-8 md:h-10">
                   {displayText}
@@ -129,8 +131,8 @@ const Hero = () => {
                 transition={{ delay: 2 }}
                 className="text-muted-foreground pl-4 max-w-2xl"
               >
-                I craft elegant solutions through clean code. Passionate about building 
-                scalable web applications and creating exceptional user experiences.
+                I build scalable software with clean, maintainable code. 
+                Passionate about machine learning and intelligent system design.
               </motion.p>
               
               <motion.div

@@ -1,46 +1,77 @@
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
+import experiencesData from "../data/experiences.json";
 
-const experiences = [
-  {
-    id: 1,
-    role: "Senior Software Engineer",
-    company: "TechCorp Inc.",
-    period: "2022 - Present",
-    description: "Leading frontend architecture and mentoring junior developers. Implemented micro-frontend architecture reducing build times by 60%.",
-    technologies: ["React", "TypeScript", "AWS", "GraphQL"],
-    type: "full-time"
-  },
-  {
-    id: 2,
-    role: "Full Stack Developer",
-    company: "StartupXYZ",
-    period: "2020 - 2022",
-    description: "Built and scaled the core platform from 0 to 100k users. Designed RESTful APIs and implemented real-time features.",
-    technologies: ["Node.js", "React", "PostgreSQL", "Redis"],
-    type: "full-time"
-  },
-  {
-    id: 3,
-    role: "Frontend Developer",
-    company: "Digital Agency Co.",
-    period: "2018 - 2020",
-    description: "Developed responsive web applications for various clients. Introduced component-based architecture and modern build tools.",
-    technologies: ["JavaScript", "Vue.js", "SASS", "Webpack"],
-    type: "full-time"
-  },
-  {
-    id: 4,
-    role: "Junior Developer",
-    company: "WebDev Studio",
-    period: "2017 - 2018",
-    description: "Started career building websites and learning modern web technologies. Contributed to 20+ client projects.",
-    technologies: ["HTML", "CSS", "JavaScript", "jQuery"],
-    type: "internship"
-  },
-];
+type ExperienceProps = {
+  hideLabel?: boolean;
+};
 
-const TimelineCard = ({ exp, index }: { exp: typeof experiences[0]; index: number }) => {
+type ExperienceItem = {
+  id: number;
+  role: string;
+  company: string;
+  startDate: string; // YYYY-MM
+  endDate: string | null; // YYYY-MM
+  isCurrent: boolean;
+  isVolunteer: boolean;
+  description: string;
+  technologies: string[];
+};
+
+const parseYearMonth = (value: string) => {
+  const [yearStr, monthStr] = value.split("-");
+  const year = Number(yearStr);
+  const month = Number(monthStr);
+  if (!Number.isFinite(year) || !Number.isFinite(month) || month < 1 || month > 12) return null;
+  return new Date(year, month - 1, 1);
+};
+
+const formatMonthYear = (value: string) => {
+  const date = parseYearMonth(value);
+  if (!date) return value;
+  return new Intl.DateTimeFormat("en", { month: "short", year: "numeric" }).format(date);
+};
+
+const formatPeriod = (exp: ExperienceItem) => {
+  const start = formatMonthYear(exp.startDate);
+  if (exp.isCurrent || !exp.endDate) return `${start} - Present`;
+  return `${start} - ${formatMonthYear(exp.endDate)}`;
+};
+
+const getTypeLabel = (exp: ExperienceItem) => {
+  if (exp.isVolunteer) return "volunteer";
+  if (/\bintern\b/i.test(exp.role)) return "internship";
+  return "experience";
+};
+
+const Experience = ({ hideLabel }: ExperienceProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const experiences = useMemo(() => {
+    const items = (experiencesData as unknown as ExperienceItem[]) ?? [];
+    return [...items].sort((a, b) => {
+      const aStart = parseYearMonth(a.startDate)?.getTime() ?? 0;
+      const bStart = parseYearMonth(b.startDate)?.getTime() ?? 0;
+      if (aStart !== bStart) return bStart - aStart;
+      return (b.id ?? 0) - (a.id ?? 0);
+    });
+  }, []);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  const fillProgress = useTransform(
+    scrollYProgress,
+    [0, 0.22, 0.72, 1],
+    [0, 0.45, 0.8, 1],
+    { clamp: true }
+  );
+
+  const lineHeight = useTransform(fillProgress, [0, 1], ["0%", "100%"], { clamp: true });
+
+  const TimelineCard = ({ exp, index }: { exp: ExperienceItem; index: number }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   
   const { scrollYProgress } = useScroll({
@@ -57,6 +88,19 @@ const TimelineCard = ({ exp, index }: { exp: typeof experiences[0]; index: numbe
   );
   const blur = useTransform(scrollYProgress, [0, 0.5, 1], [4, 1, 0]);
 
+  // Dot reveal synced to the main timeline fill.
+  // Uses an index-based threshold so each dot "activates" as the line reaches it.
+  const dotThreshold = (index + 1) / experiences.length;
+  const dotReveal = useTransform(
+    fillProgress,
+    [Math.max(0, dotThreshold - 0.12), dotThreshold],
+    [0, 1],
+    { clamp: true }
+  );
+  const dotScale = useTransform(dotReveal, [0, 1], [0.75, 1], { clamp: true });
+  const dotOpacity = useTransform(dotReveal, [0, 1], [0.35, 1], { clamp: true });
+  const pulseOpacity = useTransform(dotReveal, [0, 1], [0, 0.5], { clamp: true });
+
   return (
     <motion.div
       ref={cardRef}
@@ -66,21 +110,18 @@ const TimelineCard = ({ exp, index }: { exp: typeof experiences[0]; index: numbe
       }`}
     >
       {/* Timeline dot with pulse animation */}
-      <motion.div 
-        className="absolute left-0 md:left-1/2 transform -translate-x-1/2 z-10"
-        initial={{ scale: 0 }}
-        whileInView={{ scale: 1 }}
-        transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-        viewport={{ once: true }}
-      >
-        <div className="w-4 h-4 rounded-full bg-primary border-4 border-background relative">
-          <motion.div 
-            className="absolute inset-0 rounded-full bg-primary"
-            animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </div>
-      </motion.div>
+      <div className="absolute left-4 md:left-1/2 transform -translate-x-1/2 z-10">
+        <motion.div style={{ scale: dotScale, opacity: dotOpacity }}>
+          <div className="w-4 h-4 rounded-full bg-primary border-4 border-background relative">
+            <motion.div
+              className="absolute inset-0 rounded-full bg-primary"
+              style={{ opacity: pulseOpacity }}
+              animate={{ scale: [1, 1.8, 1] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </div>
+        </motion.div>
+      </div>
 
       {/* Content card */}
       <motion.div 
@@ -96,12 +137,16 @@ const TimelineCard = ({ exp, index }: { exp: typeof experiences[0]; index: numbe
             <div className="terminal-dot bg-accent"></div>
             <div className="terminal-dot bg-code-green"></div>
             <span className="ml-2 font-mono text-xs text-muted-foreground">
-              {exp.period}
+              {formatPeriod(exp)}
             </span>
-            <span className={`ml-auto font-mono text-xs px-2 py-0.5 rounded ${
-              exp.type === 'full-time' ? 'bg-code-green/20 text-code-green' : 'bg-code-orange/20 text-code-orange'
-            }`}>
-              {exp.type}
+            <span
+              className={`ml-auto font-mono text-xs px-2 py-0.5 rounded ${
+                getTypeLabel(exp) === "experience"
+                  ? "bg-code-green/20 text-code-green"
+                  : "bg-code-orange/20 text-code-orange"
+              }`}
+            >
+              {getTypeLabel(exp)}
             </span>
           </div>
           
@@ -171,31 +216,26 @@ const TimelineCard = ({ exp, index }: { exp: typeof experiences[0]; index: numbe
   );
 };
 
-const Experience = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-  
-  const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-
   return (
-    <section id="experience" className="py-20">
+    <section id="experience" className="py-12 relative">
       <div className="container mx-auto px-6">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.6 }}
           viewport={{ once: true }}
           className="mb-12"
         >
+          {!hideLabel && (
+            <h2 className="font-mono text-sm text-primary mb-2">
+              {"// 03. Experience"}
+            </h2>
+          )}
           <div className="terminal-header mb-0 rounded-t-lg">
             <div className="terminal-dot bg-destructive"></div>
             <div className="terminal-dot bg-accent"></div>
             <div className="terminal-dot bg-code-green"></div>
-            <span className="ml-2 font-mono text-xs text-muted-foreground">experience.json</span>
+            <span className="ml-2 font-mono text-xs text-muted-foreground">experiences.json</span>
           </div>
           <div className="bg-card border-x border-b border-border rounded-b-lg p-6">
             <h2 className="text-3xl font-bold font-mono mb-2">
@@ -205,16 +245,16 @@ const Experience = () => {
             </h2>
             <p className="text-muted-foreground font-mono text-sm">
               <span className="syntax-comment">{"// "}</span>
-              Professional journey through the tech industry
+              Professional and volunteer journey
             </p>
           </div>
         </motion.div>
 
         <div ref={containerRef} className="relative">
           {/* Animated timeline line */}
-          <div className="absolute left-0 md:left-1/2 transform md:-translate-x-px top-0 bottom-0 w-0.5 bg-border/30" />
+          <div className="absolute left-4 md:left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-border/30" />
           <motion.div 
-            className="absolute left-0 md:left-1/2 transform md:-translate-x-px top-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-primary"
+            className="absolute left-4 md:left-1/2 transform -translate-x-1/2 top-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-primary"
             style={{ height: lineHeight }}
           />
 

@@ -1,89 +1,88 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
-import { Award, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Award, ExternalLink, ChevronRight } from "lucide-react";
+import certificateData from "../data/certificates.json";
 
-const certifications = [
-  {
-    id: 1,
-    name: "AWS Certified Solutions Architect",
-    issuer: "Amazon Web Services",
-    date: "2024",
-    credentialId: "AWS-SAA-12345",
-    link: "https://aws.amazon.com/verification",
-    icon: "🏆",
-  },
-  {
-    id: 2,
-    name: "Professional Scrum Master I",
-    issuer: "Scrum.org",
-    date: "2023",
-    credentialId: "PSM-67890",
-    link: "https://scrum.org/certificates",
-    icon: "📜",
-  },
-  {
-    id: 3,
-    name: "Meta Front-End Developer",
-    issuer: "Meta (Coursera)",
-    date: "2023",
-    credentialId: "META-FE-11111",
-    link: "https://coursera.org/verify",
-    icon: "🎓",
-  },
-  {
-    id: 4,
-    name: "Google Cloud Professional",
-    issuer: "Google Cloud",
-    date: "2023",
-    credentialId: "GCP-22222",
-    link: "https://cloud.google.com/certification",
-    icon: "☁️",
-  },
-  {
-    id: 5,
-    name: "MongoDB Certified Developer",
-    issuer: "MongoDB University",
-    date: "2022",
-    credentialId: "MDB-33333",
-    link: "https://university.mongodb.com",
-    icon: "🍃",
-  },
-  {
-    id: 6,
-    name: "Certified Kubernetes Administrator",
-    issuer: "CNCF",
-    date: "2022",
-    credentialId: "CKA-44444",
-    link: "https://cncf.io/certification",
-    icon: "⚙️",
-  },
-];
+type Certificate = {
+  id: number;
+  priority?: number;
+  name: string;
+  issuer: string;
+  date: string;
+  credentialId?: string;
+  link?: string;
+  logo?: string;
+};
 
-const Certifications = () => {
-  const [showAll, setShowAll] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(3);
+type CertificateData = Record<string, Certificate[]>;
 
-  useEffect(() => {
-    const updateVisibleCount = () => {
-      if (window.innerWidth >= 1024) {
-        setVisibleCount(3); // lg: 3 columns
-      } else if (window.innerWidth >= 768) {
-        setVisibleCount(4); // md: 2 columns, show 4
-      } else {
-        setVisibleCount(3); // mobile: 1 column, show 3
-      }
+const CATEGORY_ORDER = ["machineLearning", "softwareAndWeb", "simulationsAndPrograms"] as const;
+
+const CATEGORY_TITLES: Record<(typeof CATEGORY_ORDER)[number], string> = {
+  machineLearning: "Machine Learning",
+  softwareAndWeb: "Software & Web",
+  simulationsAndPrograms: "Simulations & Programs",
+};
+
+const getLogoSrc = (logoFile?: string) => {
+  if (!logoFile) return null;
+  try {
+    return new URL(`../assets/logo/${logoFile}`, import.meta.url).href;
+  } catch {
+    return null;
+  }
+};
+
+const sortByPriority = (items: Certificate[]) =>
+  [...items].sort((a, b) => {
+    const pa = typeof a.priority === "number" ? a.priority : 999;
+    const pb = typeof b.priority === "number" ? b.priority : 999;
+    if (pa !== pb) return pa - pb;
+    return (a.id ?? 0) - (b.id ?? 0);
+  });
+
+const DEFAULT_VISIBLE_BY_CATEGORY: Record<(typeof CATEGORY_ORDER)[number], number> = {
+  machineLearning: 3,
+  softwareAndWeb: 3,
+  simulationsAndPrograms: 0,
+};
+
+type CertificationsProps = {
+  forceShowAll?: boolean;
+};
+
+const Certifications = ({ forceShowAll }: CertificationsProps) => {
+  const navigate = useNavigate();
+
+  const sectionPaddingClassName = forceShowAll ? "pt-6 pb-12" : "py-20";
+
+  const data = certificateData as unknown as CertificateData;
+
+  const isShowingAll = Boolean(forceShowAll);
+
+  const categories = CATEGORY_ORDER.map((key) => {
+    const items = sortByPriority((data[key] ?? []) as Certificate[]);
+    const visibleCount = DEFAULT_VISIBLE_BY_CATEGORY[key] ?? 0;
+    return {
+      key,
+      title: CATEGORY_TITLES[key],
+      items,
+      displayed: isShowingAll ? items : items.slice(0, visibleCount),
+      hiddenCount: Math.max(0, items.length - visibleCount),
     };
+  });
 
-    updateVisibleCount();
-    window.addEventListener("resize", updateVisibleCount);
-    return () => window.removeEventListener("resize", updateVisibleCount);
-  }, []);
+  const categoriesToRender = isShowingAll
+    ? categories
+    : categories.filter((category) => category.displayed.length > 0);
 
-  const displayedCerts = showAll ? certifications : certifications.slice(0, visibleCount);
-  const hiddenCount = certifications.length - visibleCount;
+  const totalCertifications = categories.reduce((acc, c) => acc + c.items.length, 0);
+  const hiddenCountTotal = categories.reduce((acc, c) => acc + c.hiddenCount, 0);
+
+  const hasAnyHidden = hiddenCountTotal > 0;
 
   return (
-    <section id="certifications" className="py-20 bg-muted/30">
+    <section id="certifications" className={`${sectionPaddingClassName} bg-muted/30`}>
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -96,7 +95,7 @@ const Certifications = () => {
             <div className="terminal-dot bg-destructive"></div>
             <div className="terminal-dot bg-accent"></div>
             <div className="terminal-dot bg-code-green"></div>
-            <span className="ml-2 font-mono text-xs text-muted-foreground">certifications.json</span>
+            <span className="ml-2 font-mono text-xs text-muted-foreground">certificates.json</span>
           </div>
           <div className="bg-card border-x border-b border-border rounded-b-lg p-6">
             <h2 className="text-3xl font-bold font-mono mb-2 flex items-center gap-3">
@@ -110,72 +109,97 @@ const Certifications = () => {
           </div>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <AnimatePresence mode="popLayout">
-            {displayedCerts.map((cert, index) => (
-              <motion.div
-                key={cert.id}
-                layout
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-                className="terminal-window group hover:border-primary/50 transition-colors"
-              >
-                <div className="terminal-header">
-                  <div className="terminal-dot bg-destructive"></div>
-                  <div className="terminal-dot bg-accent"></div>
-                  <div className="terminal-dot bg-code-green"></div>
-                  <span className="ml-2 font-mono text-xs text-muted-foreground">
-                    {cert.date}
-                  </span>
-                </div>
-                
-                <div className="p-5">
-                  <div className="flex items-start gap-3 mb-3">
-                    <motion.span 
-                      className="text-2xl"
-                      whileHover={{ scale: 1.2, rotate: 10 }}
+        <div className="space-y-10">
+          {categoriesToRender.map((category) => (
+            <div key={category.key}>
+              <div className="mb-4 flex items-center gap-3">
+                <p className="font-mono text-sm text-muted-foreground">
+                  <span className="syntax-comment">{"// "}</span>
+                  {category.title}
+                </p>
+                <div className="h-px flex-1 bg-border/60" />
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <AnimatePresence mode="popLayout">
+                  {category.displayed.map((cert, index) => (
+                    <motion.div
+                      key={cert.id}
+                      layout
+                      initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -20, scale: 0.9 }}
+                      transition={{ duration: 0.4, delay: index * 0.05 }}
+                      className="terminal-window group hover:border-primary/50 transition-colors"
                     >
-                      {cert.icon}
-                    </motion.span>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-mono text-sm font-semibold text-foreground group-hover:text-primary transition-colors leading-tight">
-                        {cert.name}
-                      </h3>
-                      <p className="font-mono text-xs text-muted-foreground mt-1">
-                        @ {cert.issuer}
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2 text-xs font-mono">
-                    <div className="flex items-center justify-between text-muted-foreground">
-                      <span className="syntax-keyword">credentialId:</span>
-                      <span className="syntax-string">"{cert.credentialId}"</span>
-                    </div>
-                    
-                    {cert.link && (
-                      <motion.a
-                        href={cert.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ x: 4 }}
-                        className="flex items-center gap-1 text-code-blue hover:text-primary transition-colors mt-3"
-                      >
-                        <span>verify()</span>
-                        <ExternalLink className="w-3 h-3" />
-                      </motion.a>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
+                      <div className="terminal-header">
+                        <div className="terminal-dot bg-destructive"></div>
+                        <div className="terminal-dot bg-accent"></div>
+                        <div className="terminal-dot bg-code-green"></div>
+                        <span className="ml-2 font-mono text-xs text-muted-foreground">
+                          {cert.date}
+                        </span>
+                      </div>
+                      
+                      <div className="p-5">
+                        <div className="flex items-start gap-3 mb-3">
+                          <motion.span
+                            className="shrink-0"
+                            whileHover={{ scale: 1.2, rotate: 10 }}
+                          >
+                            {getLogoSrc(cert.logo) ? (
+                              <img
+                                src={getLogoSrc(cert.logo) ?? ""}
+                                alt={cert.issuer}
+                                className="h-8 w-8 rounded object-contain bg-background/40 p-1"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <span className="text-2xl">🏆</span>
+                            )}
+                          </motion.span>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-mono text-sm font-semibold text-foreground group-hover:text-primary transition-colors leading-tight">
+                              {cert.name}
+                            </h3>
+                            <p className="font-mono text-xs text-muted-foreground mt-1">
+                              @ {cert.issuer}
+                            </p>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2 text-xs font-mono">
+                          {cert.credentialId && (
+                            <div className="flex items-center justify-between text-muted-foreground">
+                              <span className="syntax-keyword">credentialId:</span>
+                              <span className="syntax-string">"{cert.credentialId}"</span>
+                            </div>
+                          )}
+                          
+                          {cert.link && (
+                            <motion.a
+                              href={cert.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              whileHover={{ x: 4 }}
+                              className="flex items-center gap-1 text-code-blue hover:text-primary transition-colors mt-3"
+                            >
+                              <span>verify()</span>
+                              <ExternalLink className="w-3 h-3" />
+                            </motion.a>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* Show All / Show Less Button */}
-        {certifications.length > visibleCount && (
+        {/* Show All Button */}
+        {hasAnyHidden && !forceShowAll && (
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -184,22 +208,13 @@ const Certifications = () => {
             className="mt-8 text-center"
           >
             <motion.button
-              onClick={() => setShowAll(!showAll)}
+              onClick={() => navigate("/certs")}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="font-mono text-sm px-6 py-3 border border-border rounded-lg bg-card hover:border-primary hover:text-primary transition-all inline-flex items-center gap-2 group"
             >
-              {showAll ? (
-                <>
-                  <span>showLess()</span>
-                  <ChevronUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
-                </>
-              ) : (
-                <>
-                  <span>showAll({hiddenCount})</span>
-                  <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
-                </>
-              )}
+              <span>showAll({hiddenCountTotal})</span>
+              <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </motion.button>
           </motion.div>
         )}
@@ -213,7 +228,7 @@ const Certifications = () => {
         >
           <p className="font-mono text-xs text-muted-foreground">
             <span className="syntax-comment">{"// "}</span>
-            Total: {certifications.length} certifications
+            Total: {totalCertifications} certifications
           </p>
         </motion.div>
       </div>
