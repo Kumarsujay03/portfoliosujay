@@ -65,7 +65,7 @@ const Contact = ({ hideLabel }: ContactProps) => {
   }, [isCommentTyping, commentLineIndex, commentCharIndex, commentLines]);
 
   const socials = [
-    { icon: Github, href: "https://github.com/kumarsujay03/", label: "GitHub" },
+    { icon: Github, href: "https://github.com/Kumarsujay03", label: "GitHub" },
     { icon: Linkedin, href: "https://www.linkedin.com/in/kumarsujay03/", label: "LinkedIn" },
     { icon: Mail, href: "mailto:mr.sujaykumar03@gmail.com", label: "Email" },
   ];
@@ -125,7 +125,7 @@ const Contact = ({ hideLabel }: ContactProps) => {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.4 }}
-            href="mailto:mr.sujaykumar03@gmail.com"
+            href="mailto:sujayjaiswal03@gmail.com"
             className="inline-flex items-center gap-2 font-mono px-8 py-4 bg-primary text-primary-foreground rounded hover:opacity-90 transition-opacity glow-primary text-lg"
           >
             <Mail size={20} />
