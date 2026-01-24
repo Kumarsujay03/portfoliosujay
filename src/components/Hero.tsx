@@ -1,21 +1,44 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
+const roles = [
+  "Full-Stack Developer",
+  "React Specialist",
+  "Node.js Engineer",
+  "UI/UX Enthusiast",
+  "Problem Solver",
+];
+
 const Hero = () => {
   const [displayText, setDisplayText] = useState("");
-  const fullText = "Full-Stack Developer";
+  const [roleIndex, setRoleIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
   
   useEffect(() => {
-    let index = 0;
-    const timer = setInterval(() => {
-      setDisplayText(fullText.slice(0, index + 1));
-      index++;
-      if (index >= fullText.length) {
-        clearInterval(timer);
+    const currentRole = roles[roleIndex];
+    
+    const timeout = setTimeout(() => {
+      if (!isDeleting) {
+        // Typing
+        if (displayText.length < currentRole.length) {
+          setDisplayText(currentRole.slice(0, displayText.length + 1));
+        } else {
+          // Pause before deleting
+          setTimeout(() => setIsDeleting(true), 2000);
+        }
+      } else {
+        // Deleting
+        if (displayText.length > 0) {
+          setDisplayText(displayText.slice(0, -1));
+        } else {
+          setIsDeleting(false);
+          setRoleIndex((prev) => (prev + 1) % roles.length);
+        }
       }
-    }, 100);
-    return () => clearInterval(timer);
-  }, []);
+    }, isDeleting ? 50 : 100);
+    
+    return () => clearTimeout(timeout);
+  }, [displayText, isDeleting, roleIndex]);
 
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
@@ -84,7 +107,7 @@ const Hero = () => {
                 <h1 className="text-4xl md:text-6xl font-bold mt-2">
                   <span className="text-gradient">John Doe</span>
                 </h1>
-                <p className="text-xl md:text-2xl text-foreground mt-2">
+                <p className="text-xl md:text-2xl text-foreground mt-2 h-8 md:h-10">
                   {displayText}
                   <span className="cursor-blink text-primary">|</span>
                 </p>
