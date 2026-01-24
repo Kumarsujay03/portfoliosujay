@@ -1,5 +1,16 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
+import aboutData from "../data/about.json";
+
+type AboutTextSegment = {
+  text: string;
+  className?: string;
+};
+
+type AboutData = {
+  paragraphs: AboutTextSegment[][];
+  codeLines: string[];
+};
 
 type AboutProps = {
   hideLabel?: boolean;
@@ -16,27 +27,7 @@ const About = ({ hideLabel }: AboutProps) => {
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
 
-  const codeLines = [
-  'const aboutMe = {',
-  '  location: "India",',
-  '  education: "B.Tech (2025 Graduate)",',
-  '  background: "Software & Web Development",',
-  '  focus: "Machine Learning & Applied AI",',
-  '  interests: [',
-  '     "Building scalable apps",',
-  '     "Working with data",',
-  '     "Machine learning",',
-  '     "Clean code"',
-  '   ],',
-  '  currentlyLearning: [',
-  '     "Machine learning basics",',
-  '     "Deep learning",',
-  '     "Improving model accuracy"',
-  '   ],',
-  '  fuel: "Tea ☕"',
-  '  funFact: "I refactor code as often as I tune models"',
-  '};',
-];
+  const { paragraphs, codeLines } = aboutData as unknown as AboutData;
   useEffect(() => {
     if (isCodeInView && !isTyping) {
       setIsTyping(true);
@@ -170,24 +161,15 @@ const About = ({ hideLabel }: AboutProps) => {
                 <span className="syntax-string">"..."</span>
               </h3>
               <div className="space-y-6">
-                <p className="text-muted-foreground leading-relaxed">
-                Hello! I'm <span className="text-primary">Sujay</span>, a 2025 B.Tech graduate with a strong
-                foundation in software and web development. I enjoy breaking down complex problems and
-                turning them into clean, scalable solutions that work reliably in real-world systems.
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                My journey began with building full-stack web applications, which helped me develop a
-                solid understanding of system design, APIs, and performance considerations. Today, my
-                focus is expanding toward{" "}
-                <span className="text-code-purple">machine learning</span>,{" "}
-                <span className="text-code-blue">data-driven systems</span>, and{" "}
-                <span className="text-code-green">applied AI</span>.
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                When I’m not coding or experimenting with models, I spend time refining my fundamentals,
-                exploring new technologies, and continuously learning how to build intelligent systems
-                that scale and evolve.
-              </p>
+                {paragraphs.map((segments, idx) => (
+                  <p key={idx} className="text-muted-foreground leading-relaxed">
+                    {segments.map((segment, segmentIndex) => (
+                      <span key={segmentIndex} className={segment.className ?? undefined}>
+                        {segment.text}
+                      </span>
+                    ))}
+                  </p>
+                ))}
               </div>
             </div>
 

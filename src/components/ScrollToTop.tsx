@@ -7,17 +7,32 @@ const ScrollToTop = () => {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const toggleVisibility = () => {
-      const scrollTop = window.scrollY;
+    let rafId: number | null = null;
+
+    const update = () => {
+      rafId = null;
+
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = (scrollTop / docHeight) * 100;
-      
+      const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
       setScrollProgress(progress);
       setIsVisible(scrollTop > 300);
     };
 
-    window.addEventListener("scroll", toggleVisibility);
-    return () => window.removeEventListener("scroll", toggleVisibility);
+    const onScroll = () => {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(update);
+    };
+
+    // Initial sync
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId !== null) window.cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const scrollToTop = () => {
@@ -61,7 +76,7 @@ const ScrollToTop = () => {
               strokeLinecap="round"
               strokeDasharray={`${2 * Math.PI * 20}`}
               strokeDashoffset={`${2 * Math.PI * 20 * (1 - scrollProgress / 100)}`}
-              className="transition-all duration-150"
+              className="transition-none"
             />
           </svg>
           

@@ -59,7 +59,7 @@ const ListItem = React.memo(({ item }) => (
 
 const Blog = () => {
   return (
-    <section id="blog" className="py-20 bg-muted/30">
+    <section id="blog" className="pt-6 pb-12 bg-muted/30">
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
