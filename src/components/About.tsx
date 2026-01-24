@@ -1,7 +1,11 @@
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 
-const About = () => {
+type AboutProps = {
+  hideLabel?: boolean;
+};
+
+const About = ({ hideLabel }: AboutProps) => {
   const ref = useRef(null);
   const codeRef = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -13,20 +17,26 @@ const About = () => {
   const [isTyping, setIsTyping] = useState(false);
 
   const codeLines = [
-    'const aboutMe = {',
-    '  location: "San Francisco, CA",',
-    '  education: "CS @ Stanford",',
-    '  interests: [',
-    '    "Open Source",',
-    '    "System Design",',
-    '    "UI/UX",',
-    '    "Coffee ☕"',
-    '  ],',
-    '  currentlyLearning: "Rust",',
-    '  funFact: "I debug with console.log"',
-    '};',
-  ];
-
+  'const aboutMe = {',
+  '  location: "India",',
+  '  education: "B.Tech (2025 Graduate)",',
+  '  background: "Software & Web Development",',
+  '  focus: "Machine Learning & Applied AI",',
+  '  interests: [',
+  '     "Building scalable apps",',
+  '     "Working with data",',
+  '     "Machine learning",',
+  '     "Clean code"',
+  '   ],',
+  '  currentlyLearning: [',
+  '     "Machine learning basics",',
+  '     "Deep learning",',
+  '     "Improving model accuracy"',
+  '   ],',
+  '  fuel: "Tea ☕"',
+  '  funFact: "I refactor code as often as I tune models"',
+  '};',
+];
   useEffect(() => {
     if (isCodeInView && !isTyping) {
       setIsTyping(true);
@@ -50,7 +60,7 @@ const About = () => {
           return newLines;
         });
         setCurrentCharIndex(prev => prev + 1);
-      }, 25); // Typing speed
+      }, 5); // Typing speed
       
       return () => clearTimeout(timeout);
     } else {
@@ -58,7 +68,7 @@ const About = () => {
       const timeout = setTimeout(() => {
         setCurrentLineIndex(prev => prev + 1);
         setCurrentCharIndex(0);
-      }, 100); // Delay between lines
+      }, 25); // Delay between lines
       
       return () => clearTimeout(timeout);
     }
@@ -137,7 +147,7 @@ const About = () => {
   };
 
   return (
-    <section id="about" className="py-24 relative">
+    <section id="about" className="py-12 relative">
       <div className="container mx-auto px-6">
         <motion.div
           ref={ref}
@@ -145,35 +155,40 @@ const About = () => {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="font-mono text-sm text-primary mb-2">
-            {"// 01. About"}
-          </h2>
-          <h3 className="text-3xl md:text-4xl font-bold mb-12">
-            <span className="syntax-keyword">const</span>{" "}
-            <span className="syntax-function">aboutMe</span>{" "}
-            <span className="text-foreground">=</span>{" "}
-            <span className="syntax-string">"..."</span>
-          </h3>
+          {!hideLabel && (
+            <h2 className="font-mono text-sm text-primary mb-2">
+              {"// 01. About"}
+            </h2>
+          )}
 
           <div className="grid md:grid-cols-2 gap-12 items-start">
-            <div className="space-y-6">
-              <p className="text-muted-foreground leading-relaxed">
-                Hello! I'm <span className="text-primary">John</span>, a passionate developer 
-                who loves turning complex problems into simple, beautiful solutions. My journey 
-                in tech started when I wrote my first "Hello, World!" program and got hooked 
-                on the magic of making computers do things.
+            <div>
+              <h3 className="text-3xl md:text-4xl font-bold mb-8">
+                <span className="syntax-keyword">const</span>{" "}
+                <span className="syntax-function">aboutMe</span>{" "}
+                <span className="text-foreground">=</span>{" "}
+                <span className="syntax-string">"..."</span>
+              </h3>
+              <div className="space-y-6">
+                <p className="text-muted-foreground leading-relaxed">
+                Hello! I'm <span className="text-primary">Sujay</span>, a 2025 B.Tech graduate with a strong
+                foundation in software and web development. I enjoy breaking down complex problems and
+                turning them into clean, scalable solutions that work reliably in real-world systems.
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                Today, I specialize in building robust web applications using modern 
-                technologies. I'm particularly interested in{" "}
-                <span className="text-code-purple">distributed systems</span>,{" "}
-                <span className="text-code-blue">developer tooling</span>, and{" "}
-                <span className="text-code-green">performance optimization</span>.
+                My journey began with building full-stack web applications, which helped me develop a
+                solid understanding of system design, APIs, and performance considerations. Today, my
+                focus is expanding toward{" "}
+                <span className="text-code-purple">machine learning</span>,{" "}
+                <span className="text-code-blue">data-driven systems</span>, and{" "}
+                <span className="text-code-green">applied AI</span>.
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                When I'm not coding, you'll find me contributing to open source, 
-                writing technical blog posts, or exploring the latest in tech.
+                When I’m not coding or experimenting with models, I spend time refining my fundamentals,
+                exploring new technologies, and continuously learning how to build intelligent systems
+                that scale and evolve.
               </p>
+              </div>
             </div>
 
             <motion.div
