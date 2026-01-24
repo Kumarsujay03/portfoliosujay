@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import Footer from "@/components/Footer";
+import FooterBridge from "@/components/FooterBridge";
 import ScrollToTop from "@/components/ScrollToTop";
 import Seo from "@/components/Seo";
 import blogsData from "@/data/blogs.json";
@@ -89,6 +90,7 @@ const BlogPostPage = () => {
             </div>
           </div>
         </main>
+        <FooterBridge />
         <Footer showSocialLinks />
         <ScrollToTop />
       </div>
@@ -257,6 +259,7 @@ const BlogPostPage = () => {
           </motion.article>
         </div>
       </main>
+      <FooterBridge />
       <Footer showSocialLinks />
       <ScrollToTop />
     </div>

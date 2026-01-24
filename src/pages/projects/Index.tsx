@@ -1,4 +1,5 @@
 import Projects from "@/components/Projects";
+import FooterBridge from "@/components/FooterBridge";
 import Footer from "@/components/Footer";
 import ScrollToTop from "@/components/ScrollToTop";
 import Seo from "@/components/Seo";
@@ -10,6 +11,7 @@ const ProjectsPage = () => {
       <main className="pt-20">
         <Projects hideLabel={true} />
       </main>
+      <FooterBridge />
       <Footer showSocialLinks />
       <ScrollToTop />
     </div>

@@ -18,7 +18,11 @@ type BlogPost = {
   view?: boolean;
 };
 
-const Blog = () => {
+type BlogProps = {
+  backgroundVariant?: "muted" | "none";
+};
+
+const Blog = ({ backgroundVariant = "muted" }: BlogProps) => {
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
@@ -58,8 +62,10 @@ const Blog = () => {
     });
   }, [posts, query, activeTag]);
 
+  const backgroundClassName = backgroundVariant === "muted" ? "bg-muted/30" : "";
+
   return (
-    <section id="blog" className="pt-6 pb-12 bg-muted/30">
+    <section id="blog" className={`pt-6 pb-12 ${backgroundClassName}`.trim()}>
       <div className="container mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
