@@ -2,22 +2,28 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Skills from "@/components/Skills";
+import Experience from "@/components/Experience";
 import Projects from "@/components/Projects";
+import Blog from "@/components/Blog";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background scroll-smooth">
       <Header />
       <main>
         <Hero />
         <About />
         <Skills />
+        <Experience />
         <Projects />
+        <Blog />
         <Contact />
       </main>
       <Footer />
+      <ScrollToTop />
     </div>
   );
 };
