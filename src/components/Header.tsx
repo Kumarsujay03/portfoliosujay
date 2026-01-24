@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Download, ChevronRight } from "lucide-react";
 import { useLocation, Link, NavLink } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle";
+import { prefetchRoute } from "@/lib/routePrefetch";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -57,6 +58,8 @@ const Header = () => {
       return `${baseClassName} ${activeGlowClassName}`.trim();
     };
 
+    const className = baseClassName;
+
     if (item.isAnchor && isHomePage) {
       return (
         <motion.a
@@ -96,7 +99,14 @@ const Header = () => {
         animate={isMobile ? { opacity: 1, x: 0 } : { opacity: 1, y: 0 }}
         transition={{ delay: index * 0.05 + (isMobile ? 0.1 : 0.2) }}
       >
-        <NavLink to={item.href} end onClick={handleNavClick} className={getClassName}>
+        <NavLink
+          to={item.href}
+          end
+          onClick={handleNavClick}
+          onMouseEnter={() => prefetchRoute(item.href)}
+          onFocus={() => prefetchRoute(item.href)}
+          className={getClassName}
+        >
           {item.label}()
           {isMobile && <ChevronRight className="w-4 h-4 opacity-50" />}
         </NavLink>
@@ -130,7 +140,7 @@ const Header = () => {
             <motion.span
               className="ml-1 text-primary/80"
               animate={{ opacity: [1, 0, 1] }}
-              transition={{ duration: isLogoTyping ? 1 : 1.2, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: isLogoTyping ? 1.2 : 1.5, repeat: Infinity, ease: "easeInOut" }}
             >
               _
             </motion.span>
@@ -160,6 +170,8 @@ const Header = () => {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
               href="/contact"
+              onMouseEnter={() => prefetchRoute("/contact")}
+              onFocus={() => prefetchRoute("/contact")}
               className="font-mono text-xs px-3 py-2 bg-primary text-primary-foreground rounded hover:opacity-90 transition-all"
             >
               hire()

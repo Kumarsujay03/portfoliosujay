@@ -3,6 +3,7 @@ import path from "node:path";
 
 const WORKSPACE = process.cwd();
 const PUBLIC_DIR = path.join(WORKSPACE, "public");
+const BLOGS_PATH = path.join(WORKSPACE, "src", "data", "blogs.json");
 
 const getSiteUrl = () => {
   const raw = process.env.VITE_SITE_URL || process.env.SITE_URL;
@@ -21,6 +22,20 @@ const routes = [
   "/contact",
 ];
 
+const readBlogRoutes = async () => {
+  try {
+    const raw = await fs.readFile(BLOGS_PATH, "utf8");
+    const blogs = JSON.parse(raw);
+    if (!Array.isArray(blogs)) return [];
+
+    return blogs
+      .filter((b) => b && typeof b.slug === "string" && b.slug.length > 0 && b.view !== false)
+      .map((b) => `/blog/${b.slug}`);
+  } catch {
+    return [];
+  }
+};
+
 const isoDate = () => new Date().toISOString().slice(0, 10);
 
 const main = async () => {
@@ -29,7 +44,10 @@ const main = async () => {
   const siteUrl = getSiteUrl();
   const lastMod = isoDate();
 
-  const urlEntries = routes
+  const blogRoutes = await readBlogRoutes();
+  const allRoutes = Array.from(new Set([...routes, ...blogRoutes]));
+
+  const urlEntries = allRoutes
     .map((routePath) => {
       const loc = siteUrl ? `${siteUrl}${routePath}` : routePath;
       return [

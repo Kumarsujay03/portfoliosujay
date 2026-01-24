@@ -5,9 +5,11 @@ import sharp from "sharp";
 const WORKSPACE = process.cwd();
 const ASSETS_DIR = path.join(WORKSPACE, "src", "assets");
 const PROJECT_IMG_DIR = path.join(ASSETS_DIR, "project_img");
+const BLOG_IMG_DIR = path.join(ASSETS_DIR, "blog_img");
 
 const IMAGE_EXTS = new Set([".png", ".jpg", ".jpeg"]);
 const MAX_PROJECT_WIDTH = 1600;
+const MAX_BLOG_WIDTH = 1400;
 
 const formatBytes = (bytes) => {
   const units = ["B", "KB", "MB"];
@@ -82,6 +84,40 @@ const ensureProjectWebp = async (filePath) => {
   return { generated: true, bytes: webpBuffer.length };
 };
 
+const ensureBlogWebp = async (filePath) => {
+  const ext = path.extname(filePath).toLowerCase();
+  if (!IMAGE_EXTS.has(ext)) return { generated: false };
+
+  const outputPath = filePath.replace(/\.(png|jpe?g)$/i, ".webp");
+  if (outputPath === filePath) return { generated: false };
+
+  const input = await fs.readFile(filePath);
+  let pipeline = sharp(input, { failOn: "none" });
+
+  try {
+    const metadata = await pipeline.metadata();
+    if (metadata.width && metadata.width > MAX_BLOG_WIDTH) {
+      pipeline = pipeline.resize({ width: MAX_BLOG_WIDTH, withoutEnlargement: true });
+    }
+  } catch {
+  }
+
+  const webpBuffer = await pipeline.webp({ quality: 80, effort: 5 }).toBuffer();
+
+  let shouldWrite = true;
+  try {
+    const existing = await fs.stat(outputPath);
+    if (existing.size <= webpBuffer.length) {
+      shouldWrite = false;
+    }
+  } catch {
+  }
+
+  if (!shouldWrite) return { generated: false };
+  await fs.writeFile(outputPath, webpBuffer);
+  return { generated: true, bytes: webpBuffer.length };
+};
+
 const walkFiles = async (dir) => {
   const out = [];
   const entries = await fs.readdir(dir, { withFileTypes: true });
@@ -127,6 +163,15 @@ const main = async () => {
 
     if (file.startsWith(PROJECT_IMG_DIR + path.sep)) {
       const webp = await ensureProjectWebp(file);
+      if (webp.generated) {
+        webpCount++;
+        const relWebp = path.relative(WORKSPACE, file.replace(/\.(png|jpe?g)$/i, ".webp"));
+        console.log(`  + ${relWebp}: generated WebP`);
+      }
+    }
+
+    if (file.startsWith(BLOG_IMG_DIR + path.sep)) {
+      const webp = await ensureBlogWebp(file);
       if (webp.generated) {
         webpCount++;
         const relWebp = path.relative(WORKSPACE, file.replace(/\.(png|jpe?g)$/i, ".webp"));

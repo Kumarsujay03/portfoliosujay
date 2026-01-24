@@ -12,6 +12,20 @@ export default defineConfig(({ mode }) => ({
       overlay: false,
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (!id.includes("node_modules")) return;
+          if (id.includes("react-router")) return "router";
+          if (id.includes("framer-motion")) return "motion";
+          if (id.includes("@radix-ui")) return "radix";
+          if (id.includes("react")) return "react";
+          return "vendor";
+        },
+      },
+    },
+  },
   plugins: [
     react(),
     // Optimize images in production builds to reduce bundle size and improve load time
