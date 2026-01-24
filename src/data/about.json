@@ -26,7 +26,7 @@
   ],
   "codeLines": [
     "const aboutMe = {",
-    "  location: \"India\",",
+    "  location: \"Bengaluru, India\",",
     "  education: \"B.Tech (2025 Graduate)\",",
     "  background: \"Software & Web Development\",",
     "  focus: \"Machine Learning & Applied AI\",",
