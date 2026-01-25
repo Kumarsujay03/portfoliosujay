@@ -137,10 +137,9 @@ const Footer = ({ showSocialLinks }: FooterProps) => {
           {/* Decorative animated separator */}
           <motion.div
             className="mx-auto my-6 h-px w-64 bg-gradient-to-r from-transparent via-primary/50 to-transparent"
-            initial={{ scaleX: 0, opacity: 0 }}
-            whileInView={{ scaleX: 1, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 1.2, duration: 0.8 }}
+            initial={{ scaleX: 0.6, opacity: 0.4 }}
+            animate={{ scaleX: [0.6, 1, 0.6], opacity: [0.4, 1, 0.4] }}
+            transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
           />
 
           <motion.p

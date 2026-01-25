@@ -31,24 +31,24 @@ const variantConfig: Record<
 > = {
   about: {
     gridSizePx: 70,
-    gridOpacity: 0.15,
-    particleCount: 9,
+    gridOpacity: 0.16,
+    particleCount: 24,
     glowOpacity: 0.09,
     glowPosition: "left",
     particleBias: "mixed",
   },
   projects: {
     gridSizePx: 64,
-    gridOpacity: 0.18,
-    particleCount: 11,
+    gridOpacity: 0.19,
+    particleCount: 26,
     glowOpacity: 0.1,
     glowPosition: "center",
     particleBias: "blue",
   },
   skills: {
     gridSizePx: 76,
-    gridOpacity: 0.2,
-    particleCount: 8,
+    gridOpacity: 0.19,
+    particleCount: 33,
     glowOpacity: 0.08,
     glowPosition: "top",
     particleBias: "green",
@@ -56,7 +56,7 @@ const variantConfig: Record<
   certs: {
     gridSizePx: 80,
     gridOpacity: 0.17,
-    particleCount: 8,
+    particleCount: 23,
     glowOpacity: 0.085,
     glowPosition: "right",
     particleBias: "mixed",
@@ -64,7 +64,7 @@ const variantConfig: Record<
   work: {
     gridSizePx: 68,
     gridOpacity: 0.19,
-    particleCount: 10,
+    particleCount: 35,
     glowOpacity: 0.095,
     glowPosition: "bottom",
     particleBias: "blue",
@@ -72,7 +72,7 @@ const variantConfig: Record<
   blog: {
     gridSizePx: 84,
     gridOpacity: 0.17,
-    particleCount: 7,
+    particleCount: 31,
     glowOpacity: 0.08,
     glowPosition: "top",
     particleBias: "green",
@@ -80,7 +80,7 @@ const variantConfig: Record<
   blogPost: {
     gridSizePx: 74,
     gridOpacity: 0.2,
-    particleCount: 9,
+    particleCount: 25,
     glowOpacity: 0.09,
     glowPosition: "center",
     particleBias: "mixed",
@@ -88,7 +88,7 @@ const variantConfig: Record<
   contact: {
     gridSizePx: 72,
     gridOpacity: 0.21,
-    particleCount: 9,
+    particleCount: 35,
     glowOpacity: 0.1,
     glowPosition: "bottom",
     particleBias: "green",
@@ -109,6 +109,7 @@ const getGlowGradient = (glowOpacity: number, glowPosition: "center" | "top" | "
 
   return `radial-gradient(${pos}, hsl(var(--primary)/${glowOpacity}) 0%, transparent 68%)`;
 };
+
 
 const PageBackground = ({
   variant = "projects",
@@ -184,18 +185,18 @@ const PageBackground = ({
                       : i % 4 === 0
                         ? "hsl(var(--code-green))"
                         : "hsl(var(--code-blue))",
-                opacity: 0.18,
+                opacity: 0.2,
               }}
               animate={{
-                y: [0, i % 2 === 0 ? -16 : 16, 0],
-                x: [0, i % 2 === 0 ? 10 : -10, 0],
-                opacity: [0.12, 0.22, 0.12],
+                y: [0, i % 2 === 0 ? -14 : 14, 0],
+                x: [0, i % 2 === 0 ? 9 : -9, 0],
+                opacity: [0.12, 0.24, 0.12],
               }}
               transition={{
-                duration: 7 + (i % 5),
+                duration: 9 + (i % 6),
                 repeat: Infinity,
                 ease: "easeInOut",
-                delay: i * 0.2,
+                delay: i * 0.18,
               }}
             />
           ))}
