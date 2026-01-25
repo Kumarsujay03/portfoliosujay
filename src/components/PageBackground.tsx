@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 type PageBackgroundVariant =
   | "about"
@@ -119,11 +120,18 @@ const PageBackground = ({
   glowOpacity,
 }: PageBackgroundProps) => {
   const reduceMotion = useReducedMotion();
+  const [enableMotion, setEnableMotion] = useState(false);
   const config = variantConfig[variant];
   const resolvedGridSize = gridSizePx ?? config.gridSizePx;
   const resolvedGridOpacity = gridOpacity ?? config.gridOpacity;
   const resolvedParticleCount = particleCount ?? config.particleCount;
   const resolvedGlowOpacity = glowOpacity ?? config.glowOpacity;
+
+  useEffect(() => {
+    if (reduceMotion) return;
+    const id = requestAnimationFrame(() => setEnableMotion(true));
+    return () => cancelAnimationFrame(id);
+  }, [reduceMotion]);
 
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -147,25 +155,25 @@ const PageBackground = ({
             "radial-gradient(ellipse at center, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.0) 75%)",
         }}
         animate={
-          reduceMotion
-            ? undefined
-            : {
+          !reduceMotion && enableMotion
+            ? {
                 backgroundPosition: ["0px 0px", `${resolvedGridSize}px ${resolvedGridSize}px`],
               }
+            : undefined
         }
         transition={
-          reduceMotion
-            ? undefined
-            : {
+          !reduceMotion && enableMotion
+            ? {
                 duration: 14,
                 repeat: Infinity,
                 ease: "linear",
               }
+            : undefined
         }
       />
 
       {/* Tiny drifting particles */}
-      {!reduceMotion && (
+      {!reduceMotion && enableMotion && (
         <>
           {Array.from({ length: resolvedParticleCount }).map((_, i) => (
             <motion.span

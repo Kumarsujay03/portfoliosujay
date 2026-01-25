@@ -1,7 +1,15 @@
 import { motion, useReducedMotion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const HomeBackground = () => {
   const reduceMotion = useReducedMotion();
+  const [enableMotion, setEnableMotion] = useState(false);
+
+  useEffect(() => {
+    if (reduceMotion) return;
+    const id = requestAnimationFrame(() => setEnableMotion(true));
+    return () => cancelAnimationFrame(id);
+  }, [reduceMotion]);
 
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0">
@@ -20,25 +28,25 @@ const HomeBackground = () => {
             "radial-gradient(ellipse at center, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.0) 72%)",
         }}
         animate={
-          reduceMotion
-            ? undefined
-            : {
+          !reduceMotion && enableMotion
+            ? {
                 backgroundPosition: ["0px 0px", "56px 56px"],
               }
+            : undefined
         }
         transition={
-          reduceMotion
-            ? undefined
-            : {
+          !reduceMotion && enableMotion
+            ? {
                 duration: 18,
                 repeat: Infinity,
                 ease: "linear",
               }
+            : undefined
         }
       />
 
       {/* Floating particles */}
-      {!reduceMotion && (
+      {!reduceMotion && enableMotion && (
         <>
           {Array.from({ length: 30 }).map((_, i) => (
             <motion.span
@@ -71,8 +79,8 @@ const HomeBackground = () => {
 
       {/* Floating code snippets (subtle, across the page) */}
       <motion.div
-        animate={{ y: [0, -20, 0] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        animate={enableMotion ? { y: [0, -20, 0] } : undefined}
+        transition={enableMotion ? { duration: 10, repeat: Infinity, ease: "easeInOut" } : undefined}
         className="absolute top-[20%] left-8 hidden md:block opacity-30"
       >
         <pre className="font-mono text-xs text-primary drop-shadow-[0_0_8px_rgba(56,189,248,0.25)]">
@@ -86,8 +94,8 @@ const HomeBackground = () => {
       </motion.div>
 
       <motion.div
-        animate={{ y: [0, 20, 0] }}
-        transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        animate={enableMotion ? { y: [0, 20, 0] } : undefined}
+        transition={enableMotion ? { duration: 9, repeat: Infinity, ease: "easeInOut", delay: 1 } : undefined}
         className="absolute top-[62%] right-8 hidden md:block opacity-30"
       >
         <pre className="font-mono text-xs text-secondary drop-shadow-[0_0_8px_rgba(45,212,191,0.25)]">
