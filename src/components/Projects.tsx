@@ -207,7 +207,6 @@ const Projects = ({ hideLabel }: ProjectsProps) => {
                                 className="h-full w-full object-contain"
                                 loading="lazy"
                                 decoding="async"
-                                fetchPriority="low"
                               />
                             </picture>
                           );

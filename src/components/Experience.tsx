@@ -218,7 +218,7 @@ const Experience = ({ hideLabel }: ExperienceProps) => {
 
   return (
     <section id="experience" className="py-12 relative">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-6 relative">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
