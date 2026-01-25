@@ -5,10 +5,49 @@ const WORKSPACE = process.cwd();
 const PUBLIC_DIR = path.join(WORKSPACE, "public");
 const BLOGS_PATH = path.join(WORKSPACE, "src", "data", "blogs.json");
 
-const getSiteUrl = () => {
-  const raw = process.env.VITE_SITE_URL || process.env.SITE_URL;
-  if (!raw) return null;
-  return raw.replace(/\/$/, "");
+const normalizeBaseUrl = (raw) => {
+  if (!raw || typeof raw !== "string") return null;
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  const noTrailing = trimmed.replace(/\/+$/, "");
+
+  try {
+    const asUrl = new URL(noTrailing);
+    if (asUrl.protocol !== "http:" && asUrl.protocol !== "https:") return null;
+    return asUrl.origin;
+  } catch {
+    return null;
+  }
+};
+
+const resolveSiteUrl = () => {
+  // Preferred explicit config (works locally + in CI)
+  const explicit = normalizeBaseUrl(
+    process.env.VITE_SITE_URL || process.env.SITE_URL || process.env.PUBLIC_SITE_URL,
+  );
+  if (explicit) return explicit;
+
+  // Vercel provides a hostname without protocol (e.g. "my-app.vercel.app")
+  if (process.env.VERCEL_URL) {
+    const vercel = normalizeBaseUrl(`https://${process.env.VERCEL_URL}`);
+    if (vercel) return vercel;
+  }
+
+  // Netlify provides full URLs
+  const netlify = normalizeBaseUrl(process.env.URL || process.env.DEPLOY_PRIME_URL);
+  if (netlify) return netlify;
+
+  // Cloudflare Pages provides a full URL in newer setups
+  const cf = normalizeBaseUrl(process.env.CF_PAGES_URL);
+  if (cf) return cf;
+
+  return null;
+};
+
+const joinUrl = (base, routePath) => {
+  const cleanBase = base.replace(/\/+$/, "");
+  const cleanPath = routePath.startsWith("/") ? routePath : `/${routePath}`;
+  return `${cleanBase}${cleanPath}`;
 };
 
 const routes = [
@@ -41,7 +80,7 @@ const isoDate = () => new Date().toISOString().slice(0, 10);
 const main = async () => {
   await fs.mkdir(PUBLIC_DIR, { recursive: true });
 
-  const siteUrl = getSiteUrl();
+  const siteUrl = resolveSiteUrl();
   const lastMod = isoDate();
 
   const blogRoutes = await readBlogRoutes();
@@ -49,7 +88,7 @@ const main = async () => {
 
   const urlEntries = allRoutes
     .map((routePath) => {
-      const loc = siteUrl ? `${siteUrl}${routePath}` : routePath;
+      const loc = siteUrl ? joinUrl(siteUrl, routePath) : routePath;
       return [
         "  <url>",
         `    <loc>${loc}</loc>`,
@@ -79,12 +118,31 @@ const main = async () => {
   }
 
   const sitemapLine = `Sitemap: ${siteUrl ? `${siteUrl}/sitemap.xml` : "/sitemap.xml"}`;
-  if (!robots.includes("Sitemap:")) {
+  const hasSitemap = robots.includes("Sitemap:");
+  if (hasSitemap) {
+    // Replace all existing sitemap lines to avoid stale domains.
+    const updated = robots
+      .split(/\r?\n/)
+      .map((line) => (line.trimStart().startsWith("Sitemap:") ? sitemapLine : line))
+      .join("\n")
+      .trimEnd()
+      .concat("\n");
+    if (updated !== robots) {
+      robots = updated;
+      await fs.writeFile(robotsPath, robots, "utf8");
+    }
+  } else {
     robots = robots.trimEnd() + "\n\n" + sitemapLine + "\n";
     await fs.writeFile(robotsPath, robots, "utf8");
   }
 
-  console.log("Generated public/sitemap.xml" + (siteUrl ? ` for ${siteUrl}` : ""));
+  if (!siteUrl) {
+    console.warn(
+      "Generated public/sitemap.xml with relative URLs. Set VITE_SITE_URL (or SITE_URL) to generate absolute URLs for Google Search Console.",
+    );
+  } else {
+    console.log(`Generated public/sitemap.xml for ${siteUrl}`);
+  }
 };
 
 main().catch((err) => {
