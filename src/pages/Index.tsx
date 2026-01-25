@@ -21,14 +21,28 @@ const Index = () => {
         />
         <main>
           <Hero />
-          <About />
-          <Skills backgroundVariant="none" />
-          <Certifications backgroundVariant="none" />
-          <Experience />
-          <Projects />
-          <Contact />
+          <div className="cv-auto">
+            <About />
+          </div>
+          <div className="cv-auto">
+            <Skills backgroundVariant="none" />
+          </div>
+          <div className="cv-auto">
+            <Certifications backgroundVariant="none" />
+          </div>
+          <div className="cv-auto">
+            <Experience />
+          </div>
+          <div className="cv-auto">
+            <Projects />
+          </div>
+          <div className="cv-auto">
+            <Contact />
+          </div>
         </main>
-        <Footer />
+        <div className="cv-auto">
+          <Footer />
+        </div>
         <ScrollToTop />
       </div>
     </div>

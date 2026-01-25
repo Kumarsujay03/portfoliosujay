@@ -68,7 +68,7 @@ const BlogPostPage = () => {
       <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
         <PageBackground variant="blogPost" />
         <Seo title="Blog" description="Blog post not found." noIndex />
-        <main className="pt-20">
+        <main className="pt-20 cv-auto">
           <div className="container mx-auto px-6">
             <div className="terminal-window">
               <div className="terminal-header">
@@ -106,7 +106,7 @@ const BlogPostPage = () => {
     <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
       <PageBackground variant="blogPost" />
       <Seo title={post.title} description={post.summary ?? "Blog post"} imagePath="/favicon.svg" />
-      <main className="pt-20">
+      <main className="pt-20 cv-auto">
         <div className="container mx-auto px-6">
           <div className="mb-6">
             <Link

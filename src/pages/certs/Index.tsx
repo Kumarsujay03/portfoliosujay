@@ -10,7 +10,7 @@ const CertificationsPage = () => {
     <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
       <PageBackground variant="certs" />
       <Seo title="Certifications" description="Certifications and programs — verified learning and achievements." />
-      <main className="pt-16">
+      <main className="pt-16 cv-auto">
         <Certifications forceShowAll backgroundVariant="none" />
       </main>
       <FooterBridge />

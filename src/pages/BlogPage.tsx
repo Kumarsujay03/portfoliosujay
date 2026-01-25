@@ -10,7 +10,7 @@ const BlogPage = () => {
     <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
       <PageBackground variant="blog" />
       <Seo title="Blog" description="Blog posts and notes — learnings, projects, and experiments." />
-      <main className="pt-16">
+      <main className="pt-16 cv-auto">
         <Blog backgroundVariant="none" />
       </main>
       <FooterBridge />

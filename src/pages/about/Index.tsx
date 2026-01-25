@@ -10,7 +10,7 @@ const AboutPage = () => {
     <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
       <PageBackground variant="about" />
       <Seo title="About" description="About Sujay Kumar — background, interests, and what I build." />
-      <main className="pt-20">
+      <main className="pt-20 cv-auto">
         <About hideLabel={true} />
       </main>
       <FooterBridge />

@@ -10,7 +10,7 @@ const WorkPage = () => {
     <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
       <PageBackground variant="work" />
       <Seo title="Work" description="Work and volunteer experience — roles, responsibilities, and impact." />
-      <main className="pt-20">
+      <main className="pt-20 cv-auto">
         <Experience hideLabel={true} />
       </main>
       <FooterBridge />

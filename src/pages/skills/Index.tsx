@@ -10,7 +10,7 @@ const SkillsPage = () => {
     <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
       <PageBackground variant="skills" />
       <Seo title="Skills" description="Skills and tech stack — frontend, backend, and tools I use." />
-      <main className="pt-16">
+      <main className="pt-16 cv-auto">
         <Skills hideLabel={true} backgroundVariant="none" />
       </main>
       <FooterBridge />

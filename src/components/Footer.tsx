@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Coffee, Terminal, Github, Linkedin, Mail } from "lucide-react";
+import { prefetchRoute } from "@/lib/routePrefetch";
 
 type FooterProps = {
   showSocialLinks?: boolean;
@@ -98,6 +99,8 @@ const Footer = ({ showSocialLinks }: FooterProps) => {
               viewport={{ once: true }}
               transition={{ delay: 0.7 }}
               whileHover={{ scale: 1.05 }}
+              onMouseEnter={() => prefetchRoute("/about")}
+              onFocus={() => prefetchRoute("/about")}
             >
               "Sujay Kumar"
             </motion.a>

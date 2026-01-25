@@ -10,7 +10,7 @@ const ProjectsPage = () => {
     <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
       <PageBackground variant="projects" />
       <Seo title="Projects" description="Featured projects and other builds — screenshots, tech stack, and links." />
-      <main className="pt-20">
+      <main className="pt-20 cv-auto">
         <Projects hideLabel={true} />
       </main>
       <FooterBridge />
