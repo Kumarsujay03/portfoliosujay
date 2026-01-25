@@ -106,17 +106,17 @@ const Hero = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 2.5 }}
-                className="flex gap-4 pt-4"
+                className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4"
               >
                 <a
                   href="#projects"
-                  className="font-mono px-6 py-3 bg-primary text-primary-foreground rounded hover:opacity-90 transition-opacity glow-primary"
+                  className="font-mono px-6 py-3 bg-primary text-primary-foreground rounded hover:opacity-90 transition-opacity glow-primary w-full sm:w-auto text-center"
                 >
                   view_projects()
                 </a>
                 <a
                   href="#contact"
-                  className="font-mono px-6 py-3 border border-border text-foreground rounded hover:border-primary hover:text-primary transition-colors"
+                  className="font-mono px-6 py-3 border border-border text-foreground rounded hover:border-primary hover:text-primary transition-colors w-full sm:w-auto text-center"
                 >
                   get_in_touch()
                 </a>

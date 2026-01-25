@@ -191,7 +191,7 @@ const About = ({ hideLabel }: AboutProps) => {
               initial={{ opacity: 0, x: 20 }}
               animate={isInView ? { opacity: 1, x: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="terminal-window"
+              className="terminal-window w-full min-w-0"
             >
               <div className="terminal-header">
                 <div className="terminal-dot bg-destructive" />
@@ -221,8 +221,8 @@ const About = ({ hideLabel }: AboutProps) => {
                   )}
                 </div>
               </div>
-              <div className="terminal-body min-h-[320px]">
-                <pre className="text-sm">
+              <div className="terminal-body min-h-[320px] overflow-x-auto">
+                <pre className="text-sm whitespace-pre-wrap break-words">
                   <code>
                     {displayedLines.map((line, i) => renderLine(line, i))}
                     {currentLineIndex < codeLines.length && displayedLines.length <= currentLineIndex && (
