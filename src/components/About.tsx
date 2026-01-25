@@ -137,7 +137,7 @@ const About = ({ hideLabel }: AboutProps) => {
 
     return (
       <div key={lineNumber} className="flex">
-        <span className="text-muted-foreground/50 w-6 select-none text-right pr-2">
+        <span className="text-muted-foreground/50 min-w-[2.25rem] select-none text-right pr-2 flex-none whitespace-nowrap tabular-nums">
           {lineNumber + 1}
         </span>
         <span className="ml-2">
@@ -224,17 +224,7 @@ const About = ({ hideLabel }: AboutProps) => {
               <div className="terminal-body min-h-[320px] overflow-x-auto">
                 <pre className="text-sm whitespace-pre-wrap break-words">
                   <code>
-                    {displayedLines.map((line, i) => renderLine(line, i))}
-                    {currentLineIndex < codeLines.length && displayedLines.length <= currentLineIndex && (
-                      <div className="flex">
-                        <span className="text-muted-foreground/50 w-6 select-none text-right pr-2">
-                          {currentLineIndex + 1}
-                        </span>
-                        <span className="ml-2">
-                          <span className="cursor-blink text-primary">|</span>
-                        </span>
-                      </div>
-                    )}
+                    {codeLines.map((_, i) => renderLine(displayedLines[i] ?? "", i))}
                   </code>
                 </pre>
               </div>
