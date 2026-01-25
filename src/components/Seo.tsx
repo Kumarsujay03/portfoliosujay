@@ -16,7 +16,7 @@ const getSiteUrl = () => {
 
 const Seo = ({
   title,
-  description = "Sujay Kumar — software engineer portfolio.",
+  description = "Sujay Kumar - software engineer portfolio.",
   imagePath = "/favicon.svg",
   noIndex = false,
 }: SeoProps) => {
@@ -24,7 +24,7 @@ const Seo = ({
   const siteUrl = getSiteUrl();
 
   const baseTitle = "Sujay Kumar";
-  const defaultTitle = `${baseTitle} — Portfolio`;
+  const defaultTitle = `${baseTitle} - Portfolio`;
   const fullTitle = pathname === "/" ? defaultTitle : title ? `${title} | ${baseTitle}` : defaultTitle;
 
   const canonicalUrl = siteUrl ? `${siteUrl}${pathname}` : null;
