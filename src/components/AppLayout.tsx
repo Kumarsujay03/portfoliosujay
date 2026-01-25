@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import { Suspense, useEffect } from "react";
 import CustomCursor from "@/components/CustomCursor";
 import { prefetchRoute } from "@/lib/routePrefetch";
+import Lenis from "lenis";
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center px-6">
@@ -22,6 +23,31 @@ const PageLoader = () => (
 );
 
 const AppLayout = () => {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const lenis = new Lenis({
+      duration: 1.1,
+      smoothWheel: true,
+      syncTouch: true,
+      touchMultiplier: 1.1,
+    });
+
+    let rafId = 0;
+    const raf = (time: number) => {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+
+    rafId = requestAnimationFrame(raf);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      lenis.destroy();
+    };
+  }, []);
+
   useEffect(() => {
     const routesToPrefetch = [
       "/about",
