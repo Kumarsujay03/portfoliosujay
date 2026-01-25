@@ -2,6 +2,7 @@ import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import aboutData from "../data/about.json";
 import { RotateCcw } from "lucide-react";
+import RevealOnView from "@/components/RevealOnView";
 
 type AboutTextSegment = {
   text: string;
@@ -15,9 +16,10 @@ type AboutData = {
 
 type AboutProps = {
   hideLabel?: boolean;
+  animateOnView?: boolean;
 };
 
-const About = ({ hideLabel }: AboutProps) => {
+const About = ({ hideLabel, animateOnView = false }: AboutProps) => {
   const ref = useRef(null);
   const codeRef = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -150,15 +152,13 @@ const About = ({ hideLabel }: AboutProps) => {
     );
   };
 
-  return (
-    <section id="about" className="py-12 relative">
-      <div className="container mx-auto px-6">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
+  const content = (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6 }}
+    >
           {!hideLabel && (
             <h2 className="font-mono text-sm text-primary mb-2">
               {"// 01. About"}
@@ -230,7 +230,13 @@ const About = ({ hideLabel }: AboutProps) => {
               </div>
             </motion.div>
           </div>
-        </motion.div>
+    </motion.div>
+  );
+
+  return (
+    <section id="about" className="py-12 relative">
+      <div className="container mx-auto px-6">
+        {animateOnView ? <RevealOnView>{content}</RevealOnView> : content}
       </div>
     </section>
   );

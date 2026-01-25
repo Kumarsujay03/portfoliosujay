@@ -35,8 +35,8 @@ const Header = () => {
   const navItems = [
     { label: "about", href: "/about", isAnchor: false },
     { label: "skills", href: "/skills", isAnchor: false },
-    { label: "certs", href: "/certs", isAnchor: false },
     { label: "work", href: "/work", isAnchor: false },
+    { label: "certs", href: "/certs", isAnchor: false },
     { label: "projects", href: "/projects", isAnchor: false },
     { label: "blog", href: "/blog", isAnchor: false },
     { label: "contact", href: "/contact", isAnchor: false },

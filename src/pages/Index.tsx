@@ -22,22 +22,22 @@ const Index = () => {
         <main>
           <Hero />
           <div className="cv-auto">
-            <About />
+            <About animateOnView />
           </div>
           <div className="cv-auto">
-            <Skills backgroundVariant="none" />
+            <Skills backgroundVariant="none" animateOnView />
           </div>
           <div className="cv-auto">
-            <Certifications backgroundVariant="none" />
+            <Experience limit={4} showViewAll animateOnView />
           </div>
           <div className="cv-auto">
-            <Experience limit={4} showViewAll />
+            <Certifications backgroundVariant="none" animateOnView />
           </div>
           <div className="cv-auto">
-            <Projects />
+            <Projects animateOnView />
           </div>
           <div className="cv-auto">
-            <Contact />
+            <Contact animateOnView />
           </div>
         </main>
         <div className="cv-auto">

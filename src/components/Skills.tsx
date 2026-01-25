@@ -1,6 +1,7 @@
 import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import skillsData from "../data/skills.json";
+import RevealOnView from "@/components/RevealOnView";
 
 type SkillCategory = {
   title: string;
@@ -16,9 +17,10 @@ type SkillsData = {
 type SkillsProps = {
   hideLabel?: boolean;
   backgroundVariant?: "muted" | "none";
+  animateOnView?: boolean;
 };
 
-const Skills = ({ hideLabel, backgroundVariant = "muted" }: SkillsProps) => {
+const Skills = ({ hideLabel, backgroundVariant = "muted", animateOnView = false }: SkillsProps) => {
   const ref = useRef(null);
   const codeRef = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -133,15 +135,13 @@ const Skills = ({ hideLabel, backgroundVariant = "muted" }: SkillsProps) => {
 
   const backgroundClassName = backgroundVariant === "muted" ? "bg-muted/20" : "";
 
-  return (
-    <section id="skills" className={`${sectionPaddingClassName} ${backgroundClassName} relative`}>
-      <div className="container mx-auto px-6">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
+  const content = (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6 }}
+    >
           {!hideLabel && (
             <h2 className="font-mono text-sm text-primary mb-2">
               {"// 02. Skills"}
@@ -219,7 +219,13 @@ const Skills = ({ hideLabel, backgroundVariant = "muted" }: SkillsProps) => {
             ))}
           </pre>
           </motion.div>
-        </motion.div>
+    </motion.div>
+  );
+
+  return (
+    <section id="skills" className={`${sectionPaddingClassName} ${backgroundClassName} relative`}>
+      <div className="container mx-auto px-6">
+        {animateOnView ? <RevealOnView>{content}</RevealOnView> : content}
       </div>
     </section>
   );

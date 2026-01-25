@@ -11,7 +11,7 @@ const CertificationsPage = () => {
       <PageBackground variant="certs" />
       <Seo title="Certifications" description="Certifications and programs — verified learning and achievements." />
       <main className="pt-16 cv-auto">
-        <Certifications forceShowAll backgroundVariant="none" />
+        <Certifications forceShowAll backgroundVariant="none" hideLabel />
       </main>
       <FooterBridge />
       <Footer showSocialLinks />

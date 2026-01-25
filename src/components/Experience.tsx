@@ -2,12 +2,14 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 import { prefetchRoute } from "@/lib/routePrefetch";
+import RevealOnView from "@/components/RevealOnView";
 import experiencesData from "../data/experiences.json";
 
 type ExperienceProps = {
   hideLabel?: boolean;
   limit?: number;
   showViewAll?: boolean;
+  animateOnView?: boolean;
 };
 
 type ExperienceItem = {
@@ -48,7 +50,7 @@ const getTypeLabel = (exp: ExperienceItem) => {
   return "experience";
 };
 
-const Experience = ({ hideLabel, limit, showViewAll }: ExperienceProps) => {
+const Experience = ({ hideLabel, limit, showViewAll, animateOnView = false }: ExperienceProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const experiences = useMemo(() => {
@@ -225,65 +227,71 @@ const Experience = ({ hideLabel, limit, showViewAll }: ExperienceProps) => {
   );
 };
 
+  const content = (
+    <>
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="mb-12"
+      >
+        {!hideLabel && (
+          <h2 className="font-mono text-sm text-primary mb-2">
+            {"// 03. Experience"}
+          </h2>
+        )}
+        <div className="terminal-header mb-0 rounded-t-lg">
+          <div className="terminal-dot bg-destructive"></div>
+          <div className="terminal-dot bg-accent"></div>
+          <div className="terminal-dot bg-code-green"></div>
+          <span className="ml-2 font-mono text-xs text-muted-foreground">experiences.json</span>
+        </div>
+        <div className="bg-card border-x border-b border-border rounded-b-lg p-6">
+          <h2 className="text-3xl font-bold font-mono mb-2">
+            <span className="text-muted-foreground">{"{ "}</span>
+            <span className="text-gradient">"experience"</span>
+            <span className="text-muted-foreground">{" }"}</span>
+          </h2>
+          <p className="text-muted-foreground font-mono text-sm">
+            <span className="syntax-comment">{"// "}</span>
+            Professional and volunteer journey
+          </p>
+        </div>
+      </motion.div>
+
+      <div ref={containerRef} className="relative">
+        {/* Animated timeline line */}
+        <div className="absolute left-4 md:left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-border/30" />
+        <motion.div 
+          className="absolute left-4 md:left-1/2 transform -translate-x-1/2 top-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-primary"
+          style={{ height: lineHeight }}
+        />
+
+        {displayedExperiences.map((exp, index) => (
+          <TimelineCard key={exp.id} exp={exp} index={index} />
+        ))}
+      </div>
+
+      {showViewAll && displayedExperiences.length < experiences.length && (
+        <div className="mt-6 text-center">
+          <Link
+            to="/work"
+            onMouseEnter={() => prefetchRoute("/work")}
+            onFocus={() => prefetchRoute("/work")}
+            className="font-mono text-sm px-6 py-3 border border-border rounded-lg bg-card hover:border-primary hover:text-primary transition-all inline-flex items-center gap-2"
+          >
+            view_all_work()
+          </Link>
+        </div>
+      )}
+    </>
+  );
+
   return (
     <section id="experience" className="py-12 relative">
       <div className="container mx-auto px-6 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          className="mb-12"
-        >
-          {!hideLabel && (
-            <h2 className="font-mono text-sm text-primary mb-2">
-              {"// 03. Experience"}
-            </h2>
-          )}
-          <div className="terminal-header mb-0 rounded-t-lg">
-            <div className="terminal-dot bg-destructive"></div>
-            <div className="terminal-dot bg-accent"></div>
-            <div className="terminal-dot bg-code-green"></div>
-            <span className="ml-2 font-mono text-xs text-muted-foreground">experiences.json</span>
-          </div>
-          <div className="bg-card border-x border-b border-border rounded-b-lg p-6">
-            <h2 className="text-3xl font-bold font-mono mb-2">
-              <span className="text-muted-foreground">{"{ "}</span>
-              <span className="text-gradient">"experience"</span>
-              <span className="text-muted-foreground">{" }"}</span>
-            </h2>
-            <p className="text-muted-foreground font-mono text-sm">
-              <span className="syntax-comment">{"// "}</span>
-              Professional and volunteer journey
-            </p>
-          </div>
-        </motion.div>
-
-        <div ref={containerRef} className="relative">
-          {/* Animated timeline line */}
-          <div className="absolute left-4 md:left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-border/30" />
-          <motion.div 
-            className="absolute left-4 md:left-1/2 transform -translate-x-1/2 top-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-primary"
-            style={{ height: lineHeight }}
-          />
-
-          {displayedExperiences.map((exp, index) => (
-            <TimelineCard key={exp.id} exp={exp} index={index} />
-          ))}
-        </div>
-
-        {showViewAll && displayedExperiences.length < experiences.length && (
-          <div className="mt-6 text-center">
-            <Link
-              to="/work"
-              onMouseEnter={() => prefetchRoute("/work")}
-              onFocus={() => prefetchRoute("/work")}
-              className="font-mono text-sm px-6 py-3 border border-border rounded-lg bg-card hover:border-primary hover:text-primary transition-all inline-flex items-center gap-2"
-            >
-              view_all_work()
-            </Link>
-          </div>
-        )}
+        {animateOnView ? <RevealOnView>{content}</RevealOnView> : content}
       </div>
     </section>
   );

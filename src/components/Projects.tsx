@@ -3,9 +3,11 @@ import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ExternalLink, Github, ChevronDown, ChevronRight, ChevronUp } from "lucide-react";
 import projectsData from "../data/projects.json";
+import RevealOnView from "@/components/RevealOnView";
 
 type ProjectsProps = {
   hideLabel?: boolean;
+  animateOnView?: boolean;
 };
 
 type FeaturedProject = {
@@ -58,7 +60,7 @@ const getProjectWebpSrc = (imageFile?: string) => {
 
 const hasUrl = (url?: string) => Boolean(url && url.trim().length > 0);
 
-const Projects = ({ hideLabel }: ProjectsProps) => {
+const Projects = ({ hideLabel, animateOnView = false }: ProjectsProps) => {
   const navigate = useNavigate();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -111,18 +113,16 @@ const Projects = ({ hideLabel }: ProjectsProps) => {
   const hiddenFeaturedCount = Math.max(0, projects.length - featuredLimit);
   const hiddenOtherCount = Math.max(0, otherProjects.length - visibleOtherCount);
 
-  return (
-    <section id="projects" className="py-12 relative">
-      <div className="container mx-auto px-6">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 50 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
+  const content = (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6 }}
+    >
           {!hideLabel && (
             <h2 className="font-mono text-sm text-primary mb-2">
-              {"// 03. Projects"}
+              {"// 05. Projects"}
             </h2>
           )}
           <h3 className="text-3xl md:text-4xl font-bold mb-12">
@@ -465,7 +465,13 @@ const Projects = ({ hideLabel }: ProjectsProps) => {
           <p className="font-mono text-3xl md:text-4xl font-bold mt-12 text-primary">
             {"}"}
           </p>
-        </motion.div>
+    </motion.div>
+  );
+
+  return (
+    <section id="projects" className="py-12 relative">
+      <div className="container mx-auto px-6">
+        {animateOnView ? <RevealOnView>{content}</RevealOnView> : content}
       </div>
     </section>
   );
