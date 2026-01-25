@@ -31,7 +31,7 @@ const Index = () => {
             <Certifications backgroundVariant="none" />
           </div>
           <div className="cv-auto">
-            <Experience />
+            <Experience limit={4} showViewAll />
           </div>
           <div className="cv-auto">
             <Projects />

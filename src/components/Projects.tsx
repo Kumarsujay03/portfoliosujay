@@ -1,5 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { useInView } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ExternalLink, Github, ChevronDown, ChevronRight, ChevronUp } from "lucide-react";
@@ -310,7 +309,7 @@ const Projects = ({ hideLabel }: ProjectsProps) => {
                 whileTap={{ scale: 0.98 }}
                 className="font-mono text-sm px-6 py-3 border border-border rounded-lg bg-card hover:border-primary hover:text-primary transition-all inline-flex items-center gap-2 group"
               >
-                <span>showAll({visibleProjects.length})</span>
+                <span>indexAll()</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </motion.button>
             </motion.div>
@@ -453,7 +452,7 @@ const Projects = ({ hideLabel }: ProjectsProps) => {
                       </>
                     ) : (
                       <>
-                        <span>showAll({hiddenOtherCount})</span>
+                        <span>indexAll()</span>
                         <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
                       </>
                     )}

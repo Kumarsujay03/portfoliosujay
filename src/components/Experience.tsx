@@ -1,9 +1,13 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useMemo, useRef } from "react";
+import { Link } from "react-router-dom";
+import { prefetchRoute } from "@/lib/routePrefetch";
 import experiencesData from "../data/experiences.json";
 
 type ExperienceProps = {
   hideLabel?: boolean;
+  limit?: number;
+  showViewAll?: boolean;
 };
 
 type ExperienceItem = {
@@ -44,7 +48,7 @@ const getTypeLabel = (exp: ExperienceItem) => {
   return "experience";
 };
 
-const Experience = ({ hideLabel }: ExperienceProps) => {
+const Experience = ({ hideLabel, limit, showViewAll }: ExperienceProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const experiences = useMemo(() => {
@@ -56,6 +60,11 @@ const Experience = ({ hideLabel }: ExperienceProps) => {
       return (b.id ?? 0) - (a.id ?? 0);
     });
   }, []);
+
+  const displayedExperiences = useMemo(() => {
+    if (!limit || limit <= 0) return experiences;
+    return experiences.slice(0, limit);
+  }, [experiences, limit]);
   
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -90,7 +99,7 @@ const Experience = ({ hideLabel }: ExperienceProps) => {
 
   // Dot reveal synced to the main timeline fill.
   // Uses an index-based threshold so each dot "activates" as the line reaches it.
-  const dotThreshold = (index + 1) / experiences.length;
+  const dotThreshold = (index + 1) / displayedExperiences.length;
   const dotReveal = useTransform(
     fillProgress,
     [Math.max(0, dotThreshold - 0.12), dotThreshold],
@@ -258,10 +267,23 @@ const Experience = ({ hideLabel }: ExperienceProps) => {
             style={{ height: lineHeight }}
           />
 
-          {experiences.map((exp, index) => (
+          {displayedExperiences.map((exp, index) => (
             <TimelineCard key={exp.id} exp={exp} index={index} />
           ))}
         </div>
+
+        {showViewAll && displayedExperiences.length < experiences.length && (
+          <div className="mt-6 text-center">
+            <Link
+              to="/work"
+              onMouseEnter={() => prefetchRoute("/work")}
+              onFocus={() => prefetchRoute("/work")}
+              className="font-mono text-sm px-6 py-3 border border-border rounded-lg bg-card hover:border-primary hover:text-primary transition-all inline-flex items-center gap-2"
+            >
+              view_all_work()
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

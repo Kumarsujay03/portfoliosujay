@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const roles = [
@@ -13,8 +13,6 @@ const Hero = () => {
   const [displayText, setDisplayText] = useState("");
   const [roleIndex, setRoleIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
-  const reduceMotion = useReducedMotion();
-  
   useEffect(() => {
     const currentRole = roles[roleIndex];
     
@@ -76,7 +74,7 @@ const Hero = () => {
                 <h1 className="text-4xl md:text-6xl font-bold mt-2">
                   <span className="text-gradient">Sujay Kumar</span>
                 </h1>
-                <p className="text-xl md:text-2xl text-foreground mt-2 h-8 md:h-10">
+                <p className="text-xl md:text-2xl text-foreground mt-2 h-8 md:h-10 mb-6 sm:mb-3">
                   {displayText}
                   <span className="cursor-blink text-primary">|</span>
                 </p>
