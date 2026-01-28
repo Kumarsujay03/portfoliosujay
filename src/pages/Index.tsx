@@ -21,28 +21,14 @@ const Index = () => {
         />
         <main>
           <Hero />
-          <div className="cv-auto">
-            <About animateOnView />
-          </div>
-          <div className="cv-auto">
-            <Skills backgroundVariant="none" animateOnView />
-          </div>
-          <div className="cv-auto">
-            <Experience limit={4} showViewAll animateOnView />
-          </div>
-          <div className="cv-auto">
-            <Certifications backgroundVariant="none" animateOnView />
-          </div>
-          <div className="cv-auto">
-            <Projects animateOnView />
-          </div>
-          <div className="cv-auto">
-            <Contact animateOnView />
-          </div>
+          <About animateOnView />
+          <Skills backgroundVariant="none" animateOnView />
+          <Experience limit={4} showViewAll animateOnView />
+          <Certifications backgroundVariant="none" animateOnView />
+          <Projects animateOnView />
+          <Contact animateOnView />
         </main>
-        <div className="cv-auto">
-          <Footer />
-        </div>
+        <Footer />
         <ScrollToTop />
       </div>
     </div>

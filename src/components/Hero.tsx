@@ -13,6 +13,24 @@ const Hero = () => {
   const [displayText, setDisplayText] = useState("");
   const [roleIndex, setRoleIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleAnchorClick = (event: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    event.preventDefault();
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    const header = document.querySelector("header");
+    const headerOffset = header ? header.getBoundingClientRect().height + 8 : 80;
+    const lenis = (window as Window & { __lenis?: { scrollTo: (target: Element | number, options?: { offset?: number }) => void } }).__lenis;
+
+    if (lenis?.scrollTo) {
+      lenis.scrollTo(target, { offset: -headerOffset });
+      return;
+    }
+
+    const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+    window.scrollTo({ top, behavior: "smooth" });
+  };
   useEffect(() => {
     const currentRole = roles[roleIndex];
     
@@ -108,12 +126,14 @@ const Hero = () => {
               >
                 <a
                   href="#projects"
+                  onClick={(event) => handleAnchorClick(event, "projects")}
                   className="font-mono px-6 py-3 bg-primary text-primary-foreground rounded hover:opacity-90 transition-opacity glow-primary w-full sm:w-auto text-center"
                 >
                   view_projects()
                 </a>
                 <a
                   href="#contact"
+                  onClick={(event) => handleAnchorClick(event, "contact")}
                   className="font-mono px-6 py-3 border border-border text-foreground rounded hover:border-primary hover:text-primary transition-colors w-full sm:w-auto text-center"
                 >
                   get_in_touch()

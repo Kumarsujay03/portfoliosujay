@@ -73,7 +73,7 @@ const Contact = ({ hideLabel, animateOnView = false }: ContactProps) => {
   ];
 
   return (
-    <section id="contact" className="py-12 relative overflow-hidden">
+    <section id="contact" className="py-12 relative overflow-hidden scroll-offset">
       {/* Animated gradient that fades in from top - seamlessly connects to footer */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5"

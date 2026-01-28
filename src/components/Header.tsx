@@ -123,7 +123,16 @@ const Header = () => {
         className="fixed top-0 left-0 right-0 z-50 border-b border-border bg-background/80 backdrop-blur-md"
       >
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <Link to="/" className="font-mono text-base font-bold text-primary" aria-label="Home">
+          <Link
+            to="/"
+            className="font-mono text-base font-bold text-primary"
+            aria-label="Home"
+            onClick={() => {
+              if (location.pathname === "/") {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }}
+          >
             <motion.span
               className="inline-flex items-center min-w-[7ch]"
               animate={{
@@ -169,9 +178,9 @@ const Header = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}
-              href="/contact"
-              onMouseEnter={() => prefetchRoute("/contact")}
-              onFocus={() => prefetchRoute("/contact")}
+              href="/#contact"
+              onMouseEnter={() => prefetchRoute("/")}
+              onFocus={() => prefetchRoute("/")}
               className="font-mono text-xs px-3 py-2 bg-primary text-primary-foreground rounded hover:opacity-90 transition-all"
             >
               hire()
@@ -244,7 +253,7 @@ const Header = () => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.45 }}
-                    href="/contact"
+                    href="/#contact"
                     onClick={handleNavClick}
                     className="font-mono text-sm px-4 py-2.5 bg-primary text-primary-foreground rounded hover:opacity-90 transition-all text-center"
                   >

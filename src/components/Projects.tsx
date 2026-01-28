@@ -469,7 +469,7 @@ const Projects = ({ hideLabel, animateOnView = false }: ProjectsProps) => {
   );
 
   return (
-    <section id="projects" className="py-12 relative">
+    <section id="projects" className="py-12 relative scroll-offset">
       <div className="container mx-auto px-6">
         {animateOnView ? <RevealOnView>{content}</RevealOnView> : content}
       </div>
