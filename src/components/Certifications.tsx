@@ -5,7 +5,7 @@ import certificateData from "../data/certificates.json";
 import RevealOnView from "@/components/RevealOnView";
 
 type Certificate = {
-  id: number;
+  id?: number;
   priority?: number;
   name: string;
   issuer: string;
@@ -13,9 +13,16 @@ type Certificate = {
   credentialId?: string;
   link?: string;
   logo?: string;
+  kind?: "specialization" | "certificate";
+  group?: string;
 };
 
 type CertificateData = Record<string, Certificate[]>;
+
+type CertificateWithComputed = Certificate & {
+  computedId: number;
+  computedPriority: number;
+};
 
 const CATEGORY_ORDER = ["machineLearning", "softwareAndWeb", "simulationsAndPrograms"] as const;
 
@@ -34,13 +41,116 @@ const getLogoSrc = (logoFile?: string) => {
   }
 };
 
-const sortByPriority = (items: Certificate[]) =>
-  [...items].sort((a, b) => {
-    const pa = typeof a.priority === "number" ? a.priority : 999;
-    const pb = typeof b.priority === "number" ? b.priority : 999;
-    if (pa !== pb) return pa - pb;
-    return (a.id ?? 0) - (b.id ?? 0);
+const monthIndex: Record<string, number> = {
+  jan: 0,
+  feb: 1,
+  mar: 2,
+  apr: 3,
+  may: 4,
+  jun: 5,
+  jul: 6,
+  aug: 7,
+  sep: 8,
+  oct: 9,
+  nov: 10,
+  dec: 11,
+};
+
+const parseMonthYear = (value?: string) => {
+  if (!value) return 0;
+  const raw = value.trim();
+  const parts = raw.split(/\s+/);
+  if (parts.length < 2) return 0;
+
+  const month = monthIndex[parts[0].slice(0, 3).toLowerCase()];
+  const year = Number(parts[1]);
+  if (!Number.isFinite(year) || typeof month !== "number") return 0;
+  return new Date(year, month, 1).getTime();
+};
+
+const getCertificateKey = (cert: Certificate, fallbackIndex: number) => {
+  const stable = (cert.credentialId && cert.credentialId.trim()) || (cert.link && cert.link.trim());
+  if (stable) return stable;
+  return `${cert.issuer}|${cert.name}|${cert.date}|${fallbackIndex}`;
+};
+
+const isSpecialization = (cert: Certificate) => {
+  if (cert.kind === "specialization") return true;
+  return cert.name.trim().toLowerCase().startsWith("(specialization)");
+};
+
+const getGroupValue = (cert: Certificate) => {
+  const group = cert.group?.trim();
+  return group ? group : "other";
+};
+
+const buildGroupOrder = (items: Array<{ item: Certificate; index: number }>) => {
+  const seen = new Set<string>();
+  const order: string[] = [];
+
+  for (const entry of items) {
+    if (!isSpecialization(entry.item)) continue;
+    const g = getGroupValue(entry.item);
+    if (seen.has(g)) continue;
+    seen.add(g);
+    order.push(g);
+  }
+
+  for (const entry of items) {
+    const g = getGroupValue(entry.item);
+    if (seen.has(g)) continue;
+    seen.add(g);
+    order.push(g);
+  }
+
+  return order;
+};
+
+const getGroupRank = (groupOrder: string[], group: string) => {
+  const idx = groupOrder.indexOf(group);
+  return idx >= 0 ? idx : Number.POSITIVE_INFINITY;
+};
+
+const sortCertificates = (categoryKey: (typeof CATEGORY_ORDER)[number], items: Certificate[]) => {
+  const itemsWithIndex = items.map((item, index) => ({ item, index }));
+
+  if (categoryKey === "machineLearning") {
+    const groupOrder = buildGroupOrder(itemsWithIndex);
+    return [...itemsWithIndex]
+      .sort((a, b) => {
+        const aIsSpec = isSpecialization(a.item) ? 0 : 1;
+        const bIsSpec = isSpecialization(b.item) ? 0 : 1;
+      if (aIsSpec !== bIsSpec) return aIsSpec - bIsSpec;
+
+        const aGroup = getGroupValue(a.item);
+        const bGroup = getGroupValue(b.item);
+        const aRank = getGroupRank(groupOrder, aGroup);
+        const bRank = getGroupRank(groupOrder, bGroup);
+      if (aRank !== bRank) return aRank - bRank;
+
+        return a.index - b.index;
+      })
+      .map((x) => x.item);
+  }
+
+  return [...itemsWithIndex]
+    .sort((a, b) => {
+      const da = parseMonthYear(a.item.date);
+      const db = parseMonthYear(b.item.date);
+      if (da !== db) return db - da;
+      return a.index - b.index;
+    })
+    .map((x) => x.item);
+};
+
+const withComputedOrdering = (categoryKey: (typeof CATEGORY_ORDER)[number], items: Certificate[], startId: number) => {
+  const sorted = sortCertificates(categoryKey, items);
+  return sorted.map((cert, index) => {
+    const computedId = startId + index;
+    const computedPriority = index + 1;
+    return { ...cert, computedId, computedPriority } satisfies CertificateWithComputed;
   });
+};
 
 const DEFAULT_VISIBLE_BY_CATEGORY: Record<(typeof CATEGORY_ORDER)[number], number> = {
   machineLearning: 3,
@@ -64,17 +174,22 @@ const Certifications = ({ forceShowAll, backgroundVariant = "muted", hideLabel, 
 
   const isShowingAll = Boolean(forceShowAll);
 
-  const categories = CATEGORY_ORDER.map((key) => {
-    const items = sortByPriority((data[key] ?? []) as Certificate[]);
+  const categories = (() => {
+    let nextId = 1;
+    return CATEGORY_ORDER.map((key) => {
+      const computedItems = withComputedOrdering(key, (data[key] ?? []) as Certificate[], nextId);
+      nextId += computedItems.length;
+
     const visibleCount = DEFAULT_VISIBLE_BY_CATEGORY[key] ?? 0;
     return {
       key,
       title: CATEGORY_TITLES[key],
-      items,
-      displayed: isShowingAll ? items : items.slice(0, visibleCount),
-      hiddenCount: Math.max(0, items.length - visibleCount),
+      items: computedItems,
+      displayed: isShowingAll ? computedItems : computedItems.slice(0, visibleCount),
+      hiddenCount: Math.max(0, computedItems.length - visibleCount),
     };
-  });
+    });
+  })();
 
   const categoriesToRender = isShowingAll
     ? categories
@@ -135,7 +250,7 @@ const Certifications = ({ forceShowAll, backgroundVariant = "muted", hideLabel, 
                   <AnimatePresence mode="popLayout">
                     {category.displayed.map((cert, index) => (
                       <motion.div
-                        key={cert.id}
+                        key={getCertificateKey(cert, index)}
                         layout
                         initial={{ opacity: 0, y: 30, scale: 0.9 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}

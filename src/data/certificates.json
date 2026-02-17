@@ -1,8 +1,118 @@
 {
   "machineLearning": [
     {
-      "id": 1,
-      "priority": 1,
+      "kind": "specialization",
+      "group": "dl",
+      "name": "(Specialization) Deep Learning",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "0c53130a-1c30-4490-ab93-cb399fcf8ae2",
+      "link": "https://learn.deeplearning.ai/certificates/0c53130a-1c30-4490-ab93-cb399fcf8ae2?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "specialization",
+      "group": "ml",
+      "name": "(Specialization) Machine Learning",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "62f4817b-82e6-4830-b069-5300e9d662d3",
+      "link": "https://learn.deeplearning.ai/certificates/62f4817b-82e6-4830-b069-5300e9d662d3?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "specialization",
+      "group": "maths",
+      "name": "(Specialization) Mathematics for Machine Learning and Data Science",
+      "issuer": "DeepLearning.AI",
+      "date": "Oct 2025",
+      "credentialId": "5KWHVNPO8DVS",
+      "link": "https://coursera.org/verify/specialization/5KWHVNPO8DVS",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "certificate",
+      "group": "dl",
+      "name": "Neural Networks and Deep Learning",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "2e257807-f160-4c0e-85de-a26bb2f8c0ac",
+      "link": "https://learn.deeplearning.ai/certificates/2e257807-f160-4c0e-85de-a26bb2f8c0ac?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "certificate",
+      "group": "dl",
+      "name": "Improving Deep Neural Networks: Hyperparameter Tuning, Regularization and Optimization",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "1aa6f844-8c31-4bb4-9668-b084c246ebc1",
+      "link": "https://learn.deeplearning.ai/certificates/1aa6f844-8c31-4bb4-9668-b084c246ebc1?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "certificate",
+      "group": "dl",
+      "name": "Structuring Machine Learning Projects",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "be069aad-8941-41ad-a7f6-ca546c9c5004",
+      "link": "https://learn.deeplearning.ai/certificates/be069aad-8941-41ad-a7f6-ca546c9c5004?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "certificate",
+      "group": "dl",
+      "name": "Convolutional Neural Networks",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "8189868a-9bee-4280-a94e-e5f312d58d32",
+      "link": "https://learn.deeplearning.ai/certificates/8189868a-9bee-4280-a94e-e5f312d58d32?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "certificate",
+      "group": "dl",
+      "name": "Sequence Models",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "0d13de41-3469-4f30-8ce2-1846def9e37c",
+      "link": "https://learn.deeplearning.ai/certificates/0d13de41-3469-4f30-8ce2-1846def9e37c?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "certificate",
+      "group": "ml",
+      "name": "Supervised Machine Learning: Regression and Classification",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "91b69884-4c23-4102-8e43-a7eb7fd6b734",
+      "link": "https://learn.deeplearning.ai/certificates/91b69884-4c23-4102-8e43-a7eb7fd6b734?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "certificate",
+      "group": "ml",
+      "name": "Advanced Learning Algorithms",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "ee0a5d3a-86a9-453a-9937-45f61e04d761",
+      "link": "https://learn.deeplearning.ai/certificates/ee0a5d3a-86a9-453a-9937-45f61e04d761?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "certificate",
+      "group": "ml",
+      "name": "Unsupervised Learning, Recommenders, Reinforcement Learning",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "e0e35dec-6c43-4278-aa5c-10b0d0827cd0",
+      "link": "https://learn.deeplearning.ai/certificates/e0e35dec-6c43-4278-aa5c-10b0d0827cd0?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "certificate",
+      "group": "maths",
       "name": "Calculus for Machine Learning and Data Science",
       "issuer": "DeepLearning.AI",
       "date": "Oct 2025",
@@ -11,8 +121,8 @@
       "logo": "deeplearning.jpeg"
     },
     {
-      "id": 2,
-      "priority": 2,
+      "kind": "certificate",
+      "group": "maths",
       "name": "Linear Algebra for Machine Learning and Data Science",
       "issuer": "DeepLearning.AI",
       "date": "Oct 2025",
@@ -21,31 +131,20 @@
       "logo": "deeplearning.jpeg"
     },
     {
-      "id": 3,
-      "priority": 3,
+      "kind": "certificate",
+      "group": "maths",
       "name": "Probability & Statistics for Machine Learning & Data Science",
       "issuer": "DeepLearning.AI",
       "date": "Oct 2025",
       "credentialId": "5TWFFG345J1M",
       "link": "https://coursera.org/verify/5TWFFG345J1M",
       "logo": "deeplearning.jpeg"
-    },
-    {
-      "id": 4,
-      "priority": 4,
-      "name": "(Specialization) Mathematics for Machine Learning and Data Science",
-      "issuer": "DeepLearning.AI",
-      "date": "Oct 2025",
-      "credentialId": "5KWHVNPO8DVS",
-      "link": "https://coursera.org/verify/specialization/5KWHVNPO8DVS",
-      "logo": "deeplearning.jpeg"
     }
   ],
 
   "softwareAndWeb": [
     {
-      "id": 5,
-      "priority": 1,
+      "kind": "certificate",
       "name": "Stanford Code in Place",
       "issuer": "Stanford University",
       "date": "Jun 2025",
@@ -54,8 +153,7 @@
       "logo": "Stanford_logo.png"
     },
     {
-      "id": 6,
-      "priority": 2,
+      "kind": "certificate",
       "name": "Programming with JavaScript",
       "issuer": "Meta",
       "date": "Feb 2024",
@@ -64,8 +162,7 @@
       "logo": "Meta_logo.png"
     },
     {
-      "id": 7,
-      "priority": 3,
+      "kind": "certificate",
       "name": "Introduction to Front-End Development",
       "issuer": "Meta",
       "date": "Oct 2023",
@@ -74,8 +171,7 @@
       "logo": "Meta_logo.png"
     },
     {
-      "id": 8,
-      "priority": 4,
+      "kind": "certificate",
       "name": "Certificate of Excellence in Data Structure and Algorithm (Java)",
       "issuer": "Coding Ninjas",
       "date": "Sep 2023",
@@ -84,8 +180,7 @@
       "logo": "coding_ninjas_logo.png"
     },
     {
-      "id": 9,
-      "priority": 5,
+      "kind": "certificate",
       "name": "Certificate of Completion in Data Structure and Algorithm (Java)",
       "issuer": "Coding Ninjas",
       "date": "Sep 2023",
@@ -94,8 +189,7 @@
       "logo": "coding_ninjas_logo.png"
     },
     {
-      "id": 10,
-      "priority": 6,
+      "kind": "certificate",
       "name": "Certificate of Excellence in Introduction to Java",
       "issuer": "Coding Ninjas",
       "date": "May 2023",
@@ -104,8 +198,7 @@
       "logo": "coding_ninjas_logo.png"
     },
     {
-      "id": 11,
-      "priority": 7,
+      "kind": "certificate",
       "name": "Certificate of Completion in Introduction to Java",
       "issuer": "Coding Ninjas",
       "date": "May 2023",
@@ -114,8 +207,7 @@
       "logo": "coding_ninjas_logo.png"
     },
     {
-      "id": 12,
-      "priority": 8,
+      "kind": "certificate",
       "name": "Java (Basic)",
       "issuer": "HackerRank",
       "date": "Feb 2023",
@@ -124,8 +216,7 @@
       "logo": "hackerrank_logo.jpeg"
     },
     {
-      "id": 13,
-      "priority": 9,
+      "kind": "certificate",
       "name": "Problem Solving (Basic)",
       "issuer": "HackerRank",
       "date": "Feb 2023",
@@ -134,8 +225,7 @@
       "logo": "hackerrank_logo.jpeg"
     },
     {
-      "id": 14,
-      "priority": 10,
+      "kind": "certificate",
       "name": "Problem Solving (Intermediate)",
       "issuer": "HackerRank",
       "date": "Feb 2023",
@@ -147,8 +237,7 @@
 
   "simulationsAndPrograms": [
     {
-      "id": 15,
-      "priority": 1,
+      "kind": "certificate",
       "name": "Software Engineering Job Simulation",
       "issuer": "JPMorgan Chase & Co.",
       "date": "Sep 2023",
@@ -157,8 +246,7 @@
       "logo": "jpmorganchase_logo.jpeg"
     },
     {
-      "id": 16,
-      "priority": 2,
+      "kind": "certificate",
       "name": "Artificial Intelligence Job Simulation",
       "issuer": "Cognizant",
       "date": "Sep 2023",
@@ -167,8 +255,7 @@
       "logo": "Cognizant_logo.png"
     },
     {
-      "id": 17,
-      "priority": 3,
+      "kind": "certificate",
       "name": "Cyber Security Job Simulation",
       "issuer": "Clifford Chance",
       "date": "Sep 2023",
@@ -177,8 +264,7 @@
       "logo": "clifford_chance_llp_logo.jpeg"
     },
     {
-      "id": 18,
-      "priority": 4,
+      "kind": "certificate",
       "name": "Accenture Nordic Developer Program",
       "issuer": "Accenture",
       "date": "Jul 2022",
