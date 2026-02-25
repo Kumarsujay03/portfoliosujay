@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Coffee, Terminal, Github, Linkedin, Mail } from "lucide-react";
 import { prefetchRoute } from "@/lib/routePrefetch";
+import SiteStats from "@/components/SiteStats";
 
 type FooterProps = {
   showSocialLinks?: boolean;
@@ -155,6 +156,15 @@ const Footer = ({ showSocialLinks }: FooterProps) => {
             <span className="syntax-comment">{"// "}</span>
             © {currentYear} All rights reserved
           </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 1.15 }}
+          >
+            <SiteStats />
+          </motion.div>
         </motion.div>
       </div>
     </motion.footer>
