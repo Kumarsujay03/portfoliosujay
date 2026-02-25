@@ -1,5 +1,4 @@
 const VISIT_SESSION_KEY = "portfolio-visit-registered";
-const ACTIVE_SESSION_KEY = "portfolio-active-registered";
 const FALLBACK_VISITS_KEY = "portfolio-fallback-visits";
 
 type MetricsResponse = {
@@ -45,14 +44,6 @@ const fallbackVisitGet = () => {
   return Number(localStorage.getItem(FALLBACK_VISITS_KEY) || "0");
 };
 
-const fallbackActiveGet = () => {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  return sessionStorage.getItem(ACTIVE_SESSION_KEY) === "1" ? 1 : 0;
-};
-
 export const registerVisit = async () => {
   if (typeof window === "undefined") {
     return null;
@@ -73,53 +64,8 @@ export const registerVisit = async () => {
     sessionStorage.setItem(VISIT_SESSION_KEY, "1");
     return value;
   } catch {
-    const fallbackValue = fallbackVisitIncrement();
+    const value = fallbackVisitIncrement();
     sessionStorage.setItem(VISIT_SESSION_KEY, "1");
-    return fallbackValue;
-  }
-};
-
-export const registerActiveSession = async () => {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  const alreadyRegistered = sessionStorage.getItem(ACTIVE_SESSION_KEY) === "1";
-
-  if (alreadyRegistered) {
-    try {
-      return await requestCount("/api/metrics/active?op=get");
-    } catch {
-      return fallbackActiveGet();
-    }
-  }
-
-  try {
-    const active = await requestCount("/api/metrics/active?op=up");
-    sessionStorage.setItem(ACTIVE_SESSION_KEY, "1");
-    return active;
-  } catch {
-    sessionStorage.setItem(ACTIVE_SESSION_KEY, "1");
-    return fallbackActiveGet();
-  }
-};
-
-export const unregisterActiveSession = async () => {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  const isRegistered = sessionStorage.getItem(ACTIVE_SESSION_KEY) === "1";
-
-  if (!isRegistered) {
-    return;
-  }
-
-  sessionStorage.removeItem(ACTIVE_SESSION_KEY);
-
-  try {
-    await requestCount("/api/metrics/active?op=down", true);
-  } catch {
-    return;
+    return value;
   }
 };
