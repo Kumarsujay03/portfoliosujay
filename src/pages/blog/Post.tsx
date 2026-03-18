@@ -105,7 +105,7 @@ const BlogPostPage = () => {
   return (
     <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
       <PageBackground variant="blogPost" />
-      <Seo title={post.title} description={post.summary ?? "Blog post"} imagePath="/favicon.svg" />
+      <Seo title={post.title} description={post.summary ?? "Blog post"} imagePath="/og-image.png" />
       <main className="pt-20 cv-auto">
         <div className="container mx-auto px-6">
           <div className="mb-6">

@@ -2,6 +2,16 @@
   "machineLearning": [
     {
       "kind": "specialization",
+      "group": "nlp",
+      "name": "(Specialization) Natural Language Processing",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "5bbef81b-bbbe-4987-b339-1a4fcd779ac8",
+      "link": "https://learn.deeplearning.ai/certificates/5bbef81b-bbbe-4987-b339-1a4fcd779ac8?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "specialization",
       "group": "dl",
       "name": "(Specialization) Deep Learning",
       "issuer": "DeepLearning.AI",
@@ -28,6 +38,46 @@
       "date": "Oct 2025",
       "credentialId": "5KWHVNPO8DVS",
       "link": "https://coursera.org/verify/specialization/5KWHVNPO8DVS",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "certificate",
+      "group": "nlp",
+      "name": "Natural Language Processing with Classification and Vector Spaces",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "b64aab8c-ff89-4afc-a682-1f201b594771",
+      "link": "https://learn.deeplearning.ai/certificates/b64aab8c-ff89-4afc-a682-1f201b594771?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "certificate",
+      "group": "nlp",
+      "name": "Natural Language Processing with Probabilistic Models",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "c4002c47-f7ee-4b04-a5af-32ca63c4b7fb",
+      "link": "https://learn.deeplearning.ai/certificates/c4002c47-f7ee-4b04-a5af-32ca63c4b7fb?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "certificate",
+      "group": "nlp",
+      "name": "Natural Language Processing with Sequence Models",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "4a5b5032-519f-42c5-9a9c-b83446e3bd1a",
+      "link": "https://learn.deeplearning.ai/certificates/4a5b5032-519f-42c5-9a9c-b83446e3bd1a?usp=sharing",
+      "logo": "deeplearning.jpeg"
+    },
+    {
+      "kind": "certificate",
+      "group": "nlp",
+      "name": "Natural Language Processing with Attention Models",
+      "issuer": "DeepLearning.AI",
+      "date": "Feb 2026",
+      "credentialId": "6181dd50-bfec-4557-97dd-bf49434a9222",
+      "link": "https://learn.deeplearning.ai/certificates/6181dd50-bfec-4557-97dd-bf49434a9222?usp=sharing",
       "logo": "deeplearning.jpeg"
     },
     {

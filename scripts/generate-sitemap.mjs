@@ -4,6 +4,41 @@ import path from "node:path";
 const WORKSPACE = process.cwd();
 const PUBLIC_DIR = path.join(WORKSPACE, "public");
 const BLOGS_PATH = path.join(WORKSPACE, "src", "data", "blogs.json");
+const ENV_FILES = [".env", ".env.local", ".env.production", ".env.production.local"];
+
+const parseDotEnv = (raw) => {
+  const entries = {};
+
+  for (const line of raw.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+
+    const eqIndex = trimmed.indexOf("=");
+    if (eqIndex <= 0) continue;
+
+    const key = trimmed.slice(0, eqIndex).trim();
+    const value = trimmed.slice(eqIndex + 1).trim().replace(/^['"]|['"]$/g, "");
+    if (!key) continue;
+    entries[key] = value;
+  }
+
+  return entries;
+};
+
+const loadLocalEnv = async () => {
+  const merged = {};
+
+  for (const fileName of ENV_FILES) {
+    try {
+      const raw = await fs.readFile(path.join(WORKSPACE, fileName), "utf8");
+      Object.assign(merged, parseDotEnv(raw));
+    } catch {
+      // Ignore missing env files.
+    }
+  }
+
+  return merged;
+};
 
 const normalizeBaseUrl = (raw) => {
   if (!raw || typeof raw !== "string") return null;
@@ -20,10 +55,15 @@ const normalizeBaseUrl = (raw) => {
   }
 };
 
-const resolveSiteUrl = () => {
+const resolveSiteUrl = (fileEnv) => {
   // Preferred explicit config (works locally + in CI)
   const explicit = normalizeBaseUrl(
-    process.env.VITE_SITE_URL || process.env.SITE_URL || process.env.PUBLIC_SITE_URL,
+    process.env.VITE_SITE_URL ||
+      process.env.SITE_URL ||
+      process.env.PUBLIC_SITE_URL ||
+      fileEnv.VITE_SITE_URL ||
+      fileEnv.SITE_URL ||
+      fileEnv.PUBLIC_SITE_URL,
   );
   if (explicit) return explicit;
 
@@ -80,7 +120,8 @@ const isoDate = () => new Date().toISOString().slice(0, 10);
 const main = async () => {
   await fs.mkdir(PUBLIC_DIR, { recursive: true });
 
-  const siteUrl = resolveSiteUrl();
+  const fileEnv = await loadLocalEnv();
+  const siteUrl = resolveSiteUrl(fileEnv);
   const lastMod = isoDate();
 
   const blogRoutes = await readBlogRoutes();

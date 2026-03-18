@@ -51,3 +51,23 @@ bun run dev
 npm install
 npm run dev
 ```
+
+## SEO + Search Setup
+
+Add these environment variables in your deployment platform (and optionally in local `.env`):
+
+- `VITE_SITE_URL=https://kumarsujay.dev`
+- `VITE_BING_SITE_VERIFICATION=<bing-meta-code>`
+- `INDEXNOW_KEY=<your-indexnow-key>`
+- `INDEXNOW_AUTO_NOTIFY=true` (only in CI/deploy environments)
+
+Useful scripts:
+
+- `npm run generate:sitemap` generates `public/sitemap.xml`
+- `npm run generate:og-image` generates `public/og-image.png` (1200x630) from SVG for social previews
+- `npm run indexnow:key` creates `public/<INDEXNOW_KEY>.txt`
+- `npm run indexnow:notify` posts changed URLs to IndexNow
+
+`npm run build` now performs sitemap generation, IndexNow key file generation, and optional IndexNow ping.
+
+Social sharing is configured using Open Graph + Twitter tags and works across major platforms (WhatsApp, LinkedIn, Facebook, Telegram, Discord, X/Twitter).

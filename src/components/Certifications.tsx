@@ -24,6 +24,14 @@ type CertificateWithComputed = Certificate & {
   computedPriority: number;
 };
 
+type CategoryModel = {
+  key: (typeof CATEGORY_ORDER)[number];
+  title: string;
+  items: CertificateWithComputed[];
+  displayed: CertificateWithComputed[];
+  hiddenCount: number;
+};
+
 const CATEGORY_ORDER = ["machineLearning", "softwareAndWeb", "simulationsAndPrograms"] as const;
 
 const CATEGORY_TITLES: Record<(typeof CATEGORY_ORDER)[number], string> = {
@@ -158,6 +166,12 @@ const DEFAULT_VISIBLE_BY_CATEGORY: Record<(typeof CATEGORY_ORDER)[number], numbe
   simulationsAndPrograms: 0,
 };
 
+const splitMachineLearningSections = (items: CertificateWithComputed[]) => {
+  const specializations = items.filter((cert) => isSpecialization(cert));
+  const courses = items.filter((cert) => !isSpecialization(cert));
+  return { specializations, courses };
+};
+
 type CertificationsProps = {
   forceShowAll?: boolean;
   backgroundVariant?: "muted" | "none";
@@ -201,6 +215,110 @@ const Certifications = ({ forceShowAll, backgroundVariant = "muted", hideLabel, 
   const hasAnyHidden = hiddenCountTotal > 0;
 
   const backgroundClassName = backgroundVariant === "muted" ? "bg-muted/30" : "";
+
+  const renderCertificateGrid = (items: CertificateWithComputed[]) => {
+    return (
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <AnimatePresence mode="popLayout">
+          {items.map((cert, index) => (
+            <motion.div
+              key={getCertificateKey(cert, index)}
+              layout
+              initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.9 }}
+              transition={{ duration: 0.4, delay: index * 0.05 }}
+              className="terminal-window group hover:border-primary/50 transition-colors"
+            >
+              <div className="terminal-header">
+                <div className="terminal-dot bg-destructive"></div>
+                <div className="terminal-dot bg-accent"></div>
+                <div className="terminal-dot bg-code-green"></div>
+                <span className="ml-2 font-mono text-xs text-muted-foreground">
+                  {cert.date}
+                </span>
+              </div>
+
+              <div className="p-5">
+                <div className="flex items-start gap-3 mb-3">
+                  <motion.span
+                    className="shrink-0"
+                    whileHover={{ scale: 1.2, rotate: 10 }}
+                  >
+                    {getLogoSrc(cert.logo) ? (
+                      <img
+                        src={getLogoSrc(cert.logo) ?? ""}
+                        alt={cert.issuer}
+                        className="h-8 w-8 rounded object-contain bg-background/40 p-1"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <span className="text-2xl">🏆</span>
+                    )}
+                  </motion.span>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-mono text-sm font-semibold text-foreground group-hover:text-primary transition-colors leading-tight">
+                      {cert.name}
+                    </h3>
+                    <p className="font-mono text-xs text-muted-foreground mt-1">
+                      @ {cert.issuer}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="space-y-2 text-xs font-mono">
+                  {cert.credentialId && (
+                    <div className="flex items-center justify-between text-muted-foreground">
+                      <span className="syntax-keyword">credentialId:</span>
+                      <span className="syntax-string">"{cert.credentialId}"</span>
+                    </div>
+                  )}
+
+                  {cert.link && (
+                    <motion.a
+                      href={cert.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ x: 4 }}
+                      className="flex items-center gap-1 text-code-blue hover:text-primary transition-colors mt-3"
+                    >
+                      <span>verify()</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </motion.a>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+    );
+  };
+
+  const renderCategoryContent = (category: CategoryModel) => {
+    if (category.key !== "machineLearning") {
+      return renderCertificateGrid(category.displayed);
+    }
+
+    const { specializations, courses } = splitMachineLearningSections(category.displayed);
+
+    return (
+      <div className="space-y-6">
+        {specializations.length > 0 && (
+          <div>
+            <p className="mb-3 font-mono text-xs text-code-green">specializations:</p>
+            {renderCertificateGrid(specializations)}
+          </div>
+        )}
+        {courses.length > 0 && (
+          <div>
+            <p className="mb-3 font-mono text-xs text-code-blue">courses:</p>
+            {renderCertificateGrid(courses)}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const content = (
     <>
@@ -246,80 +364,7 @@ const Certifications = ({ forceShowAll, backgroundVariant = "muted", hideLabel, 
                   <div className="h-px flex-1 bg-border/60" />
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  <AnimatePresence mode="popLayout">
-                    {category.displayed.map((cert, index) => (
-                      <motion.div
-                        key={getCertificateKey(cert, index)}
-                        layout
-                        initial={{ opacity: 0, y: 30, scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -20, scale: 0.9 }}
-                        transition={{ duration: 0.4, delay: index * 0.05 }}
-                        className="terminal-window group hover:border-primary/50 transition-colors"
-                      >
-                        <div className="terminal-header">
-                          <div className="terminal-dot bg-destructive"></div>
-                          <div className="terminal-dot bg-accent"></div>
-                          <div className="terminal-dot bg-code-green"></div>
-                          <span className="ml-2 font-mono text-xs text-muted-foreground">
-                            {cert.date}
-                          </span>
-                        </div>
-
-                        <div className="p-5">
-                          <div className="flex items-start gap-3 mb-3">
-                            <motion.span
-                              className="shrink-0"
-                              whileHover={{ scale: 1.2, rotate: 10 }}
-                            >
-                              {getLogoSrc(cert.logo) ? (
-                                <img
-                                  src={getLogoSrc(cert.logo) ?? ""}
-                                  alt={cert.issuer}
-                                  className="h-8 w-8 rounded object-contain bg-background/40 p-1"
-                                  loading="lazy"
-                                />
-                              ) : (
-                                <span className="text-2xl">🏆</span>
-                              )}
-                            </motion.span>
-                            <div className="flex-1 min-w-0">
-                              <h3 className="font-mono text-sm font-semibold text-foreground group-hover:text-primary transition-colors leading-tight">
-                                {cert.name}
-                              </h3>
-                              <p className="font-mono text-xs text-muted-foreground mt-1">
-                                @ {cert.issuer}
-                              </p>
-                            </div>
-                          </div>
-
-                          <div className="space-y-2 text-xs font-mono">
-                            {cert.credentialId && (
-                              <div className="flex items-center justify-between text-muted-foreground">
-                                <span className="syntax-keyword">credentialId:</span>
-                                <span className="syntax-string">"{cert.credentialId}"</span>
-                              </div>
-                            )}
-
-                            {cert.link && (
-                              <motion.a
-                                href={cert.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                whileHover={{ x: 4 }}
-                                className="flex items-center gap-1 text-code-blue hover:text-primary transition-colors mt-3"
-                              >
-                                <span>verify()</span>
-                                <ExternalLink className="w-3 h-3" />
-                              </motion.a>
-                            )}
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
-                </div>
+                {renderCategoryContent(category)}
               </div>
             ))}
           </div>
