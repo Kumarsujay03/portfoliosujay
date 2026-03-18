@@ -177,8 +177,7 @@ const PageBackground = ({
         <>
           {Array.from({ length: resolvedParticleCount }).map((_, i) => (
             <motion.span
-              // eslint-disable-next-line react/no-array-index-key
-              key={i}
+              key={`particle-${(i * 9) % 100}-${(i * 13) % 100}`}
               className="absolute rounded-full"
               style={{
                 left: `${(i * 9) % 100}%`,

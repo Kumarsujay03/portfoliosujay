@@ -22,7 +22,6 @@ const Seo = ({
 }: SeoProps) => {
   const { pathname } = useLocation();
   const siteUrl = getSiteUrl();
-  const bingVerification = (import.meta.env.VITE_BING_SITE_VERIFICATION as string | undefined)?.trim();
 
   const baseTitle = "Sujay Kumar";
   const defaultTitle = `${baseTitle} - Portfolio`;
@@ -46,7 +45,6 @@ const Seo = ({
       )}
 
       {canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
-      {bingVerification && <meta name="msvalidate.01" content={bingVerification} />}
 
       <meta property="og:title" content={fullTitle} />
       <meta property="og:description" content={description} />

@@ -76,6 +76,8 @@ export default function CustomCursor() {
   const trailAngle = useMotionValue(0);
   const trailStrength = useMotionValue(0);
   const trailScaleX = useTransform(trailStrength, (t) => 0.7 + t * 2.2);
+  const trailOpacityDefault = useTransform(trailStrength, (t) => 0.45 * clamp(t * 1.15, 0, 1));
+  const trailOpacityInteractive = useTransform(trailStrength, (t) => 0.65 * clamp(t * 1.15, 0, 1));
   const lastPos = useRef<{ x: number; y: number; t: number } | null>(null);
   const trailStopTimeoutRef = useRef<number | null>(null);
 
@@ -202,7 +204,7 @@ export default function CustomCursor() {
       window.removeEventListener("pointerout", onPointerOut);
       window.removeEventListener("pointerdown", onPointerDown);
     };
-  }, [enabled, magnetEl, x, y]);
+  }, [enabled, magnetEl, trailAngle, trailStrength, x, y]);
 
   if (!enabled) return null;
 
@@ -213,11 +215,6 @@ export default function CustomCursor() {
   const matrixGreen = "hsl(var(--code-green))";
   const crosshairLen = hoveringInteractive ? 6 : 4;
   const crosshairThickness = 2;
-  const trailOpacity = useTransform(trailStrength, (t) => {
-    if (!visible) return 0;
-    const base = hoveringInteractive ? 0.65 : 0.45;
-    return base * clamp(t * 1.15, 0, 1);
-  });
 
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 z-[9999]">
@@ -233,7 +230,7 @@ export default function CustomCursor() {
           height: 4,
           rotate: trailAngle,
           scaleX: trailScaleX,
-          opacity: trailOpacity,
+          opacity: visible ? (hoveringInteractive ? trailOpacityInteractive : trailOpacityDefault) : 0,
           background: hoveringInteractive
             ? "linear-gradient(90deg, transparent, hsl(var(--code-blue) / 0.95), transparent)"
             : "linear-gradient(90deg, transparent, hsl(var(--primary) / 0.90), transparent)",
@@ -367,8 +364,7 @@ export default function CustomCursor() {
             { top: "50%", right: "-1px", w: `${crosshairLen}px`, h: `${crosshairThickness}px` },
           ].map((tick, idx) => (
             <div
-              // eslint-disable-next-line react/no-array-index-key
-              key={idx}
+              key={`${String(tick.left ?? tick.right)}-${String(tick.top ?? tick.bottom)}`}
               className="absolute rounded-full"
               style={{
                 backgroundColor: hoveringInteractive ? interactiveColor : baseColor,

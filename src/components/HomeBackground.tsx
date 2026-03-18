@@ -50,8 +50,7 @@ const HomeBackground = () => {
         <>
           {Array.from({ length: 30 }).map((_, i) => (
             <motion.span
-              // eslint-disable-next-line react/no-array-index-key
-              key={i}
+              key={`particle-${(i * 7) % 100}-${(i * 11) % 100}`}
               className="absolute rounded-full"
               style={{
                 left: `${(i * 7) % 100}%`,
