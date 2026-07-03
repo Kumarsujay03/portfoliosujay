@@ -33,7 +33,7 @@ I enjoy turning ideas into polished UIs and product-ready pages, with attention 
 
 If you’d like to collaborate, discuss an opportunity, or just say hi:
 
-- Email: sujayjaiswal03@gmail.com
+- Email: mr.sujaykumar03@gmail.com
 - GitHub: https://github.com/Kumarsujay03
 
 ---
