@@ -105,11 +105,17 @@
 
   html {
     scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  html::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
   }
 
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', sans-serif;
+    -ms-overflow-style: none; /* IE/Edge legacy */
   }
 
   code, .font-mono {
