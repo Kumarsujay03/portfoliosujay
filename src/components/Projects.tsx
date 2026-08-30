@@ -4,6 +4,7 @@ import { ArrowUpRight, Github } from "lucide-react";
 import projectsData from "../data/projects.json";
 import RevealOnView from "@/components/RevealOnView";
 import SectionHeader from "@/components/SectionHeader";
+import SmartImage from "@/components/SmartImage";
 
 type ProjectsProps = {
   hideLabel?: boolean;
@@ -63,18 +64,13 @@ const ProjectImage = ({ project }: { project: Project }) => {
   // border) at their edges. A slight scale inside an overflow-hidden frame
   // trims those edges without distorting the page content.
   return (
-    <div className="w-full overflow-hidden rounded-lg">
-      <picture>
-        {webp && <source srcSet={webp} type="image/webp" />}
-        <img
-          src={png}
-          alt={project.title}
-          loading="lazy"
-          decoding="async"
-          className="block h-auto w-full scale-[1.05] object-contain grayscale transition-all duration-500 group-hover:grayscale-0"
-        />
-      </picture>
-    </div>
+    <SmartImage
+      src={png}
+      webpSrc={webp}
+      alt={project.title}
+      className="w-full rounded-lg"
+      imgClassName="block h-auto w-full scale-[1.05] object-contain grayscale transition-all duration-500 group-hover:grayscale-0"
+    />
   );
 };
 

@@ -9,6 +9,7 @@ import Seo from "@/components/Seo";
 import { useBlogPost } from "@/lib/blog";
 import { renderMarkdown, renderPlainText } from "@/lib/markdown";
 import { getBlogImgSrc, getBlogWebpSrc } from "@/lib/blogImages";
+import SmartImage from "@/components/SmartImage";
 import { prefetchRoute } from "@/lib/routePrefetch";
 
 const BlogPostPage = () => {
@@ -120,18 +121,14 @@ const BlogPostPage = () => {
           </header>
 
           {img && (
-            <div className="mt-8 overflow-hidden rounded-xl">
-              <picture>
-                {webp && <source srcSet={webp} type="image/webp" />}
-                <img
-                  src={img}
-                  alt={post.title}
-                  loading="lazy"
-                  decoding="async"
-                  className="max-h-[420px] w-full object-cover"
-                />
-              </picture>
-            </div>
+            <SmartImage
+              src={img}
+              webpSrc={webp}
+              alt={post.title}
+              loading="eager"
+              className="mt-8 rounded-xl"
+              imgClassName="max-h-[420px] w-full object-cover"
+            />
           )}
 
           {post.hook && !hasMarkdown && (

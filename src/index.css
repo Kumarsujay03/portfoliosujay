@@ -216,4 +216,32 @@
     content-visibility: auto;
     contain-intrinsic-size: 1px 800px;
   }
+
+  /* Loading skeleton for images: a soft shimmer that sweeps until the image
+     finishes loading, then the image fades in over it. */
+  .img-skeleton {
+    background: linear-gradient(
+      100deg,
+      hsl(var(--muted) / 0.4) 30%,
+      hsl(var(--muted-foreground) / 0.12) 50%,
+      hsl(var(--muted) / 0.4) 70%
+    );
+    background-size: 200% 100%;
+    animation: img-shimmer 1.4s ease-in-out infinite;
+  }
+
+  @keyframes img-shimmer {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .img-skeleton {
+      animation: none;
+    }
+  }
 }

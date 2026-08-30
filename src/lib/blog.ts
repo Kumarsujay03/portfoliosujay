@@ -46,8 +46,9 @@ export const normalizePosts = (posts: BlogPost[]): BlogPost[] =>
 
 const getBundledPosts = (): BlogPost[] => normalizePosts(bundledPosts as unknown as BlogPost[]);
 
-// Falls back to the posts bundled in src/data/blogs.json if the API is
-// unavailable or returns nothing.
+// Fetches posts from the API (Warehouse/KV/upstream). Only when the API is
+// unavailable or returns nothing do we fall back to the posts bundled in
+// src/data/blogs.json. When the API has posts, the bundled ones are never used.
 export const fetchBlogPosts = async (): Promise<BlogPost[]> => {
   try {
     const res = await fetch(API_URL, { headers: { Accept: "application/json" } });
@@ -65,7 +66,9 @@ export const useBlogPosts = () =>
     queryKey: ["blog-posts"],
     queryFn: fetchBlogPosts,
     staleTime: 5 * 60 * 1000,
-    initialData: getBundledPosts,
+    // Show bundled posts as a placeholder while the API loads, but never treat
+    // them as real cached data — the fetched result always replaces them.
+    placeholderData: getBundledPosts,
   });
 
 export const useBlogPost = (slug: string | undefined) => {

@@ -6,6 +6,7 @@ import { useBlogPosts, type BlogPost } from "@/lib/blog";
 import { getBlogImgSrc, getBlogWebpSrc } from "@/lib/blogImages";
 import { prefetchRoute } from "@/lib/routePrefetch";
 import SectionHeader from "@/components/SectionHeader";
+import SmartImage from "@/components/SmartImage";
 
 type BlogProps = {
   backgroundVariant?: "muted" | "none";
@@ -115,18 +116,13 @@ const Blog = (_props: BlogProps) => {
                   className="group flex flex-col gap-4 py-7 sm:flex-row sm:items-start"
                 >
                   {img && (
-                    <div className="w-full shrink-0 overflow-hidden rounded-lg sm:w-40">
-                      <picture>
-                        {webp && <source srcSet={webp} type="image/webp" />}
-                        <img
-                          src={img}
-                          alt={post.title}
-                          loading="lazy"
-                          decoding="async"
-                          className="h-32 w-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0 sm:h-24"
-                        />
-                      </picture>
-                    </div>
+                    <SmartImage
+                      src={img}
+                      webpSrc={webp}
+                      alt={post.title}
+                      className="w-full shrink-0 rounded-lg sm:w-40"
+                      imgClassName="h-32 w-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0 sm:h-24"
+                    />
                   )}
 
                   <div className="flex-1">
