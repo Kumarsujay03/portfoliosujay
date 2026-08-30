@@ -1,8 +1,9 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { Award, ExternalLink, ChevronRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import certificateData from "../data/certificates.json";
 import RevealOnView from "@/components/RevealOnView";
+import SectionHeader from "@/components/SectionHeader";
 
 type Certificate = {
   id?: number;
@@ -24,20 +25,20 @@ type CertificateWithComputed = Certificate & {
   computedPriority: number;
 };
 
-type CategoryModel = {
-  key: (typeof CATEGORY_ORDER)[number];
-  title: string;
-  items: CertificateWithComputed[];
-  displayed: CertificateWithComputed[];
-  hiddenCount: number;
-};
-
 const CATEGORY_ORDER = ["machineLearning", "softwareAndWeb", "simulationsAndPrograms"] as const;
 
 const CATEGORY_TITLES: Record<(typeof CATEGORY_ORDER)[number], string> = {
   machineLearning: "Machine Learning",
   softwareAndWeb: "Software & Web",
   simulationsAndPrograms: "Simulations & Programs",
+};
+
+type CategoryModel = {
+  key: (typeof CATEGORY_ORDER)[number];
+  title: string;
+  items: CertificateWithComputed[];
+  displayed: CertificateWithComputed[];
+  hiddenCount: number;
 };
 
 const getLogoSrc = (logoFile?: string) => {
@@ -50,26 +51,14 @@ const getLogoSrc = (logoFile?: string) => {
 };
 
 const monthIndex: Record<string, number> = {
-  jan: 0,
-  feb: 1,
-  mar: 2,
-  apr: 3,
-  may: 4,
-  jun: 5,
-  jul: 6,
-  aug: 7,
-  sep: 8,
-  oct: 9,
-  nov: 10,
-  dec: 11,
+  jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+  jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11,
 };
 
 const parseMonthYear = (value?: string) => {
   if (!value) return 0;
-  const raw = value.trim();
-  const parts = raw.split(/\s+/);
+  const parts = value.trim().split(/\s+/);
   if (parts.length < 2) return 0;
-
   const month = monthIndex[parts[0].slice(0, 3).toLowerCase()];
   const year = Number(parts[1]);
   if (!Number.isFinite(year) || typeof month !== "number") return 0;
@@ -95,7 +84,6 @@ const getGroupValue = (cert: Certificate) => {
 const buildGroupOrder = (items: Array<{ item: Certificate; index: number }>) => {
   const seen = new Set<string>();
   const order: string[] = [];
-
   for (const entry of items) {
     if (!isSpecialization(entry.item)) continue;
     const g = getGroupValue(entry.item);
@@ -103,14 +91,12 @@ const buildGroupOrder = (items: Array<{ item: Certificate; index: number }>) => 
     seen.add(g);
     order.push(g);
   }
-
   for (const entry of items) {
     const g = getGroupValue(entry.item);
     if (seen.has(g)) continue;
     seen.add(g);
     order.push(g);
   }
-
   return order;
 };
 
@@ -128,14 +114,10 @@ const sortCertificates = (categoryKey: (typeof CATEGORY_ORDER)[number], items: C
       .sort((a, b) => {
         const aIsSpec = isSpecialization(a.item) ? 0 : 1;
         const bIsSpec = isSpecialization(b.item) ? 0 : 1;
-      if (aIsSpec !== bIsSpec) return aIsSpec - bIsSpec;
-
-        const aGroup = getGroupValue(a.item);
-        const bGroup = getGroupValue(b.item);
-        const aRank = getGroupRank(groupOrder, aGroup);
-        const bRank = getGroupRank(groupOrder, bGroup);
-      if (aRank !== bRank) return aRank - bRank;
-
+        if (aIsSpec !== bIsSpec) return aIsSpec - bIsSpec;
+        const aRank = getGroupRank(groupOrder, getGroupValue(a.item));
+        const bRank = getGroupRank(groupOrder, getGroupValue(b.item));
+        if (aRank !== bRank) return aRank - bRank;
         return a.index - b.index;
       })
       .map((x) => x.item);
@@ -151,13 +133,17 @@ const sortCertificates = (categoryKey: (typeof CATEGORY_ORDER)[number], items: C
     .map((x) => x.item);
 };
 
-const withComputedOrdering = (categoryKey: (typeof CATEGORY_ORDER)[number], items: Certificate[], startId: number) => {
+const withComputedOrdering = (
+  categoryKey: (typeof CATEGORY_ORDER)[number],
+  items: Certificate[],
+  startId: number,
+) => {
   const sorted = sortCertificates(categoryKey, items);
-  return sorted.map((cert, index) => {
-    const computedId = startId + index;
-    const computedPriority = index + 1;
-    return { ...cert, computedId, computedPriority } satisfies CertificateWithComputed;
-  });
+  return sorted.map((cert, index) => ({
+    ...cert,
+    computedId: startId + index,
+    computedPriority: index + 1,
+  }) satisfies CertificateWithComputed);
 };
 
 const DEFAULT_VISIBLE_BY_CATEGORY: Record<(typeof CATEGORY_ORDER)[number], number> = {
@@ -166,11 +152,10 @@ const DEFAULT_VISIBLE_BY_CATEGORY: Record<(typeof CATEGORY_ORDER)[number], numbe
   simulationsAndPrograms: 0,
 };
 
-const splitMachineLearningSections = (items: CertificateWithComputed[]) => {
-  const specializations = items.filter((cert) => isSpecialization(cert));
-  const courses = items.filter((cert) => !isSpecialization(cert));
-  return { specializations, courses };
-};
+const splitMachineLearningSections = (items: CertificateWithComputed[]) => ({
+  specializations: items.filter((cert) => isSpecialization(cert)),
+  courses: items.filter((cert) => !isSpecialization(cert)),
+});
 
 type CertificationsProps = {
   forceShowAll?: boolean;
@@ -179,13 +164,61 @@ type CertificationsProps = {
   animateOnView?: boolean;
 };
 
-const Certifications = ({ forceShowAll, backgroundVariant = "muted", hideLabel, animateOnView = false }: CertificationsProps) => {
+const CertCard = ({ cert, index }: { cert: CertificateWithComputed; index: number }) => {
+  const logo = getLogoSrc(cert.logo);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.35, delay: (index % 6) * 0.04 }}
+      whileHover={{ y: -4 }}
+      className="group surface flex flex-col p-5 transition-colors hover:border-foreground/25"
+    >
+      <div className="flex items-start gap-3">
+        {logo ? (
+          <img
+            src={logo}
+            alt={cert.issuer}
+            loading="lazy"
+            className="h-8 w-8 shrink-0 rounded object-contain grayscale opacity-80 transition-all group-hover:grayscale-0 group-hover:opacity-100"
+          />
+        ) : (
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded bg-muted/50 text-[0.7rem] font-semibold text-muted-foreground">
+            {cert.issuer.slice(0, 2).toUpperCase()}
+          </span>
+        )}
+        <div className="min-w-0">
+          <h4 className="text-[0.8rem] font-normal leading-relaxed text-foreground/65">
+            {cert.name}
+          </h4>
+          <p className="mt-1.5 text-[0.7rem] uppercase tracking-wider text-muted-foreground/60">
+            {cert.issuer}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 flex items-center justify-between">
+        <span className="text-[0.7rem] text-muted-foreground/60">{cert.date}</span>
+        {cert.link && (
+          <a
+            href={cert.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-[0.7rem] text-muted-foreground/70 transition-colors hover:text-foreground"
+          >
+            verify
+            <ArrowUpRight className="h-3 w-3" />
+          </a>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+
+const Certifications = ({ forceShowAll, animateOnView = false }: CertificationsProps) => {
   const navigate = useNavigate();
-
-  const sectionPaddingClassName = forceShowAll ? "pt-6 pb-12" : "py-20";
-
   const data = certificateData as unknown as CertificateData;
-
   const isShowingAll = Boolean(forceShowAll);
 
   const categories = (() => {
@@ -193,15 +226,14 @@ const Certifications = ({ forceShowAll, backgroundVariant = "muted", hideLabel, 
     return CATEGORY_ORDER.map((key) => {
       const computedItems = withComputedOrdering(key, (data[key] ?? []) as Certificate[], nextId);
       nextId += computedItems.length;
-
-    const visibleCount = DEFAULT_VISIBLE_BY_CATEGORY[key] ?? 0;
-    return {
-      key,
-      title: CATEGORY_TITLES[key],
-      items: computedItems,
-      displayed: isShowingAll ? computedItems : computedItems.slice(0, visibleCount),
-      hiddenCount: Math.max(0, computedItems.length - visibleCount),
-    };
+      const visibleCount = DEFAULT_VISIBLE_BY_CATEGORY[key] ?? 0;
+      return {
+        key,
+        title: CATEGORY_TITLES[key],
+        items: computedItems,
+        displayed: isShowingAll ? computedItems : computedItems.slice(0, visibleCount),
+        hiddenCount: Math.max(0, computedItems.length - visibleCount),
+      } satisfies CategoryModel;
     });
   })();
 
@@ -212,108 +244,37 @@ const Certifications = ({ forceShowAll, backgroundVariant = "muted", hideLabel, 
   const totalCertifications = categories.reduce((acc, c) => acc + c.items.length, 0);
   const hiddenCountTotal = categories.reduce((acc, c) => acc + c.hiddenCount, 0);
 
-  const hasAnyHidden = hiddenCountTotal > 0;
+  const renderGrid = (items: CertificateWithComputed[]) => (
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {items.map((cert, index) => (
+        <CertCard key={getCertificateKey(cert, index)} cert={cert} index={index} />
+      ))}
+    </div>
+  );
 
-  const backgroundClassName = backgroundVariant === "muted" ? "bg-muted/30" : "";
+  const renderSubLabel = (label: string, count: number) => (
+    <div className="mb-3 flex items-center gap-2.5">
+      <span className="h-3 w-0.5 rounded-full bg-foreground/60" />
+      <span className="text-[0.8rem] font-semibold text-foreground/90">{label}</span>
+      <span className="text-xs text-muted-foreground/70">({count})</span>
+    </div>
+  );
 
-  const renderCertificateGrid = (items: CertificateWithComputed[]) => {
-    return (
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <AnimatePresence mode="popLayout">
-          {items.map((cert, index) => (
-            <motion.div
-              key={getCertificateKey(cert, index)}
-              layout
-              initial={{ opacity: 0, y: 30, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.9 }}
-              transition={{ duration: 0.4, delay: index * 0.05 }}
-              className="terminal-window group hover:border-primary/50 transition-colors"
-            >
-              <div className="terminal-header">
-                <div className="terminal-dot bg-destructive"></div>
-                <div className="terminal-dot bg-accent"></div>
-                <div className="terminal-dot bg-code-green"></div>
-                <span className="ml-2 font-mono text-xs text-muted-foreground">
-                  {cert.date}
-                </span>
-              </div>
-
-              <div className="p-5">
-                <div className="flex items-start gap-3 mb-3">
-                  <motion.span
-                    className="shrink-0"
-                    whileHover={{ scale: 1.2, rotate: 10 }}
-                  >
-                    {getLogoSrc(cert.logo) ? (
-                      <img
-                        src={getLogoSrc(cert.logo) ?? ""}
-                        alt={cert.issuer}
-                        className="h-8 w-8 rounded object-contain bg-background/40 p-1"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <span className="text-2xl">🏆</span>
-                    )}
-                  </motion.span>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-mono text-sm font-semibold text-foreground group-hover:text-primary transition-colors leading-tight">
-                      {cert.name}
-                    </h3>
-                    <p className="font-mono text-xs text-muted-foreground mt-1">
-                      @ {cert.issuer}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-2 text-xs font-mono">
-                  {cert.credentialId && (
-                    <div className="flex items-center justify-between text-muted-foreground">
-                      <span className="syntax-keyword">credentialId:</span>
-                      <span className="syntax-string">"{cert.credentialId}"</span>
-                    </div>
-                  )}
-
-                  {cert.link && (
-                    <motion.a
-                      href={cert.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ x: 4 }}
-                      className="flex items-center gap-1 text-code-blue hover:text-primary transition-colors mt-3"
-                    >
-                      <span>verify()</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </motion.a>
-                  )}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-    );
-  };
-
-  const renderCategoryContent = (category: CategoryModel) => {
-    if (category.key !== "machineLearning") {
-      return renderCertificateGrid(category.displayed);
-    }
-
+  const renderCategory = (category: CategoryModel) => {
+    if (category.key !== "machineLearning") return renderGrid(category.displayed);
     const { specializations, courses } = splitMachineLearningSections(category.displayed);
-
     return (
-      <div className="space-y-6">
+      <div className="space-y-7">
         {specializations.length > 0 && (
           <div>
-            <p className="mb-3 font-mono text-xs text-code-green">specializations:</p>
-            {renderCertificateGrid(specializations)}
+            {renderSubLabel("Specializations", specializations.length)}
+            {renderGrid(specializations)}
           </div>
         )}
         {courses.length > 0 && (
           <div>
-            <p className="mb-3 font-mono text-xs text-code-blue">courses:</p>
-            {renderCertificateGrid(courses)}
+            {renderSubLabel("Courses", courses.length)}
+            {renderGrid(courses)}
           </div>
         )}
       </div>
@@ -321,92 +282,50 @@ const Certifications = ({ forceShowAll, backgroundVariant = "muted", hideLabel, 
   };
 
   const content = (
-    <>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        viewport={{ once: true }}
-        className="mb-12"
-      >
-            {!hideLabel && (
-              <h2 className="font-mono text-sm text-primary mb-2">
-                {"// 04. Certifications"}
-              </h2>
-            )}
+    <div>
+      <SectionHeader index="04" title="certifications" className="mb-8" />
 
-            <div className="terminal-header mb-0 rounded-t-lg">
-              <div className="terminal-dot bg-destructive"></div>
-              <div className="terminal-dot bg-accent"></div>
-              <div className="terminal-dot bg-code-green"></div>
-              <span className="ml-2 font-mono text-xs text-muted-foreground">certificates.json</span>
+      <h2 className="max-w-2xl text-xl md:text-2xl font-medium tracking-tight text-foreground">
+        Credentials, coursework, and continuous learning.
+      </h2>
+
+      <div className="mt-10 space-y-14">
+        {categoriesToRender.map((category) => (
+          <div key={category.key}>
+            <div className="mb-6 flex items-center gap-3 border-b border-border pb-3">
+              <h3 className="text-base font-bold tracking-tight text-foreground md:text-lg">
+                {category.title}
+              </h3>
+              <span className="rounded-full border border-border bg-muted/40 px-2 py-0.5 text-[0.7rem] font-medium text-foreground/80">
+                {category.items.length}
+              </span>
             </div>
-            <div className="bg-card border-x border-b border-border rounded-b-lg p-6">
-              <h2 className="text-3xl font-bold font-mono mb-2 flex items-center gap-3">
-                <Award className="w-8 h-8 text-primary" />
-                <span className="text-gradient">Certifications</span>
-              </h2>
-              <p className="text-muted-foreground font-mono text-sm">
-                <span className="syntax-comment">{"// "}</span>
-                Professional credentials and achievements
-              </p>
-            </div>
-          </motion.div>
-
-          <div className="space-y-10">
-            {categoriesToRender.map((category) => (
-              <div key={category.key}>
-                <div className="mb-4 flex items-center gap-3">
-                  <p className="font-mono text-sm text-muted-foreground">
-                    <span className="syntax-comment">{"// "}</span>
-                    {category.title}
-                  </p>
-                  <div className="h-px flex-1 bg-border/60" />
-                </div>
-
-                {renderCategoryContent(category)}
-              </div>
-            ))}
+            {renderCategory(category)}
           </div>
+        ))}
+      </div>
 
-          {hasAnyHidden && !forceShowAll && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="mt-8 text-center"
-            >
-              <motion.button
-                onClick={() => navigate("/certs")}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="font-mono text-sm px-6 py-3 border border-border rounded-lg bg-card hover:border-primary hover:text-primary transition-all inline-flex items-center gap-2 group"
-              >
-                <span>showAll({hiddenCountTotal})</span>
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-              </motion.button>
-            </motion.div>
-      )}
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
-        viewport={{ once: true }}
-        className="mt-6 text-center"
-      >
-        <p className="font-mono text-xs text-muted-foreground">
-          <span className="syntax-comment">{"// "}</span>
-          Total: {totalCertifications} certifications
-        </p>
-      </motion.div>
-    </>
+      <div className="mt-10 flex flex-wrap items-center gap-4">
+        {hiddenCountTotal > 0 && !forceShowAll && (
+          <button
+            type="button"
+            onClick={() => navigate("/certs")}
+            className="hover-lift-sm group inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 font-mono text-sm text-foreground hover:border-foreground/40"
+          >
+            all {totalCertifications} certifications
+            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </button>
+        )}
+        <span className="font-mono text-xs text-muted-foreground/60">
+          {totalCertifications} total
+        </span>
+      </div>
+    </div>
   );
 
   return (
-    <section id="certifications" className={`${sectionPaddingClassName} ${backgroundClassName}`.trim()}>
-      <div className="container mx-auto px-6">
+    <section id="certifications" className="py-16 md:py-20 relative scroll-offset">
+      <div className="container-page">
         {animateOnView ? <RevealOnView>{content}</RevealOnView> : content}
       </div>
     </section>

@@ -9,7 +9,7 @@ const ContactPage = () => {
     <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
       <PageBackground variant="contact" />
       <Seo title="Contact" description="Get in touch with Sujay Kumar — email and social links." />
-      <main className="pt-20 cv-auto">
+      <main className="min-h-[70vh] pt-20">
         <Contact hideLabel={true} />
       </main>
       <Footer/>

@@ -1,241 +1,96 @@
-import { motion, useInView } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import aboutData from "../data/about.json";
-import { RotateCcw } from "lucide-react";
 import RevealOnView from "@/components/RevealOnView";
-
-type AboutTextSegment = {
-  text: string;
-  className?: string;
-};
+import DitherPortrait from "@/components/DitherPortrait";
+import SectionHeader from "@/components/SectionHeader";
 
 type AboutData = {
-  paragraphs: AboutTextSegment[][];
-  codeLines: string[];
+  headline: string;
+  paragraphs: string[];
+  focusAreas: { title: string; description: string }[];
+  facts: { label: string; value: string }[];
 };
 
 type AboutProps = {
   hideLabel?: boolean;
   animateOnView?: boolean;
+  showPortrait?: boolean;
+  /** Cap how many paragraphs render. The home page shows a shorter intro. */
+  maxParagraphs?: number;
 };
 
-const About = ({ hideLabel, animateOnView = false }: AboutProps) => {
-  const ref = useRef(null);
-  const codeRef = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const isCodeInView = useInView(codeRef, { once: true, margin: "-50px" });
-  
-  const [displayedLines, setDisplayedLines] = useState<string[]>([]);
-  const [currentLineIndex, setCurrentLineIndex] = useState(0);
-  const [currentCharIndex, setCurrentCharIndex] = useState(0);
-  const [isTyping, setIsTyping] = useState(false);
-
-  const { paragraphs, codeLines } = aboutData as unknown as AboutData;
-
-  const restartTyping = () => {
-    setDisplayedLines([]);
-    setCurrentLineIndex(0);
-    setCurrentCharIndex(0);
-    setIsTyping(true);
-  };
-
-  useEffect(() => {
-    if (isCodeInView && !isTyping && currentLineIndex < codeLines.length) {
-      setIsTyping(true);
-    }
-  }, [isCodeInView, isTyping, currentLineIndex, codeLines.length]);
-
-  useEffect(() => {
-    if (!isTyping) return;
-
-    if (currentLineIndex >= codeLines.length) {
-      setIsTyping(false);
-      return;
-    }
-
-    const currentLine = codeLines[currentLineIndex];
-    
-    if (currentCharIndex <= currentLine.length) {
-      const timeout = setTimeout(() => {
-        setDisplayedLines(prev => {
-          const newLines = [...prev];
-          newLines[currentLineIndex] = currentLine.slice(0, currentCharIndex);
-          return newLines;
-        });
-        setCurrentCharIndex(prev => prev + 1);
-      }, 5); // Typing speed
-      
-      return () => clearTimeout(timeout);
-    } else {
-      // Move to next line
-      const timeout = setTimeout(() => {
-        setCurrentLineIndex(prev => prev + 1);
-        setCurrentCharIndex(0);
-      }, 25); // Delay between lines
-      
-      return () => clearTimeout(timeout);
-    }
-  }, [isTyping, currentLineIndex, currentCharIndex, codeLines]);
-
-  const isTypingActive = isTyping && currentLineIndex < codeLines.length;
-  const showRestartButton = !isTyping && displayedLines.length > 0 && currentLineIndex >= codeLines.length;
-
-  const renderLine = (line: string, lineNumber: number) => {
-    // Syntax highlighting
-    const parts: JSX.Element[] = [];
-    let remaining = line;
-    let key = 0;
-
-    // Handle 'const' keyword
-    if (remaining.startsWith('const ')) {
-      parts.push(<span key={key++} className="syntax-keyword">const </span>);
-      remaining = remaining.slice(6);
-    }
-
-    // Handle property names and values
-    const colonIndex = remaining.indexOf(':');
-    if (colonIndex !== -1 && !remaining.trim().startsWith('"') && !remaining.trim().startsWith('[') && !remaining.trim().startsWith(']')) {
-      const propName = remaining.slice(0, colonIndex);
-      const afterColon = remaining.slice(colonIndex);
-      
-      parts.push(<span key={key++} className="text-code-blue">{propName}</span>);
-      
-      // Handle the colon and value
-      if (afterColon.includes('"')) {
-        const beforeQuote = afterColon.split('"')[0];
-        const quoted = afterColon.match(/"[^"]*"?/g);
-        parts.push(<span key={key++} className="text-foreground">{beforeQuote}</span>);
-        if (quoted) {
-          quoted.forEach(q => {
-            parts.push(<span key={key++} className="syntax-string">{q}</span>);
-          });
-          const afterQuotes = afterColon.replace(beforeQuote, '').replace(quoted.join(''), '');
-          if (afterQuotes) {
-            parts.push(<span key={key++} className="text-foreground">{afterQuotes}</span>);
-          }
-        }
-      } else if (afterColon.includes('[')) {
-        parts.push(<span key={key++} className="text-foreground">{afterColon}</span>);
-      } else {
-        parts.push(<span key={key++} className="text-foreground">{afterColon}</span>);
-      }
-    } else if (remaining.includes('"')) {
-      // Handle string values in arrays
-      const beforeQuote = remaining.split('"')[0];
-      parts.push(<span key={key++} className="text-foreground">{beforeQuote}</span>);
-      const quoted = remaining.match(/"[^"]*"?/g);
-      if (quoted) {
-        quoted.forEach(q => {
-          parts.push(<span key={key++} className="syntax-string">{q}</span>);
-        });
-        const afterQuotes = remaining.slice(beforeQuote.length + quoted.join('').length);
-        if (afterQuotes) {
-          parts.push(<span key={key++} className="text-foreground">{afterQuotes}</span>);
-        }
-      }
-    } else {
-      parts.push(<span key={key++} className="text-foreground">{remaining}</span>);
-    }
-
-    return (
-      <div key={lineNumber} className="flex">
-        <span className="text-muted-foreground/50 min-w-[2.25rem] select-none text-right pr-2 flex-none whitespace-nowrap tabular-nums">
-          {lineNumber + 1}
-        </span>
-        <span className="ml-2">
-          {parts}
-          {lineNumber === currentLineIndex && currentLineIndex < codeLines.length && (
-            <span className="cursor-blink text-primary">|</span>
-          )}
-        </span>
-      </div>
-    );
-  };
+const About = ({ animateOnView = false, showPortrait = true, maxParagraphs }: AboutProps) => {
+  const { headline, paragraphs, focusAreas, facts } = aboutData as AboutData;
+  const visibleParagraphs =
+    typeof maxParagraphs === "number" ? paragraphs.slice(0, maxParagraphs) : paragraphs;
 
   const content = (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6 }}
-    >
-          {!hideLabel && (
-            <h2 className="font-mono text-sm text-primary mb-2">
-              {"// 01. About"}
-            </h2>
-          )}
+    <div>
+      <SectionHeader index="01" title="about" className="mb-10" />
 
-          <div className="grid md:grid-cols-2 gap-12 items-start">
-            <div>
-              <h3 className="text-3xl md:text-4xl font-bold mb-8">
-                <span className="syntax-keyword">const</span>{" "}
-                <span className="syntax-function">aboutMe</span>{" "}
-                <span className="text-foreground">=</span>{" "}
-                <span className="syntax-string">"..."</span>
-              </h3>
-              <div className="space-y-6">
-                {paragraphs.map((segments, idx) => (
-                  <p key={idx} className="text-muted-foreground leading-relaxed">
-                    {segments.map((segment, segmentIndex) => (
-                      <span key={segmentIndex} className={segment.className ?? undefined}>
-                        {segment.text}
-                      </span>
-                    ))}
-                  </p>
-                ))}
-              </div>
-            </div>
-
-            <motion.div
-              ref={codeRef}
-              initial={{ opacity: 0, x: 20 }}
-              animate={isInView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="terminal-window w-full min-w-0"
-            >
-              <div className="terminal-header">
-                <div className="terminal-dot bg-destructive" />
-                <div className="terminal-dot bg-accent" />
-                <div className="terminal-dot bg-code-green" />
-                <span className="ml-4 font-mono text-xs text-muted-foreground">about.js</span>
-                <div className="ml-auto flex items-center gap-2">
-                  {isTypingActive && (
-                    <motion.span
-                      className="font-mono text-xs text-code-green"
-                      animate={{ opacity: [1, 0.5, 1] }}
-                      transition={{ duration: 0.5, repeat: Infinity }}
-                    >
-                      typing...
-                    </motion.span>
-                  )}
-                  {showRestartButton && (
-                    <button
-                      type="button"
-                      onClick={restartTyping}
-                      className="inline-flex items-center justify-center rounded p-1 text-muted-foreground hover:text-primary hover:bg-muted/40 transition-colors"
-                      aria-label="Restart typing animation"
-                      title="Restart typing"
-                    >
-                      <RotateCcw className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                </div>
-              </div>
-              <div className="terminal-body min-h-[320px] overflow-x-auto">
-                <pre className="text-sm whitespace-pre-wrap break-words">
-                  <code>
-                    {codeLines.map((_, i) => renderLine(displayedLines[i] ?? "", i))}
-                  </code>
-                </pre>
-              </div>
-            </motion.div>
+      <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr]">
+        <div>
+          <h2 className="max-w-xl text-2xl md:text-3xl font-medium tracking-tight text-foreground">
+            {headline}
+          </h2>
+          <div className="mt-6 space-y-4 max-w-xl">
+            {visibleParagraphs.map((p, i) => (
+              <p key={i} className="text-[15px] leading-relaxed text-muted-foreground">
+                {p}
+              </p>
+            ))}
           </div>
-    </motion.div>
+        </div>
+
+        <div className="space-y-5">
+          {showPortrait && (
+            <div className="mx-auto w-full max-w-[340px]">
+              <DitherPortrait />
+            </div>
+          )}
+          <dl className="surface divide-y divide-border">
+            {facts.map((fact) => (
+              <div key={fact.label} className="flex items-center justify-between px-4 py-2.5">
+                <dt className="mono-label">{fact.label}</dt>
+                <dd className="font-mono text-xs text-foreground">{fact.value}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+
+      <div className="mt-16">
+        <SectionHeader title="focus areas" className="mb-5" />
+        <div className="grid gap-4 sm:grid-cols-2">
+          {focusAreas.map((area, i) => (
+            <motion.div
+              key={area.title}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.4, delay: i * 0.06 }}
+              whileHover={{ y: -4 }}
+              className="surface p-5 transition-colors hover:border-foreground/25"
+            >
+              <div className="flex items-baseline gap-3">
+                <span className="font-mono text-xs text-muted-foreground/70">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="font-medium text-foreground">{area.title}</h3>
+              </div>
+              <p className="mt-2 pl-8 text-sm leading-relaxed text-muted-foreground">
+                {area.description}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 
   return (
-    <section id="about" className="py-12 relative">
-      <div className="container mx-auto px-6">
+    <section id="about" className="py-16 md:py-20 relative scroll-offset">
+      <div className="container-page">
         {animateOnView ? <RevealOnView>{content}</RevealOnView> : content}
       </div>
     </section>

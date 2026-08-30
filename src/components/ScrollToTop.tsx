@@ -25,7 +25,6 @@ const ScrollToTop = () => {
       rafId = window.requestAnimationFrame(update);
     };
 
-    // Initial sync
     update();
     window.addEventListener("scroll", onScroll, { passive: true });
 
@@ -53,7 +52,6 @@ const ScrollToTop = () => {
           className="fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full bg-card border border-border hover:border-primary transition-colors flex items-center justify-center group"
           aria-label="Scroll to top"
         >
-          {/* Progress ring */}
           <svg
             className="absolute inset-0 w-12 h-12 -rotate-90"
             viewBox="0 0 48 48"

@@ -3,21 +3,15 @@ import RouteScrollToTop from "@/components/RouteScrollToTop";
 import { Outlet } from "react-router-dom";
 import { Suspense, useEffect } from "react";
 import CustomCursor from "@/components/CustomCursor";
+import AnimatedFavicon from "@/components/AnimatedFavicon";
 import { prefetchRoute } from "@/lib/routePrefetch";
 import Lenis from "lenis";
 
 const PageLoader = () => (
   <div className="min-h-[60vh] flex items-center justify-center px-6">
-    <div className="terminal-window">
-      <div className="terminal-header">
-        <div className="terminal-dot bg-destructive" />
-        <div className="terminal-dot bg-accent" />
-        <div className="terminal-dot bg-code-green" />
-        <span className="ml-2 font-mono text-xs text-muted-foreground">loading.ts</span>
-      </div>
-      <div className="p-6">
-        <p className="font-mono text-sm text-muted-foreground">loading()</p>
-      </div>
+    <div className="flex items-center gap-3 font-mono text-sm text-muted-foreground">
+      <span className="h-2 w-2 animate-pulse rounded-full bg-foreground/70" />
+      loading
     </div>
   </div>
 );
@@ -83,6 +77,7 @@ const AppLayout = () => {
 
   return (
     <>
+      <AnimatedFavicon />
       <CustomCursor />
       <RouteScrollToTop />
       <Header />

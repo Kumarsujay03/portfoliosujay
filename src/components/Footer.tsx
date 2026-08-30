@@ -1,173 +1,85 @@
-import { motion } from "framer-motion";
-import { Coffee, Terminal, Github, Linkedin, Mail } from "lucide-react";
+import { Github, Linkedin, Mail } from "lucide-react";
+import { Link } from "react-router-dom";
 import { prefetchRoute } from "@/lib/routePrefetch";
 import SiteStats from "@/components/SiteStats";
+import Logo from "@/components/Logo";
 
 type FooterProps = {
   showSocialLinks?: boolean;
 };
 
+const socials = [
+  { icon: Github, href: "https://github.com/Kumarsujay03", label: "GitHub" },
+  { icon: Linkedin, href: "https://www.linkedin.com/in/kumarsujay03/", label: "LinkedIn" },
+  { icon: Mail, href: "mailto:mr.sujaykumar03@gmail.com", label: "Email" },
+];
+
+const navLinks = [
+  { label: "about", href: "/about" },
+  { label: "work", href: "/work" },
+  { label: "projects", href: "/projects" },
+  { label: "writing", href: "/blog" },
+  { label: "contact", href: "/contact" },
+];
+
 const Footer = ({ showSocialLinks }: FooterProps) => {
   const currentYear = new Date().getFullYear();
 
-  const socials = [
-    { icon: Github, href: "https://github.com/Kumarsujay03", label: "GitHub" },
-    { icon: Linkedin, href: "https://www.linkedin.com/in/kumarsujay03/", label: "LinkedIn" },
-    { icon: Mail, href: "mailto:mr.sujaykumar03@gmail.com", label: "Email" },
-  ];
-
   return (
-    <motion.footer
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6 }}
-      className="py-12 relative overflow-hidden"
-    >
-      {/* Animated background gradient - continues from contact section */}
-      <motion.div
-        className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5"
-        animate={{
-          backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-      />
-
-      <div className="container mx-auto px-4 sm:px-6 relative z-10">
-        {/* Terminal-style header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="flex items-center justify-center gap-2 mb-8"
-        >
-          <Terminal className="w-4 h-4 text-primary" />
-          <span className="font-mono text-sm text-muted-foreground">
-            <span className="text-code-green">~</span> footer.tsx
-          </span>
-        </motion.div>
-
-        {showSocialLinks && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.25 }}
-            className="flex justify-center gap-4 pt-2 mb-8"
-          >
-            {socials.map((social) => (
-              <motion.a
-                key={social.label}
-                href={social.href}
-                target={social.href.startsWith("mailto:") ? undefined : "_blank"}
-                rel={social.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
-                whileHover={{ y: -2 }}
-                className="p-2 rounded-lg border border-border text-muted-foreground hover:text-primary hover:border-primary transition-all"
-                aria-label={social.label}
-              >
-                <social.icon className="h-4 w-4" />
-              </motion.a>
-            ))}
-          </motion.div>
-        )}
-
-        {/* Code-style attribution */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="text-center space-y-3"
-        >
-          <div className="font-mono text-sm">
-            <motion.span
-              className="text-muted-foreground"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.6 }}
-            >
-              <span className="syntax-keyword">const</span>{" "}
-              <span className="text-code-blue">developer</span>{" "}
-              <span className="text-foreground">=</span>{" "}
-            </motion.span>
-            <motion.a
-              href="/about"
-              className="text-primary hover:underline"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.7 }}
-              whileHover={{ scale: 1.05 }}
-              onMouseEnter={() => prefetchRoute("/about")}
-              onFocus={() => prefetchRoute("/about")}
-            >
-              "Sujay Kumar"
-            </motion.a>
-            <motion.span
-              className="text-foreground"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.8 }}
-            >
-              ;
-            </motion.span>
+    <footer className="relative border-t border-border/60">
+      <div className="container-page py-12">
+        <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
+          <div>
+            <div className="flex items-center gap-2.5">
+              <Logo className="h-6 w-6 text-foreground" />
+              <span className="font-mono text-sm font-medium text-foreground">Sujay Kumar</span>
+            </div>
+            <p className="mt-3 max-w-xs text-sm text-muted-foreground">
+              Machine learning researcher &amp; engineer. Building intelligent systems and
+              writing about the journey.
+            </p>
+            <div className="mt-4 flex items-center gap-4">
+              {socials.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target={social.href.startsWith("mailto:") ? undefined : "_blank"}
+                  rel={social.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                  aria-label={social.label}
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <social.icon className="h-4 w-4" />
+                </a>
+              ))}
+            </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.9 }}
-            className="font-mono text-xs text-muted-foreground/60 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center px-2"
-          >
-            <span className="text-code-green">git commit</span>
-            <span>-m</span>
-            <span className="text-code-orange flex flex-wrap items-center justify-center gap-1 text-center whitespace-normal break-words">
-              "Built with curiosity and continuous learning{" "}
-              <motion.span
-                animate={{ rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="inline-flex"
+          <nav className="flex flex-col gap-2">
+            <span className="mono-label mb-1">navigate</span>
+            {navLinks.map((link) => (
+              <Link
+                key={link.label}
+                to={link.href}
+                onMouseEnter={() => prefetchRoute(link.href)}
+                className="font-mono text-sm text-muted-foreground transition-colors hover:text-foreground"
               >
-                <Coffee className="w-3 h-3 text-code-orange inline" />
-              </motion.span>
-              "
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </div>
+
+        <div className="mt-10 flex flex-col gap-3 border-t border-border/60 pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="font-mono text-xs text-muted-foreground/60">
+            © {currentYear} Sujay Kumar · Built with curiosity.
+            <span className="ml-2 rounded-full border border-border px-2 py-0.5 text-muted-foreground/70">
+              v2.0
             </span>
-          </motion.div>
-
-          {/* Decorative animated separator */}
-          <motion.div
-            className="mx-auto my-6 h-px w-64 bg-gradient-to-r from-transparent via-primary/50 to-transparent"
-            initial={{ scaleX: 0.6, opacity: 0.4 }}
-            animate={{ scaleX: [0.6, 1, 0.6], opacity: [0.4, 1, 0.4] }}
-            transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
-          />
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 1.1 }}
-            className="font-mono text-xs text-muted-foreground/40"
-          >
-            <span className="syntax-comment">{"// "}</span>
-            © {currentYear} All rights reserved
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 1.15 }}
-          >
-            <SiteStats />
-          </motion.div>
-        </motion.div>
+          </p>
+          {showSocialLinks !== false && <SiteStats />}
+        </div>
       </div>
-    </motion.footer>
+    </footer>
   );
 };
 

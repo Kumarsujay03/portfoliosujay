@@ -1,95 +1,44 @@
-import { useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import FooterBridge from "@/components/FooterBridge";
 import PageBackground from "@/components/PageBackground";
 import ScrollToTop from "@/components/ScrollToTop";
 import Seo from "@/components/Seo";
-import blogsData from "@/data/blogs.json";
+import { useBlogPost } from "@/lib/blog";
+import { renderMarkdown, renderPlainText } from "@/lib/markdown";
 import { getBlogImgSrc, getBlogWebpSrc } from "@/lib/blogImages";
 import { prefetchRoute } from "@/lib/routePrefetch";
 
-type BlogPost = {
-  slug: string;
-  title: string;
-  date: string;
-  readTime?: string;
-  tags?: string[];
-  summary?: string;
-  image?: string;
-  body: string[];
-  code?: string;
-  view?: boolean;
-};
-
 const BlogPostPage = () => {
   const { slug } = useParams();
-
-  const posts = useMemo(() => {
-    const all = blogsData as unknown as BlogPost[];
-    return all
-      .filter((p) => p.view !== false)
-      .slice()
-      .sort((a, b) => b.date.localeCompare(a.date));
-  }, []);
-
-  const postIndex = useMemo(() => {
-    if (!slug) return -1;
-    return posts.findIndex((p) => p.slug === slug);
-  }, [posts, slug]);
-
-  const post = postIndex >= 0 ? posts[postIndex] : null;
-  const prevPost = postIndex >= 0 ? posts[postIndex + 1] ?? null : null;
-  const nextPost = postIndex >= 1 ? posts[postIndex - 1] ?? null : null;
-  const relatedPosts = useMemo(() => {
-    if (!post) return [] as BlogPost[];
-
-    const postTags = new Set(post.tags ?? []);
-    if (postTags.size === 0) {
-      return posts.filter((p) => p.slug !== post.slug).slice(0, 3);
-    }
-
-    const scored = posts
-      .filter((p) => p.slug !== post.slug)
-      .map((p) => {
-        const tags = p.tags ?? [];
-        const overlap = tags.filter((t) => postTags.has(t)).length;
-        return { post: p, overlap };
-      })
-      .filter((item) => item.overlap > 0)
-      .sort((a, b) => b.overlap - a.overlap || b.post.date.localeCompare(a.post.date));
-
-    return scored.slice(0, 3).map((item) => item.post);
-  }, [post, posts]);
+  const { post, prevPost, nextPost, relatedPosts, isLoading } = useBlogPost(slug);
 
   if (!post) {
     return (
       <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
         <PageBackground variant="blogPost" />
-        <Seo title="Blog" description="Blog post not found." noIndex />
-        <main className="pt-20 cv-auto">
-          <div className="container mx-auto px-6">
-            <div className="terminal-window">
-              <div className="terminal-header">
-                <div className="terminal-dot bg-destructive" />
-                <div className="terminal-dot bg-accent" />
-                <div className="terminal-dot bg-code-green" />
-                <span className="ml-2 font-mono text-xs text-muted-foreground">blog/404.md</span>
-              </div>
-              <div className="p-6">
-                <h1 className="text-2xl font-bold mb-2">Post not found</h1>
-                <p className="text-muted-foreground mb-6">
-                  The blog post you’re looking for doesn’t exist (or is hidden).
+        <Seo title="Writing" description="Blog post not found." noIndex />
+        <main className="pt-24 cv-auto">
+          <div className="container-page">
+            <h1 className="text-2xl font-medium text-foreground">
+              {isLoading ? "Loading…" : "Post not found"}
+            </h1>
+            {!isLoading && (
+              <>
+                <p className="mt-2 text-muted-foreground">
+                  This post doesn't exist or is no longer published.
                 </p>
                 <Link
                   to="/blog"
-                  className="font-mono text-sm px-4 py-2 border border-border rounded-lg bg-card hover:border-primary hover:text-primary transition-all inline-flex items-center gap-2"
+                  className="hover-lift-sm mt-6 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 font-mono text-sm text-foreground hover:border-foreground/40"
                 >
-                  backToBlog()
+                  <ArrowLeft className="h-4 w-4" />
+                  back to writing
                 </Link>
-              </div>
-            </div>
+              </>
+            )}
           </div>
         </main>
         <FooterBridge />
@@ -99,168 +48,182 @@ const BlogPostPage = () => {
     );
   }
 
-  const imageSrc = getBlogImgSrc(post.image);
-  const imageWebpSrc = getBlogWebpSrc(post.image);
+  const img = getBlogImgSrc(post.image);
+  const webp = getBlogWebpSrc(post.image);
+  const hasMarkdown = Boolean(post.content && post.content.trim().length > 0);
+  // Warehouse posts carry body as a single plain-text string; legacy bundled
+  // posts use string[] paragraphs. Detect the Warehouse case.
+  const plainBody = typeof post.body === "string" ? post.body : null;
+  const legacyParagraphs = Array.isArray(post.body) ? post.body : [];
+
+  const siteUrl = (import.meta.env.VITE_SITE_URL as string | undefined)?.replace(/\/$/, "");
+  const postUrl = siteUrl ? `${siteUrl}/blog/${post.slug}` : undefined;
+  const ogImagePath = post.image && /^https?:\/\//i.test(post.image) ? post.image : "/og-image.png";
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.summary ?? undefined,
+    datePublished: post.publishedAt ?? post.date ?? undefined,
+    dateModified: post.updatedAt ?? post.publishedAt ?? post.date ?? undefined,
+    author: { "@type": "Person", name: "Sujay Kumar", url: siteUrl },
+    publisher: { "@type": "Person", name: "Sujay Kumar", url: siteUrl },
+    keywords: (post.tags ?? []).join(", ") || undefined,
+    image: img ?? undefined,
+    mainEntityOfPage: postUrl ? { "@type": "WebPage", "@id": postUrl } : undefined,
+  };
 
   return (
     <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
       <PageBackground variant="blogPost" />
-      <Seo title={post.title} description={post.summary ?? "Blog post"} imagePath="/og-image.png" />
-      <main className="pt-20 cv-auto">
-        <div className="container mx-auto px-6">
-          <div className="mb-6">
-            <Link
-              to="/blog"
-              className="font-mono text-sm text-muted-foreground hover:text-primary transition-colors"
-            >
-              ← backToBlog()
-            </Link>
-          </div>
+      <Seo
+        title={post.title}
+        description={post.summary ?? "Blog post"}
+        imagePath={ogImagePath}
+        type="article"
+        jsonLd={jsonLd}
+      />
+      <main className="pt-24 cv-auto">
+        <article className="container-page">
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            back to writing
+          </Link>
 
-          <motion.article
-            initial={{ opacity: 0, y: 18 }}
+          {/* Reading measure stays narrow, but stays flush-left with the page grid. */}
+          <div className="max-w-3xl">
+          <header className="mt-8">
+            <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-muted-foreground">
+              <time>{post.date}</time>
+              {post.readTime && (
+                <>
+                  <span className="opacity-40">·</span>
+                  <span>{post.readTime} read</span>
+                </>
+              )}
+            </div>
+            <h1 className="mt-3 text-3xl md:text-4xl font-semibold tracking-tight text-foreground">
+              {post.title}
+            </h1>
+            {post.tags?.length ? (
+              <div className="mt-4 flex flex-wrap gap-1.5">
+                {post.tags.map((tag) => (
+                  <span key={tag} className="font-mono text-xs text-muted-foreground/60">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            ) : null}
+          </header>
+
+          {img && (
+            <div className="mt-8 overflow-hidden rounded-xl">
+              <picture>
+                {webp && <source srcSet={webp} type="image/webp" />}
+                <img
+                  src={img}
+                  alt={post.title}
+                  loading="lazy"
+                  decoding="async"
+                  className="max-h-[420px] w-full object-cover"
+                />
+              </picture>
+            </div>
+          )}
+
+          {post.hook && !hasMarkdown && (
+            <p className="mt-8 text-lg leading-relaxed text-foreground">
+              {post.hook.split("\n").map((line, i, arr) => (
+                <span key={i}>
+                  {line}
+                  {i < arr.length - 1 && <br />}
+                </span>
+              ))}
+            </p>
+          )}
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="terminal-window"
+            className="mt-8 text-[15px]"
           >
-            <div className="terminal-header">
-              <div className="terminal-dot bg-destructive" />
-              <div className="terminal-dot bg-accent" />
-              <div className="terminal-dot bg-code-green" />
-              <span className="ml-2 font-mono text-xs text-muted-foreground flex-1">
-                {post.slug}.md
-              </span>
-              <span className="font-mono text-xs text-muted-foreground">{post.date}</span>
-            </div>
-
-            {imageSrc && (
-              <div className="border-b border-border bg-muted/20">
-                <picture>
-                  {imageWebpSrc && <source srcSet={imageWebpSrc} type="image/webp" />}
-                  <img
-                    src={imageSrc}
-                    alt={post.title}
-                    className="w-full max-h-[420px] object-cover"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </picture>
-              </div>
-            )}
-
-            <div className="p-6">
-              <div className="flex flex-wrap items-center gap-3 mb-3">
-                <h1 className="text-3xl md:text-4xl font-bold">{post.title}</h1>
-                {post.readTime && (
-                  <span className="font-mono text-xs text-muted-foreground">~ {post.readTime} read</span>
-                )}
-              </div>
-
-              {post.tags?.length ? (
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="font-mono text-xs px-2 py-1 rounded bg-muted text-code-blue"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-              ) : null}
-
+            {hasMarkdown ? (
+              renderMarkdown(post.content as string)
+            ) : plainBody !== null ? (
+              // Warehouse body: plain text, line breaks preserved, no Markdown.
+              renderPlainText(plainBody)
+            ) : (
               <div className="space-y-4">
-                {post.body.map((paragraph, idx) => (
-                  <p key={idx} className="text-muted-foreground leading-relaxed">
+                {legacyParagraphs.map((paragraph, idx) => (
+                  <p key={idx} className="leading-relaxed text-muted-foreground">
                     {paragraph}
                   </p>
                 ))}
-              </div>
-
-              {post.code && (
-                <div className="mt-8 code-block overflow-x-auto">
-                  <pre className="text-xs leading-relaxed">
-                    <code>{post.code}</code>
+                {post.code && (
+                  <pre className="my-5 overflow-x-auto rounded-xl border border-border bg-muted/50 p-4">
+                    <code className="font-mono text-[0.85rem] leading-relaxed text-foreground">
+                      {post.code}
+                    </code>
                   </pre>
-                </div>
-              )}
+                )}
+              </div>
+            )}
+          </motion.div>
+          </div>
 
-              {relatedPosts.length > 0 && (
-                <div className="mt-10">
-                  <div className="terminal-header rounded-t-lg">
-                    <div className="terminal-dot bg-destructive" />
-                    <div className="terminal-dot bg-accent" />
-                    <div className="terminal-dot bg-code-green" />
-                    <span className="ml-2 font-mono text-xs text-muted-foreground">
-                      relatedPosts()
-                    </span>
-                  </div>
-                  <div className="border-x border-b border-border rounded-b-lg p-5 bg-card">
-                    <div className="grid gap-4 md:grid-cols-3">
-                      {relatedPosts.map((rel) => (
-                        <Link
-                          key={rel.slug}
-                          to={`/blog/${rel.slug}`}
-                          onMouseEnter={() => prefetchRoute(`/blog/${rel.slug}`)}
-                          onFocus={() => prefetchRoute(`/blog/${rel.slug}`)}
-                          className="rounded-lg border border-border bg-background/40 p-4 hover:border-primary/60 transition-colors"
-                        >
-                          <p className="font-mono text-sm text-muted-foreground">
-                            {rel.date}
-                          </p>
-                          <h3 className="mt-2 font-mono text-base text-foreground">
-                            {rel.title}
-                          </h3>
-                          {rel.tags?.length ? (
-                            <div className="mt-3 flex flex-wrap gap-2">
-                              {rel.tags.slice(0, 3).map((tag) => (
-                                <span
-                                  key={tag}
-                                  className="font-mono text-[10px] px-2 py-1 rounded bg-muted text-code-blue"
-                                >
-                                  #{tag}
-                                </span>
-                              ))}
-                            </div>
-                          ) : null}
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {(prevPost || nextPost) && (
-                <div className="mt-10 pt-6 border-t border-border flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
-                  <div>
-                    {prevPost ? (
-                      <Link
-                        to={`/blog/${prevPost.slug}`}
-                        onMouseEnter={() => prefetchRoute(`/blog/${prevPost.slug}`)}
-                        onFocus={() => prefetchRoute(`/blog/${prevPost.slug}`)}
-                        className="font-mono text-sm text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        ← prevPost({prevPost.title})
-                      </Link>
-                    ) : null}
-                  </div>
-                  <div className="text-left md:text-right">
-                    {nextPost ? (
-                      <Link
-                        to={`/blog/${nextPost.slug}`}
-                        onMouseEnter={() => prefetchRoute(`/blog/${nextPost.slug}`)}
-                        onFocus={() => prefetchRoute(`/blog/${nextPost.slug}`)}
-                        className="font-mono text-sm text-muted-foreground hover:text-primary transition-colors"
-                      >
-                        nextPost({nextPost.title}) →
-                      </Link>
-                    ) : null}
-                  </div>
-                </div>
-              )}
+          {relatedPosts.length > 0 && (
+            <div className="mt-16">
+              <span className="mono-label">related</span>
+              <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                {relatedPosts.map((rel) => (
+                  <Link
+                    key={rel.slug}
+                    to={`/blog/${rel.slug}`}
+                    onMouseEnter={() => prefetchRoute(`/blog/${rel.slug}`)}
+                    onFocus={() => prefetchRoute(`/blog/${rel.slug}`)}
+                    className="hover-lift group surface p-4 hover:border-foreground/25"
+                  >
+                    <p className="font-mono text-xs text-muted-foreground/70">{rel.date}</p>
+                    <h3 className="mt-2 text-sm font-medium text-foreground">{rel.title}</h3>
+                  </Link>
+                ))}
+              </div>
             </div>
-          </motion.article>
-        </div>
+          )}
+
+          {(prevPost || nextPost) && (
+            <nav className="mt-14 flex flex-col gap-3 border-t border-border/60 pt-6 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                {prevPost && (
+                  <Link
+                    to={`/blog/${prevPost.slug}`}
+                    onMouseEnter={() => prefetchRoute(`/blog/${prevPost.slug}`)}
+                    className="inline-flex items-center gap-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    {prevPost.title}
+                  </Link>
+                )}
+              </div>
+              <div className="sm:text-right">
+                {nextPost && (
+                  <Link
+                    to={`/blog/${nextPost.slug}`}
+                    onMouseEnter={() => prefetchRoute(`/blog/${nextPost.slug}`)}
+                    className="inline-flex items-center gap-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {nextPost.title}
+                    <ArrowUpRight className="h-4 w-4" />
+                  </Link>
+                )}
+              </div>
+            </nav>
+          )}
+        </article>
       </main>
       <FooterBridge />
       <Footer showSocialLinks />

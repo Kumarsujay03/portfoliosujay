@@ -1,11 +1,11 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "sujay-kumar-portfolio",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generate-sitemap.mjs && node scripts/generate-og-image.mjs && vite build",
+    "build": "node scripts/generate-sitemap.mjs && node scripts/generate-og-image.mjs && vite build && node scripts/emit-prerender-template.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",

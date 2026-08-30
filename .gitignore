@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Generated after build for the Vercel prerender function (see
+# scripts/emit-prerender-template.mjs). Rebuilt on every deploy.
+api/_lib/index-template.js
+
 # Environment files
 .env
 .env.*

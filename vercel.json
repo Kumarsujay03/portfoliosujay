@@ -1,6 +1,36 @@
 {
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/.*", "dest": "/index.html" }
+  "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap.xml" },
+
+    {
+      "source": "/blog",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(bot|crawl|spider|slurp|bingpreview|facebookexternalhit|facebot|twitterbot|linkedinbot|embedly|quora link preview|pinterest|slackbot|slack-imgproxy|vkshare|w3c_validator|whatsapp|telegrambot|discordbot|googlebot|google-inspectiontool|applebot|baiduspider|yandex|duckduckbot|ia_archiver|redditbot|skypeuripreview|petalbot).*"
+        }
+      ],
+      "destination": "/api/prerender"
+    },
+    {
+      "source": "/blog/:slug",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*(bot|crawl|spider|slurp|bingpreview|facebookexternalhit|facebot|twitterbot|linkedinbot|embedly|quora link preview|pinterest|slackbot|slack-imgproxy|vkshare|w3c_validator|whatsapp|telegrambot|discordbot|googlebot|google-inspectiontool|applebot|baiduspider|yandex|duckduckbot|ia_archiver|redditbot|skypeuripreview|petalbot).*"
+        }
+      ],
+      "destination": "/api/prerender?slug=:slug"
+    },
+
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/sitemap.xml",
+      "headers": [{ "key": "Content-Type", "value": "application/xml; charset=utf-8" }]
+    }
   ]
 }

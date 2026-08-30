@@ -1,48 +1,32 @@
 {
+  "headline": "Turning research ideas into systems that work.",
   "paragraphs": [
-    [
-      { "text": "Hello! I'm " },
-      { "text": "Sujay", "className": "text-primary" },
-      {
-        "text": ", a 2025 B.Tech graduate with a strong foundation in software and web development. I enjoy breaking down complex problems and turning them into clean, scalable solutions that work reliably in real-world systems."
-      }
-    ],
-    [
-      {
-        "text": "My journey began with building full-stack web applications, which helped me develop a solid understanding of system design, APIs, and performance considerations. Today, my focus is expanding toward "
-      },
-      { "text": "machine learning", "className": "text-code-purple" },
-      { "text": ", " },
-      { "text": "data-driven systems", "className": "text-code-blue" },
-      { "text": ", and " },
-      { "text": "applied AI", "className": "text-code-green" },
-      { "text": "." }
-    ],
-    [
-      {
-        "text": "When I’m not coding or experimenting with models, I spend time refining my fundamentals, exploring new technologies, and continuously learning how to build intelligent systems that scale and evolve."
-      }
-    ]
+    "I'm Sujay, a 2025 B.Tech graduate and machine learning researcher-engineer. I started out building full-stack web applications, which gave me a grounding in system design, APIs, and shipping software that real people rely on.",
+    "Today my work centers on machine learning: deep learning, natural language processing, and the applied side of AI. I care about the full path from a research idea to a model that is measurable, reproducible, and useful in production, not just on paper.",
+    "I read papers, reimplement methods to understand them, and write about what I learn. I'm looking for research and applied-ML opportunities where I can go deep on hard problems."
   ],
-  "codeLines": [
-    "const aboutMe = {",
-    "  location: \"Bengaluru, India\",",
-    "  education: \"B.Tech (2025 Graduate)\",",
-    "  background: \"Software & Web Development\",",
-    "  focus: \"Machine Learning & Applied AI\",",
-    "  interests: [",
-    "     \"Building scalable apps\",",
-    "     \"Working with data\",",
-    "     \"Machine learning\",",
-    "     \"Clean code\"",
-    "   ],",
-    "  currentlyLearning: [",
-    "     \"Machine learning basics\",",
-    "     \"Deep learning\",",
-    "     \"Improving model accuracy\"",
-    "   ],",
-    "  fuel: \"Tea ☕\"",
-    "  funFact: \"I refactor code as often as I tune models\"",
-    "};"
+  "focusAreas": [
+    {
+      "title": "Deep Learning",
+      "description": "Neural network architectures, training dynamics, regularization, and optimization."
+    },
+    {
+      "title": "Natural Language Processing",
+      "description": "Classification, sequence models, attention, and language understanding."
+    },
+    {
+      "title": "Applied ML Systems",
+      "description": "Turning models into reliable, measurable services and tooling."
+    },
+    {
+      "title": "Data-Driven Engineering",
+      "description": "Clean pipelines, reproducible experiments, and evaluation you can trust."
+    }
+  ],
+  "facts": [
+    { "label": "based in", "value": "Bengaluru, India" },
+    { "label": "education", "value": "B.Tech · 2025" },
+    { "label": "focus", "value": "ML · Applied AI" },
+    { "label": "currently", "value": "NLP & Deep Learning" }
   ]
 }

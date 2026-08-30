@@ -124,30 +124,51 @@ const main = async () => {
   const siteUrl = resolveSiteUrl(fileEnv);
   const lastMod = isoDate();
 
-  const blogRoutes = await readBlogRoutes();
-  const allRoutes = Array.from(new Set([...routes, ...blogRoutes]));
+  // When Warehouse is configured, /sitemap.xml is served dynamically by the
+  // serverless function (api/sitemap.xml.js) so new posts appear without a
+  // rebuild. A static public/sitemap.xml would shadow that route (filesystem
+  // takes precedence over rewrites on Vercel), so we remove it and let the
+  // function own the URL. Robots.txt is still maintained below either way.
+  const warehouseConfigured = Boolean(
+    (process.env.WAREHOUSE_API_URL || fileEnv.WAREHOUSE_API_URL) &&
+      (process.env.WAREHOUSE_API_KEY || fileEnv.WAREHOUSE_API_KEY),
+  );
 
-  const urlEntries = allRoutes
-    .map((routePath) => {
-      const loc = siteUrl ? joinUrl(siteUrl, routePath) : routePath;
-      return [
-        "  <url>",
-        `    <loc>${loc}</loc>`,
-        `    <lastmod>${lastMod}</lastmod>`,
-        "  </url>",
-      ].join("\n");
-    })
-    .join("\n");
+  const sitemapPath = path.join(PUBLIC_DIR, "sitemap.xml");
 
-  const sitemap = [
-    '<?xml version="1.0" encoding="UTF-8"?>',
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    urlEntries,
-    "</urlset>",
-    "",
-  ].join("\n");
+  if (warehouseConfigured) {
+    try {
+      await fs.rm(sitemapPath, { force: true });
+    } catch {
+      /* nothing to remove */
+    }
+    console.log("Warehouse configured — /sitemap.xml served dynamically; skipped static sitemap.");
+  } else {
+    const blogRoutes = await readBlogRoutes();
+    const allRoutes = Array.from(new Set([...routes, ...blogRoutes]));
 
-  await fs.writeFile(path.join(PUBLIC_DIR, "sitemap.xml"), sitemap, "utf8");
+    const urlEntries = allRoutes
+      .map((routePath) => {
+        const loc = siteUrl ? joinUrl(siteUrl, routePath) : routePath;
+        return [
+          "  <url>",
+          `    <loc>${loc}</loc>`,
+          `    <lastmod>${lastMod}</lastmod>`,
+          "  </url>",
+        ].join("\n");
+      })
+      .join("\n");
+
+    const sitemap = [
+      '<?xml version="1.0" encoding="UTF-8"?>',
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+      urlEntries,
+      "</urlset>",
+      "",
+    ].join("\n");
+
+    await fs.writeFile(sitemapPath, sitemap, "utf8");
+  }
 
   // Keep existing robots.txt rules but append sitemap if missing.
   const robotsPath = path.join(PUBLIC_DIR, "robots.txt");
@@ -177,12 +198,14 @@ const main = async () => {
     await fs.writeFile(robotsPath, robots, "utf8");
   }
 
-  if (!siteUrl) {
-    console.warn(
-      "Generated public/sitemap.xml with relative URLs. Set VITE_SITE_URL (or SITE_URL) to generate absolute URLs for Google Search Console.",
-    );
-  } else {
-    console.log(`Generated public/sitemap.xml for ${siteUrl}`);
+  if (!warehouseConfigured) {
+    if (!siteUrl) {
+      console.warn(
+        "Generated public/sitemap.xml with relative URLs. Set VITE_SITE_URL (or SITE_URL) to generate absolute URLs for Google Search Console.",
+      );
+    } else {
+      console.log(`Generated public/sitemap.xml for ${siteUrl}`);
+    }
   }
 };
 

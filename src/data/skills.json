@@ -1,43 +1,28 @@
 {
-  "techStackLines": [
-    "export const techStack = [",
-    "  \"Java\",\"Python\", ",
-    "  \"React\",\"Firebase\", ",
-    "  \"Machine Learning\"",
-    "];",
-    "",
-    "// Learning ML one model at a time"
-  ],
   "categories": [
     {
-      "title": "Programming",
-      "icon": "💻",
-      "skills": ["Java", "Python", "JavaScript", "SQL"]
-    },
-    {
-      "title": "Web & Backend",
-      "icon": "🌐",
-      "skills": ["ReactJS", "NodeJS", "Bootstrap"]
-    },
-    {
-      "title": "Databases & Tools",
-      "icon": "🗄️",
-      "skills": ["MongoDB", "MySQL", "Firebase", "Git"]
-    },
-    {
       "title": "Machine Learning",
-      "icon": "🧠",
-      "skills": ["Machine Learning (learning)", "Deep Learning (learning)", "NLP (learning)"]
+      "skills": ["Deep Learning", "Neural Networks", "NLP", "Sequence Models", "Attention", "Model Evaluation"]
     },
     {
-      "title": "Platforms",
-      "icon": "🖥️",
-      "skills": ["Linux", "Windows", "Web", "Raspberry Pi"]
+      "title": "Languages",
+      "skills": ["Python", "Java", "JavaScript", "SQL"]
     },
     {
-      "title": "Core & Soft Skills",
-      "icon": "📌",
-      "skills": ["DSA", "Problem Solving", "Leadership", "Time Management"]
+      "title": "ML & Data Stack",
+      "skills": ["NumPy", "Pandas", "Matplotlib", "Scikit-learn", "Jupyter"]
+    },
+    {
+      "title": "Engineering",
+      "skills": ["React", "Node.js", "FastAPI", "Firebase", "MongoDB", "MySQL"]
+    },
+    {
+      "title": "Tools & Platforms",
+      "skills": ["Git", "Linux", "Vercel", "Raspberry Pi"]
+    },
+    {
+      "title": "Foundations",
+      "skills": ["Linear Algebra", "Calculus", "Probability & Statistics", "DSA", "Problem Solving"]
     }
   ]
 }

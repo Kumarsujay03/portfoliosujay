@@ -8,31 +8,26 @@ const ThemeToggle = () => {
   return (
     <motion.button
       onClick={toggleTheme}
-      className="relative h-9 w-9 rounded border border-border bg-muted/50 hover:border-primary transition-colors flex items-center justify-center overflow-hidden"
+      className="relative h-8 w-8 rounded-full border border-border hover:border-foreground/40 transition-colors flex items-center justify-center overflow-hidden text-muted-foreground hover:text-foreground"
+      whileHover={{ y: -2 }}
       whileTap={{ scale: 0.95 }}
       aria-label="Toggle theme"
     >
       <motion.div
         initial={false}
-        animate={{
-          y: theme === "dark" ? 0 : -36,
-          opacity: theme === "dark" ? 1 : 0,
-        }}
+        animate={{ y: theme === "dark" ? 0 : -32, opacity: theme === "dark" ? 1 : 0 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="absolute"
       >
-        <Moon className="w-5 h-5 text-primary" />
+        <Moon className="w-4 h-4" />
       </motion.div>
       <motion.div
         initial={false}
-        animate={{
-          y: theme === "light" ? 0 : 36,
-          opacity: theme === "light" ? 1 : 0,
-        }}
+        animate={{ y: theme === "light" ? 0 : 32, opacity: theme === "light" ? 1 : 0 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
         className="absolute"
       >
-        <Sun className="w-5 h-5 text-accent" />
+        <Sun className="w-4 h-4" />
       </motion.div>
     </motion.button>
   );

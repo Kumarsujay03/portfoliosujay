@@ -21,7 +21,7 @@ const Index = () => {
         />
         <main>
           <Hero />
-          <About animateOnView />
+          <About animateOnView showPortrait={false} maxParagraphs={2} />
           <Skills backgroundVariant="none" animateOnView />
           <Experience limit={4} showViewAll animateOnView />
           <Certifications backgroundVariant="none" animateOnView />

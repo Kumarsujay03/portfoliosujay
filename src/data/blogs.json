@@ -1,32 +1,32 @@
 [
   {
-    "slug": "building-scalable-apis-with-nodejs",
-    "title": "Building Scalable APIs with Node.js",
-    "date": "2024-01-15",
-    "readTime": "8 min",
-    "tags": ["nodejs", "api", "backend"],
-    "summary": "Learn how to build production-ready APIs with rate limiting, caching, and solid error handling patterns.",
+    "slug": "why-attention-changed-everything",
+    "title": "Why attention changed everything",
+    "date": "2026-02-10",
+    "readTime": "7 min",
+    "tags": ["deep-learning", "nlp", "transformers"],
+    "summary": "A short, intuition-first look at why attention replaced recurrence for sequence modeling — and what it actually computes.",
     "image": "",
-    "body": [
-      "In this post, I walk through a practical structure for Node.js APIs that scales with traffic and team size.",
-      "We’ll cover rate limiting, request validation, error handling, and a few patterns that keep your codebase maintainable.",
-      "If you’re deploying on serverless (like Vercel), we’ll also discuss cold starts and where caching belongs."
-    ],
-    "code": "// Example: rate limiting middleware\nconst rateLimit = require('express-rate-limit');\n\nconst limiter = rateLimit({\n  windowMs: 15 * 60 * 1000,\n  max: 100,\n  message: { error: 'Too many requests' }\n});\n\napp.use('/api/', limiter);"
+    "content": "Before transformers, sequence models leaned on recurrence. RNNs and LSTMs processed tokens one step at a time, carrying a hidden state forward. That worked, but it made two things hard: **long-range dependencies** and **parallelism**.\n\n## The core idea\n\nAttention reframes the problem. Instead of compressing the past into a single state, each token looks at *every other token* and decides what to focus on. The mechanism is deceptively simple:\n\n```python\nimport numpy as np\n\ndef attention(Q, K, V):\n    scores = Q @ K.T / np.sqrt(K.shape[-1])\n    weights = softmax(scores, axis=-1)\n    return weights @ V\n```\n\nThe scaled dot-product gives us a similarity between queries and keys; the softmax turns it into weights; the weights mix the values.\n\n## Why it matters\n\n- **Parallel by design.** Every position is computed at once, so training scales with modern hardware.\n- **Direct connections.** Any token can attend to any other in a single step, so long-range structure is cheap.\n- **Interpretable-ish.** Attention maps hint at what the model is using, even if they aren't a full explanation.\n\n> The lesson I keep coming back to: the right inductive bias can matter more than raw capacity.\n\nThere's much more nuance — multi-head attention, positional encodings, and the quadratic cost that later work tries to tame. But the leap in intuition is this: *let the model decide what to look at.*"
   },
   {
-    "slug": "typescript-generics-deep-dive",
-    "title": "TypeScript Generics Deep Dive",
-    "date": "2024-01-08",
-    "readTime": "12 min",
-    "tags": ["typescript", "generics", "types"],
-    "summary": "A practical guide to generics with utility and conditional types — with examples you can reuse.",
+    "slug": "reproducible-ml-experiments",
+    "title": "Notes on reproducible ML experiments",
+    "date": "2026-01-22",
+    "readTime": "6 min",
+    "tags": ["research", "mlops", "practices"],
+    "summary": "Small habits that make experiments trustworthy: seeds, config, tracking, and honest evaluation.",
     "image": "",
-    "body": [
-      "Generics help you write reusable, type-safe code without sacrificing inference.",
-      "We’ll build a few small utility types and show how to model API responses cleanly.",
-      "By the end, you’ll be comfortable reading and writing generic helpers in real projects."
-    ],
-    "code": "// Generic utility type for API responses\ntype ApiResponse<T> = {\n  data: T;\n  status: 'success' | 'error';\n  timestamp: Date;\n};\n\nconst fetchUser = async (): Promise<ApiResponse<User>> => {\n  // implementation\n  return { data: {} as User, status: 'success', timestamp: new Date() };\n};"
+    "content": "A model result you can't reproduce is a story, not a finding. Over time I've collected a few habits that keep experiments honest.\n\n## Pin the randomness\n\nSet seeds everywhere and log them. It won't guarantee bit-for-bit reproducibility on GPUs, but it removes the easy excuses.\n\n```python\nimport random, numpy as np, torch\n\ndef set_seed(seed: int = 42):\n    random.seed(seed)\n    np.random.seed(seed)\n    torch.manual_seed(seed)\n    torch.cuda.manual_seed_all(seed)\n```\n\n## Separate config from code\n\nKeep hyperparameters in a config file, not scattered across the script. Every run should be describable by *(code version, config, data version)*.\n\n## Track everything\n\n- metrics over time, not just the final number\n- the exact command and environment\n- data splits, so the test set never leaks\n\n## Evaluate honestly\n\nReport variance across seeds, not a single lucky run. If a gain is within noise, say so. The goal isn't a bigger number — it's a claim you can defend."
+  },
+  {
+    "slug": "reading-papers-without-drowning",
+    "title": "Reading papers without drowning",
+    "date": "2025-12-05",
+    "readTime": "5 min",
+    "tags": ["research", "learning"],
+    "summary": "A practical three-pass method for getting signal from ML papers without burning a whole day on each one.",
+    "image": "",
+    "content": "Machine learning moves fast, and the paper firehose is real. Here's the workflow that keeps me afloat.\n\n## Pass one — the map\n\nRead the title, abstract, figures, and conclusion. Ask one question: *what problem does this solve, and does it matter to me right now?* Most papers can stop here.\n\n## Pass two — the method\n\nFor papers that survive, read the method and results carefully. Reimplement the key equation or a toy version if you can. Understanding comes from rebuilding, not re-reading.\n\n## Pass three — the critique\n\nOnly for the few that will shape your work. Question the assumptions, the baselines, and the evaluation. Would the result hold on your data?\n\n---\n\nThe point isn't to read *more* papers. It's to spend your attention where it compounds."
   }
 ]

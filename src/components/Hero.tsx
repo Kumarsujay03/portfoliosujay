@@ -1,147 +1,168 @@
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowUpRight, Github, Linkedin, Mail, MapPin, FileText } from "lucide-react";
+import DitherPortrait from "@/components/DitherPortrait";
 
 const roles = [
-  "Software Engineer",
-  "Web Application Developer",
-  "Machine Learning Engineer",
-  "Data-Informed Problem Solver",
-  "Applied AI Developer",
+  "Machine Learning Researcher",
+  "Applied AI Engineer",
+  "Deep Learning · NLP",
 ];
 
+const socials = [
+  { icon: Github, href: "https://github.com/Kumarsujay03", label: "GitHub" },
+  { icon: Linkedin, href: "https://www.linkedin.com/in/kumarsujay03/", label: "LinkedIn" },
+  { icon: Mail, href: "mailto:mr.sujaykumar03@gmail.com", label: "Email" },
+];
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  show: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, delay: 0.05 * i, ease: "easeOut" },
+  }),
+};
+
 const Hero = () => {
-  const [displayText, setDisplayText] = useState("");
   const [roleIndex, setRoleIndex] = useState(0);
-  const [isDeleting, setIsDeleting] = useState(false);
 
-  const handleAnchorClick = (event: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
-    event.preventDefault();
-    const target = document.getElementById(targetId);
-    if (!target) return;
-
-    const header = document.querySelector("header");
-    const headerOffset = header ? header.getBoundingClientRect().height + 8 : 80;
-    const lenis = (window as Window & { __lenis?: { scrollTo: (target: Element | number, options?: { offset?: number }) => void } }).__lenis;
-
-    if (lenis?.scrollTo) {
-      lenis.scrollTo(target, { offset: -headerOffset });
-      return;
-    }
-
-    const top = target.getBoundingClientRect().top + window.scrollY - headerOffset;
-    window.scrollTo({ top, behavior: "smooth" });
-  };
   useEffect(() => {
-    const currentRole = roles[roleIndex];
-    
-    const timeout = setTimeout(() => {
-      if (!isDeleting) {
-        // Typing
-        if (displayText.length < currentRole.length) {
-          setDisplayText(currentRole.slice(0, displayText.length + 1));
-        } else {
-          // Pause before deleting
-          setTimeout(() => setIsDeleting(true), 2000);
-        }
-      } else {
-        // Deleting
-        if (displayText.length > 0) {
-          setDisplayText(displayText.slice(0, -1));
-        } else {
-          setIsDeleting(false);
-          setRoleIndex((prev) => (prev + 1) % roles.length);
-        }
-      }
-    }, isDeleting ? 50 : 100);
-    
-    return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, roleIndex]);
+    const id = setInterval(() => setRoleIndex((prev) => (prev + 1) % roles.length), 2800);
+    return () => clearInterval(id);
+  }, []);
 
   return (
-    <section className="min-h-screen min-h-[100svh] flex items-center justify-center relative overflow-hidden pt-20">
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="max-w-4xl mx-auto">
-          {/* Terminal window */}
+    <section className="relative pt-28 pb-10 md:pt-32">
+      <div className="container-page">
+        <div className="grid items-center gap-10 lg:grid-cols-[1fr_auto]">
+          <div>
+            <motion.div
+              custom={0}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              className="flex flex-wrap items-center gap-3"
+            >
+              <span className="pill border-accent/30 text-foreground">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-70 animate-ping" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-accent" />
+                </span>
+                open to research &amp; opportunities
+              </span>
+              <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+                <MapPin className="h-3.5 w-3.5" />
+                Bengaluru, India
+              </span>
+            </motion.div>
+
+            <motion.h1
+              custom={1}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              className="mt-6 text-4xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-5xl md:text-6xl [word-spacing:-0.28em]"
+            >
+              Sujay Kumar
+            </motion.h1>
+
+            <motion.div
+              custom={2}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              className="mt-4 h-6 overflow-hidden"
+            >
+              <motion.div
+                animate={{ y: -roleIndex * 24 }}
+                transition={{ type: "spring", stiffness: 260, damping: 30 }}
+              >
+                {roles.map((role) => (
+                  <p key={role} className="flex h-6 items-center text-sm text-muted-foreground">
+                    <span className="mr-2 text-muted-foreground/50">{">"}</span>
+                    {role}
+                  </p>
+                ))}
+              </motion.div>
+            </motion.div>
+
+            <motion.p
+              custom={3}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              className="mt-6 max-w-xl text-[14px] leading-relaxed text-muted-foreground"
+            >
+              I build intelligent systems at the intersection of machine learning and
+              engineering — deep learning, NLP, and turning research ideas into models
+              and tools that hold up in production.
+            </motion.p>
+
+            <motion.div
+              custom={4}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              className="mt-8 flex flex-wrap items-center gap-3"
+            >
+              <Link
+                to="/projects"
+                className="hover-lift-sm group inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm text-primary-foreground hover:opacity-90"
+              >
+                view work
+                <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+              <Link
+                to="/blog"
+                className="hover-lift-sm inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm text-foreground hover:border-foreground/40"
+              >
+                my writing
+              </Link>
+              <a
+                href="/Resume_Sujay.pdf"
+                download
+                className="hover-lift-sm inline-flex items-center gap-2 rounded-full px-3 py-2.5 text-sm text-muted-foreground hover:text-foreground"
+              >
+                <FileText className="h-4 w-4" />
+                CV
+              </a>
+            </motion.div>
+
+            <motion.div
+              custom={5}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+              className="mt-8 flex items-center gap-4"
+            >
+              {socials.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target={social.href.startsWith("mailto:") ? undefined : "_blank"}
+                  rel={social.href.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                  aria-label={social.label}
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <social.icon className="h-5 w-5" />
+                </a>
+              ))}
+            </motion.div>
+          </div>
+
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="terminal-window"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+            className="order-first mx-auto w-56 sm:w-64 lg:order-last lg:w-[20rem] xl:w-[22rem]"
           >
-            <div className="terminal-header">
-              <div className="terminal-dot bg-destructive" />
-              <div className="terminal-dot bg-accent" />
-              <div className="terminal-dot bg-code-green" />
-              <span className="ml-4 font-mono text-xs text-muted-foreground">~/portfolio</span>
-            </div>
-            
-            <div className="terminal-body space-y-4">
-              <div>
-                <span className="text-code-green">➜</span>
-                <span className="text-code-blue ml-2">~</span>
-                <span className="ml-2">whoami</span>
-              </div>
-              
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="pl-4"
-              >
-                <p className="text-muted-foreground">// Hello, World! I'm</p>
-                <h1 className="text-4xl md:text-6xl font-bold mt-2">
-                  <span className="text-gradient">Sujay Kumar</span>
-                </h1>
-                <p className="text-xl md:text-2xl text-foreground mt-2 h-8 md:h-10 mb-6 sm:mb-3">
-                  {displayText}
-                  <span className="cursor-blink text-primary">|</span>
-                </p>
-              </motion.div>
-              
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 1.5 }}
-              >
-                <span className="text-code-green">➜</span>
-                <span className="text-code-blue ml-2">~</span>
-                <span className="ml-2">cat description.txt</span>
-              </motion.div>
-              
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2 }}
-                className="text-muted-foreground pl-4 max-w-2xl"
-              >
-                I build scalable software with clean, maintainable code. 
-                Passionate about machine learning and intelligent system design.
-              </motion.p>
-              
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 2.5 }}
-                className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4"
-              >
-                <a
-                  href="#projects"
-                  onClick={(event) => handleAnchorClick(event, "projects")}
-                  className="font-mono px-6 py-3 bg-primary text-primary-foreground rounded hover:opacity-90 transition-opacity glow-primary w-full sm:w-auto text-center"
-                >
-                  view_projects()
-                </a>
-                <a
-                  href="#contact"
-                  onClick={(event) => handleAnchorClick(event, "contact")}
-                  className="font-mono px-6 py-3 border border-border text-foreground rounded hover:border-primary hover:text-primary transition-colors w-full sm:w-auto text-center"
-                >
-                  get_in_touch()
-                </a>
-              </motion.div>
-            </div>
+            <DitherPortrait />
           </motion.div>
         </div>
+
+        <div className="mt-14 h-px w-full bg-border" />
       </div>
     </section>
   );
