@@ -17,7 +17,7 @@ const Index = () => {
       <div className="relative z-10">
         <Seo
           title="Home"
-          description="Sujay Kumar — software engineer portfolio. Projects, experience, certifications, and contact."
+          description="Sujay Kumar — machine learning researcher and engineer. Projects, experience, certifications, and contact."
         />
         <main>
           <Hero />
