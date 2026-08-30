@@ -31,10 +31,23 @@ const SmartImage = ({
   }, [src, webpSrc]);
 
   return (
-    <span className={`relative block overflow-hidden ${className ?? ""}`}>
+    <span className={`relative overflow-hidden ${className ?? ""}`}>
       {!loaded && <span aria-hidden className="img-skeleton absolute inset-0 z-0" />}
-      <picture className="contents">
-        {webpSrc && <source srcSet={webpSrc} type="image/webp" />}
+      {webpSrc ? (
+        <picture className="contents">
+          <source srcSet={webpSrc} type="image/webp" />
+          <img
+            ref={imgRef}
+            src={src}
+            alt={alt}
+            loading={loading}
+            decoding="async"
+            onLoad={() => setLoaded(true)}
+            onError={onError}
+            className={`relative z-10 transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"} ${imgClassName ?? ""}`}
+          />
+        </picture>
+      ) : (
         <img
           ref={imgRef}
           src={src}
@@ -45,7 +58,7 @@ const SmartImage = ({
           onError={onError}
           className={`relative z-10 transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"} ${imgClassName ?? ""}`}
         />
-      </picture>
+      )}
     </span>
   );
 };

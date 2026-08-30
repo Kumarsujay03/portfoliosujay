@@ -126,8 +126,8 @@ const BlogPostPage = () => {
               webpSrc={webp}
               alt={post.title}
               loading="eager"
-              className="mt-8 rounded-xl"
-              imgClassName="max-h-[420px] w-full object-cover"
+              className="mt-8 flex justify-center rounded-xl bg-muted/30"
+              imgClassName="max-h-[520px] w-auto max-w-full object-contain"
             />
           )}
 

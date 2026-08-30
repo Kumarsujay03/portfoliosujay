@@ -160,14 +160,30 @@ export const toIsoTimestamp = (value) => {
 
 const IMAGE_FORMAT = /^(png|jpe?g|webp|gif|avif|svg(\+xml)?)$|^image\//i;
 
-/** Pick the best image URL from Warehouse media for OG/preview use. */
-const pickImage = (media) => {
-  if (!Array.isArray(media) || media.length === 0) return "";
-  const image =
-    media.find((m) => m?.url && IMAGE_FORMAT.test(String(m.format ?? ""))) ??
-    media.find((m) => m?.url && /\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(String(m.url)));
-  return image?.url ? String(image.url) : "";
+const isImageMedia = (m) =>
+  Boolean(
+    m?.url &&
+      (IMAGE_FORMAT.test(String(m.format ?? "")) ||
+        /\.(png|jpe?g|webp|gif|avif)(\?|$)/i.test(String(m.url))),
+  );
+
+/** Every image URL in Warehouse media, in order (deduplicated). */
+const pickImages = (media) => {
+  if (!Array.isArray(media)) return [];
+  const seen = new Set();
+  const urls = [];
+  for (const m of media) {
+    if (!isImageMedia(m)) continue;
+    const url = String(m.url);
+    if (seen.has(url)) continue;
+    seen.add(url);
+    urls.push(url);
+  }
+  return urls;
 };
+
+/** The lead image URL, used for OG/preview cards. */
+const pickImage = (media) => pickImages(media)[0] ?? "";
 
 /**
  * Map one Warehouse post to the site's blog post shape. `takenSlugs` is mutated
@@ -216,6 +232,7 @@ export const mapWarehousePost = (post, takenSlugs = new Set()) => {
     hook: hook || undefined,
     body,
     image: pickImage(post.media),
+    images: pickImages(post.media),
     publishedAt: publishedIso ?? undefined,
     updatedAt: updatedIso ?? undefined,
   };

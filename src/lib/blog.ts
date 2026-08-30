@@ -11,6 +11,8 @@ export type BlogPost = {
   category?: string;
   summary?: string;
   image?: string;
+  /** All post images in order (Warehouse). `image` is the lead/OG image. */
+  images?: string[];
   /** Warehouse lead-in (plain text, line breaks significant). */
   hook?: string;
   /**

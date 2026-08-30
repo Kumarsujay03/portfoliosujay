@@ -120,7 +120,7 @@ const Blog = (_props: BlogProps) => {
                       src={img}
                       webpSrc={webp}
                       alt={post.title}
-                      className="w-full shrink-0 rounded-lg sm:w-40"
+                      className="block w-full shrink-0 rounded-lg sm:w-40"
                       imgClassName="h-32 w-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0 sm:h-24"
                     />
                   )}
