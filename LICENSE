@@ -1,0 +1,28 @@
+Copyright (c) 2026 Sujay Kumar. All rights reserved.
+
+This repository contains the source code for Sujay Kumar's personal portfolio
+website (https://kumarsujay.dev). It is published publicly for viewing and
+reference only.
+
+You MAY:
+  - View and read the source code.
+  - Draw inspiration from the general concepts and techniques used here.
+
+You MAY NOT, without prior written permission from the copyright holder:
+  - Copy, reproduce, or redistribute this code or its design, in whole or in
+    part.
+  - Use this code or design to create a derivative work, including a personal
+    or commercial website.
+  - Reuse the personal content, branding, images, text, logos, or likeness
+    contained in this repository.
+
+Third-party components and dependencies included in this repository (for
+example, shadcn/ui components under src/components/ui and packages listed in
+package.json) remain under their own respective licenses.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

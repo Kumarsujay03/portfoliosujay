@@ -3,6 +3,14 @@
   "private": true,
   "version": "2.0.0",
   "type": "module",
+  "description": "Personal portfolio of Sujay Kumar (also known as Kumar Sujay), machine learning researcher and engineer.",
+  "author": "Sujay Kumar",
+  "license": "UNLICENSED",
+  "homepage": "https://kumarsujay.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kumarsujay03/portfoliosujay.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "node scripts/generate-sitemap.mjs && node scripts/generate-og-image.mjs && vite build && node scripts/emit-prerender-template.mjs",
