@@ -13,13 +13,14 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generate-sitemap.mjs && node scripts/generate-og-image.mjs && vite build && node scripts/emit-prerender-template.mjs",
+    "build": "node scripts/generate-sitemap.mjs && node scripts/generate-og-image.mjs && node scripts/generate-favicon.mjs && vite build && node scripts/emit-prerender-template.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
     "optimize:assets": "node scripts/optimize-assets.mjs",
     "generate:sitemap": "node scripts/generate-sitemap.mjs",
     "generate:og-image": "node scripts/generate-og-image.mjs",
+    "generate:favicon": "node scripts/generate-favicon.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },
