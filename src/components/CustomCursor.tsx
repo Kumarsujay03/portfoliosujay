@@ -13,9 +13,16 @@ type TrailNode = {
 
 function supportsFinePointer(): boolean {
   if (typeof window === "undefined") return false;
-  const hasHover = window.matchMedia?.("(hover: hover)").matches ?? false;
-  const hasFinePointer = window.matchMedia?.("(pointer: fine)").matches ?? false;
-  return hasHover && hasFinePointer;
+  const mq = window.matchMedia;
+  if (!mq) return false;
+  // Use `any-*` so touchscreen laptops (whose *primary* pointer is reported as
+  // coarse/touch but which also have a trackpad/mouse) still get the cursor.
+  // `(pointer: fine)` alone excludes those devices. Fall back to the primary
+  // pointer queries for browsers that don't support the `any-*` variants.
+  const hasFinePointer =
+    mq("(any-pointer: fine)").matches || mq("(pointer: fine)").matches;
+  const hasHover = mq("(any-hover: hover)").matches || mq("(hover: hover)").matches;
+  return hasFinePointer && hasHover;
 }
 
 const readForeground = () => {

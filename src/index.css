@@ -108,22 +108,20 @@
 }
 
 @layer base {
-  @media (hover: hover) and (pointer: fine) {
-    html.has-custom-cursor,
-    html.has-custom-cursor body {
-      cursor: none;
-    }
-
-    html.has-custom-cursor a,
-    html.has-custom-cursor button,
-    html.has-custom-cursor [role="button"],
-    html.has-custom-cursor input,
-    html.has-custom-cursor textarea,
-    html.has-custom-cursor select,
-    html.has-custom-cursor label,
-    html.has-custom-cursor summary {
-      cursor: none;
-    }
+  /* The `has-custom-cursor` class is only added by JS when a fine pointer with
+     hover is available (see CustomCursor.tsx), so hide the native cursor
+     whenever it is present rather than re-gating on a stricter media query. */
+  html.has-custom-cursor,
+  html.has-custom-cursor body,
+  html.has-custom-cursor a,
+  html.has-custom-cursor button,
+  html.has-custom-cursor [role="button"],
+  html.has-custom-cursor input,
+  html.has-custom-cursor textarea,
+  html.has-custom-cursor select,
+  html.has-custom-cursor label,
+  html.has-custom-cursor summary {
+    cursor: none;
   }
 }
 
