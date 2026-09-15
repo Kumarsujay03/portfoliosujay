@@ -61,6 +61,27 @@ export const absoluteUrl = (path, env = process.env) => {
 
 const BASE_TITLE = "Sujay Kumar";
 
+/** Our generated preview card, whose exact dimensions we know. */
+const DEFAULT_OG_IMAGE = "/og-image.png";
+const DEFAULT_OG_WIDTH = "1200";
+const DEFAULT_OG_HEIGHT = "630";
+
+const IMAGE_MIME = {
+  png: "image/png",
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  webp: "image/webp",
+  gif: "image/gif",
+  avif: "image/avif",
+};
+
+/** Infer the image MIME type from a URL's extension, or null if unknown. */
+const imageMimeType = (url) => {
+  const match = /\.([a-z0-9]+)(?:[?#]|$)/i.exec(String(url ?? ""));
+  if (!match) return null;
+  return IMAGE_MIME[match[1].toLowerCase()] ?? null;
+};
+
 /**
  * Build the <head> tag string for a blog post (or the blog index) and the
  * JSON-LD block. Returned as a single HTML string ready to inject.
@@ -81,9 +102,16 @@ export const buildHeadTags = (meta, env = process.env) => {
     .replace(/\s+/g, " ")
     .trim();
   const canonical = meta.canonicalPath ? absoluteUrl(meta.canonicalPath, env) : origin || "";
-  const rawImage = meta.image || "/og-image.png";
+  const rawImage = meta.image || DEFAULT_OG_IMAGE;
   const image = /^https?:\/\//i.test(rawImage) ? rawImage : absoluteUrl(rawImage, env);
   const ogType = meta.type === "article" ? "article" : "website";
+
+  // Declaring the type and pixel size lets crawlers build a large preview card
+  // without fetching the file first. Only claim dimensions for our own generated
+  // card: post images come from Warehouse at arbitrary sizes, and advertising
+  // the wrong dimensions makes some crawlers skip the large card entirely.
+  const imageMime = imageMimeType(rawImage);
+  const imageIsDefault = /(^|\/)og-image\.png$/i.test(rawImage);
 
   const tags = [
     `<title>${escapeHtml(fullTitle)}</title>`,
@@ -98,6 +126,9 @@ export const buildHeadTags = (meta, env = process.env) => {
     `<meta property="og:type" content="${ogType}" />`,
     `<meta property="og:image" content="${escapeAttr(image)}" />`,
     `<meta property="og:image:secure_url" content="${escapeAttr(image)}" />`,
+    imageMime ? `<meta property="og:image:type" content="${imageMime}" />` : "",
+    imageIsDefault ? `<meta property="og:image:width" content="${DEFAULT_OG_WIDTH}" />` : "",
+    imageIsDefault ? `<meta property="og:image:height" content="${DEFAULT_OG_HEIGHT}" />` : "",
     `<meta property="og:image:alt" content="${escapeAttr(meta.title || BASE_TITLE)}" />`,
     `<meta name="twitter:card" content="summary_large_image" />`,
     `<meta name="twitter:title" content="${escapeAttr(fullTitle)}" />`,

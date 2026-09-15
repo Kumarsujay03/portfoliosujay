@@ -6,9 +6,7 @@ type SeoProps = {
   description?: string;
   imagePath?: string;
   noIndex?: boolean;
-  /** OpenGraph type. Defaults to "website"; use "article" for blog posts. */
   type?: "website" | "article";
-  /** Optional JSON-LD structured data object (e.g. BlogPosting). */
   jsonLd?: Record<string, unknown>;
 };
 
@@ -16,6 +14,20 @@ const getSiteUrl = () => {
   const fromEnv = import.meta.env.VITE_SITE_URL as string | undefined;
   if (fromEnv && fromEnv.trim().length > 0) return fromEnv.replace(/\/$/, "");
   return null;
+};
+
+const IMAGE_MIME: Record<string, string> = {
+  png: "image/png",
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  webp: "image/webp",
+  gif: "image/gif",
+  avif: "image/avif",
+};
+
+const getImageMimeType = (url: string): string | undefined => {
+  const match = /\.([a-z0-9]+)(?:[?#]|$)/i.exec(url);
+  return match ? IMAGE_MIME[match[1].toLowerCase()] : undefined;
 };
 
 const Seo = ({
@@ -41,13 +53,12 @@ const Seo = ({
   const ogUrl = canonicalUrl;
   const imageIsAbsolute = /^https?:\/\//i.test(imagePath);
   const ogImage = imageIsAbsolute ? imagePath : siteUrl ? `${siteUrl}${imagePath}` : imagePath;
-  const ogImageType = imageIsAbsolute
-    ? undefined
-    : imagePath.endsWith(".png")
-      ? "image/png"
-      : imagePath.endsWith(".jpg") || imagePath.endsWith(".jpeg")
-        ? "image/jpeg"
-        : undefined;
+  const ogImageType = getImageMimeType(imagePath);
+
+  // Only declare pixel dimensions for our own generated card, which really is
+  // 1200x630. Post images come from Warehouse at arbitrary sizes, and claiming
+  // the wrong dimensions makes some crawlers skip the large preview card.
+  const imageIsDefault = /(^|\/)og-image\.png$/i.test(imagePath);
 
   return (
     <Helmet>
@@ -71,8 +82,8 @@ const Seo = ({
       <meta property="og:image" content={ogImage} />
       <meta property="og:image:secure_url" content={ogImage} />
       {ogImageType && <meta property="og:image:type" content={ogImageType} />}
-      <meta property="og:image:width" content="1200" />
-      <meta property="og:image:height" content="630" />
+      {imageIsDefault && <meta property="og:image:width" content="1200" />}
+      {imageIsDefault && <meta property="og:image:height" content="630" />}
       <meta property="og:image:alt" content={`${baseTitle} portfolio preview`} />
 
       <meta name="twitter:card" content="summary_large_image" />
