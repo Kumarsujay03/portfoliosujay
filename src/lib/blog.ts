@@ -63,14 +63,15 @@ export const fetchBlogPosts = async (): Promise<BlogPost[]> => {
   }
 };
 
+// No initialData/placeholderData on purpose: seeding the cache with the bundled
+// posts would make `isLoading` false on the first render, so the list would show
+// stale posts and a post page would report "not found" before the API replied.
+// Consumers render a loading state until the real posts arrive.
 export const useBlogPosts = () =>
   useQuery({
     queryKey: ["blog-posts"],
     queryFn: fetchBlogPosts,
     staleTime: 5 * 60 * 1000,
-    // Show bundled posts as a placeholder while the API loads, but never treat
-    // them as real cached data — the fetched result always replaces them.
-    placeholderData: getBundledPosts,
   });
 
 export const useBlogPost = (slug: string | undefined) => {

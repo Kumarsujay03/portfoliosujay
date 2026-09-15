@@ -1,9 +1,13 @@
 {
+  "redirects": [
+    { "source": "/blog", "destination": "/writing", "permanent": true },
+    { "source": "/blog/:slug", "destination": "/writing/:slug", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap.xml" },
 
     {
-      "source": "/blog",
+      "source": "/writing",
       "has": [
         {
           "type": "header",
@@ -14,7 +18,7 @@
       "destination": "/api/prerender"
     },
     {
-      "source": "/blog/:slug",
+      "source": "/writing/:slug",
       "has": [
         {
           "type": "header",

@@ -12,7 +12,7 @@ const navItems = [
   { label: "work", href: "/work" },
   { label: "projects", href: "/projects" },
   { label: "certs", href: "/certs" },
-  { label: "writing", href: "/blog" },
+  { label: "writing", href: "/writing" },
 ];
 
 const Header = () => {

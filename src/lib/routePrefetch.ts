@@ -9,14 +9,14 @@ const routeMap: Record<string, PrefetchFn> = {
   "/certs": () => import("../pages/certs/Index"),
   "/work": () => import("../pages/work/Index"),
   "/projects": () => import("../pages/projects/Index"),
-  "/blog": () => import("../pages/BlogPage"),
+  "/writing": () => import("../pages/BlogPage"),
   "/contact": () => import("../pages/contact/Index"),
 };
 
 const normalize = (path?: string) => {
   if (!path) return null;
   const clean = path.split("?")[0].split("#")[0];
-  if (clean.startsWith("/blog/")) return "/blog/:slug";
+  if (clean.startsWith("/writing/")) return "/writing/:slug";
   return clean;
 };
 
@@ -26,7 +26,7 @@ export const prefetchRoute = (path?: string) => {
   if (prefetched.has(key)) return;
   prefetched.add(key);
 
-  if (key === "/blog/:slug") {
+  if (key === "/writing/:slug") {
     void import("../pages/blog/Post");
     return;
   }

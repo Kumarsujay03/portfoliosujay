@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useParams } from "react-router-dom";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { HelmetProvider } from "react-helmet-async";
 import AppLayout from "@/components/AppLayout";
@@ -22,6 +22,13 @@ const BlogPostPage = lazy(() => import("./pages/blog/Post"));
 
 const queryClient = new QueryClient();
 
+// The writing section used to live at /blog. Keep those URLs working for old
+// links and search results by redirecting them to the canonical /writing path.
+const LegacyPostRedirect = () => {
+  const { slug } = useParams();
+  return <Navigate to={`/writing/${slug ?? ""}`} replace />;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
@@ -39,8 +46,10 @@ const App = () => (
                 <Route path="/projects" element={<ProjectsPage />} />
                 <Route path="/certs" element={<CertificationsPage />} />
                 <Route path="/contact" element={<ContactPage />} />
-                <Route path="/blog" element={<BlogPage />} />
-                <Route path="/blog/:slug" element={<BlogPostPage />} />
+                <Route path="/writing" element={<BlogPage />} />
+                <Route path="/writing/:slug" element={<BlogPostPage />} />
+                <Route path="/blog" element={<Navigate to="/writing" replace />} />
+                <Route path="/blog/:slug" element={<LegacyPostRedirect />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Route>

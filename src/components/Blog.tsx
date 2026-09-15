@@ -29,7 +29,7 @@ const searchableText = (post: BlogPost) =>
     .toLowerCase();
 
 const Blog = (_props: BlogProps) => {
-  const { data: posts = [], isLoading } = useBlogPosts();
+  const { data: posts = [], isPending } = useBlogPosts();
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
@@ -110,9 +110,9 @@ const Blog = (_props: BlogProps) => {
                 whileHover={{ y: -3 }}
               >
                 <Link
-                  to={`/blog/${post.slug}`}
-                  onMouseEnter={() => prefetchRoute(`/blog/${post.slug}`)}
-                  onFocus={() => prefetchRoute(`/blog/${post.slug}`)}
+                  to={`/writing/${post.slug}`}
+                  onMouseEnter={() => prefetchRoute(`/writing/${post.slug}`)}
+                  onFocus={() => prefetchRoute(`/writing/${post.slug}`)}
                   className="group flex flex-col gap-4 py-7 sm:flex-row sm:items-start"
                 >
                   {img && (
@@ -162,9 +162,28 @@ const Blog = (_props: BlogProps) => {
             );
           })}
 
-          {filtered.length === 0 && (
+          {isPending &&
+            Array.from({ length: 3 }).map((_, i) => (
+              <div
+                key={`skeleton-${i}`}
+                className="flex animate-pulse flex-col gap-4 py-7 sm:flex-row sm:items-start"
+                role="status"
+                aria-busy="true"
+                aria-label="Loading posts"
+              >
+                <div className="h-32 w-full shrink-0 rounded-lg bg-muted sm:h-24 sm:w-40" />
+                <div className="flex-1 space-y-3">
+                  <div className="h-3 w-28 rounded bg-muted" />
+                  <div className="h-5 w-2/3 rounded bg-muted" />
+                  <div className="h-4 w-full rounded bg-muted" />
+                  <div className="h-4 w-4/5 rounded bg-muted" />
+                </div>
+              </div>
+            ))}
+
+          {!isPending && filtered.length === 0 && (
             <p className="py-16 text-center font-mono text-sm text-muted-foreground">
-              {isLoading ? "loading…" : "No posts match your filters."}
+              No posts match your filters.
             </p>
           )}
         </div>

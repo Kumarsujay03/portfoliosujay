@@ -1,7 +1,7 @@
 /**
  * Crawler prerender for blog routes. SERVER-SIDE ONLY.
  *
- * Vercel rewrites bot/crawler requests for /blog and /blog/:slug to this
+ * Vercel rewrites bot/crawler requests for /writing and /writing/:slug to this
  * function (see vercel.json). It returns the built index.html with real,
  * post-specific <head> tags, JSON-LD, and a server-rendered copy of the post
  * text injected into <div id="root">. Human visitors are NOT rewritten here —
@@ -127,7 +127,7 @@ const renderArticleHtml = (post) => {
 const renderIndexHtml = (posts) => {
   const items = posts
     .map((post) => {
-      const href = absoluteUrl(`/blog/${post.slug}`);
+      const href = absoluteUrl(`/writing/${post.slug}`);
       const summary = post.summary ? `<p>${escapeHtml(post.summary)}</p>` : "";
       return [
         `  <article>`,
@@ -168,7 +168,7 @@ const slugFromReq = (req) => {
     return req.query.slug;
   }
   const url = req.url || "";
-  const match = /\/blog\/([^/?#]+)/.exec(url);
+  const match = /\/(?:writing|blog)\/([^/?#]+)/.exec(url);
   return match ? decodeURIComponent(match[1]) : null;
 };
 
@@ -205,7 +205,7 @@ export default async function handler(req, res) {
       const headTags = buildHeadTags({
         title: "Writing",
         description: "Post not found.",
-        canonicalPath: "/blog",
+        canonicalPath: "/writing",
         type: "website",
       });
       const html = compose(template, headTags, `<section><h1>Post not found</h1></section>`);
@@ -215,7 +215,7 @@ export default async function handler(req, res) {
     const headTags = buildHeadTags({
       title: post.title,
       description: post.summary || post.title,
-      canonicalPath: `/blog/${post.slug}`,
+      canonicalPath: `/writing/${post.slug}`,
       image: post.image || "/og-image.png",
       type: "article",
       post,
@@ -228,7 +228,7 @@ export default async function handler(req, res) {
   const headTags = buildHeadTags({
     title: "Writing",
     description: "Notes on ML, research, and building — papers, ideas, and lessons from turning research into working systems.",
-    canonicalPath: "/blog",
+    canonicalPath: "/writing",
     type: "website",
   });
   const html = compose(template, headTags, renderIndexHtml(posts));

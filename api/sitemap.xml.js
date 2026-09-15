@@ -12,7 +12,7 @@
 import { isWarehouseConfigured, getWarehouseBlogPosts } from "./_lib/warehouse.js";
 import { absoluteUrl, escapeHtml, resolveSiteUrl } from "./_lib/seo.js";
 
-const STATIC_ROUTES = ["/", "/about", "/skills", "/certs", "/work", "/projects", "/blog", "/contact"];
+const STATIC_ROUTES = ["/", "/about", "/skills", "/certs", "/work", "/projects", "/writing", "/contact"];
 
 const todayIso = () => new Date().toISOString().slice(0, 10);
 
@@ -30,7 +30,7 @@ export default async function handler(_req, res) {
       const posts = await getWarehouseBlogPosts();
       for (const post of posts) {
         const lastmod = (post.updatedAt || post.publishedAt || "").slice(0, 10) || post.date || today;
-        entries.push(urlEntry(absoluteUrl(`/blog/${post.slug}`), lastmod));
+        entries.push(urlEntry(absoluteUrl(`/writing/${post.slug}`), lastmod));
       }
     } catch (error) {
       console.error("Sitemap: Warehouse fetch failed, serving static routes only:", error);

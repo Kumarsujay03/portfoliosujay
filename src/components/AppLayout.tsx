@@ -53,8 +53,8 @@ const AppLayout = () => {
       "/projects",
       "/certs",
       "/contact",
-      "/blog",
-      "/blog/intro",
+      "/writing",
+      "/writing/intro",
     ];
 
     const runPrefetch = () => {

@@ -97,7 +97,7 @@ const routes = [
   "/certs",
   "/work",
   "/projects",
-  "/blog",
+  "/writing",
   "/contact",
 ];
 
@@ -109,7 +109,7 @@ const readBlogRoutes = async () => {
 
     return blogs
       .filter((b) => b && typeof b.slug === "string" && b.slug.length > 0 && b.view !== false)
-      .map((b) => `/blog/${b.slug}`);
+      .map((b) => `/writing/${b.slug}`);
   } catch {
     return [];
   }

@@ -9,7 +9,10 @@ const BlogPage = () => {
   return (
     <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
       <PageBackground variant="blog" />
-      <Seo title="Blog" description="Blog posts and notes — learnings, projects, and experiments." />
+      <Seo
+        title="Writing"
+        description="Notes on ML, research, and building — papers, ideas, and lessons from turning research into working systems."
+      />
       <main className="pt-24 cv-auto">
         <Blog backgroundVariant="none" />
       </main>

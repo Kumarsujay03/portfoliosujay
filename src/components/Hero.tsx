@@ -115,7 +115,7 @@ const Hero = () => {
                 <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
               <Link
-                to="/blog"
+                to="/writing"
                 className="hover-lift-sm inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm text-foreground hover:border-foreground/40"
               >
                 my writing

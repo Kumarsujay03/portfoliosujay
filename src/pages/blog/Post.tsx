@@ -14,7 +14,43 @@ import { prefetchRoute } from "@/lib/routePrefetch";
 
 const BlogPostPage = () => {
   const { slug } = useParams();
-  const { post, prevPost, nextPost, relatedPosts, isLoading } = useBlogPost(slug);
+  const { post, prevPost, nextPost, relatedPosts, isPending } = useBlogPost(slug);
+
+  // Posts are fetched client-side, so wait for the response before deciding a
+  // slug is missing. Reporting "not found" while the request is still in flight
+  // would flash an error on every valid post.
+  if (isPending) {
+    return (
+      <div className="min-h-screen bg-background scroll-smooth relative overflow-hidden">
+        <PageBackground variant="blogPost" />
+        <Seo title="Writing" description="Loading post…" noIndex />
+        <main className="pt-24 cv-auto">
+          <div className="container-page">
+            <div
+              className="max-w-3xl animate-pulse"
+              role="status"
+              aria-busy="true"
+              aria-label="Loading post"
+            >
+              <div className="h-3 w-40 rounded bg-muted" />
+              <div className="mt-5 h-8 w-full rounded bg-muted" />
+              <div className="mt-3 h-8 w-2/3 rounded bg-muted" />
+              <div className="mt-8 h-56 w-full rounded-xl bg-muted sm:h-72" />
+              <div className="mt-8 space-y-3">
+                <div className="h-4 w-full rounded bg-muted" />
+                <div className="h-4 w-11/12 rounded bg-muted" />
+                <div className="h-4 w-full rounded bg-muted" />
+                <div className="h-4 w-4/5 rounded bg-muted" />
+              </div>
+            </div>
+          </div>
+        </main>
+        <FooterBridge />
+        <Footer showSocialLinks />
+        <ScrollToTop />
+      </div>
+    );
+  }
 
   if (!post) {
     return (
@@ -23,23 +59,17 @@ const BlogPostPage = () => {
         <Seo title="Writing" description="Blog post not found." noIndex />
         <main className="pt-24 cv-auto">
           <div className="container-page">
-            <h1 className="text-2xl font-medium text-foreground">
-              {isLoading ? "Loading…" : "Post not found"}
-            </h1>
-            {!isLoading && (
-              <>
-                <p className="mt-2 text-muted-foreground">
-                  This post doesn't exist or is no longer published.
-                </p>
-                <Link
-                  to="/blog"
-                  className="hover-lift-sm mt-6 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 font-mono text-sm text-foreground hover:border-foreground/40"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                  back to writing
-                </Link>
-              </>
-            )}
+            <h1 className="text-2xl font-medium text-foreground">Post not found</h1>
+            <p className="mt-2 text-muted-foreground">
+              This post doesn't exist or is no longer published.
+            </p>
+            <Link
+              to="/writing"
+              className="hover-lift-sm mt-6 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 font-mono text-sm text-foreground hover:border-foreground/40"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              back to writing
+            </Link>
           </div>
         </main>
         <FooterBridge />
@@ -58,7 +88,7 @@ const BlogPostPage = () => {
   const legacyParagraphs = Array.isArray(post.body) ? post.body : [];
 
   const siteUrl = (import.meta.env.VITE_SITE_URL as string | undefined)?.replace(/\/$/, "");
-  const postUrl = siteUrl ? `${siteUrl}/blog/${post.slug}` : undefined;
+  const postUrl = siteUrl ? `${siteUrl}/writing/${post.slug}` : undefined;
   const ogImagePath = post.image && /^https?:\/\//i.test(post.image) ? post.image : "/og-image.png";
   const jsonLd = {
     "@context": "https://schema.org",
@@ -87,7 +117,7 @@ const BlogPostPage = () => {
       <main className="pt-24 cv-auto">
         <article className="container-page">
           <Link
-            to="/blog"
+            to="/writing"
             className="inline-flex items-center gap-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -179,9 +209,9 @@ const BlogPostPage = () => {
                 {relatedPosts.map((rel) => (
                   <Link
                     key={rel.slug}
-                    to={`/blog/${rel.slug}`}
-                    onMouseEnter={() => prefetchRoute(`/blog/${rel.slug}`)}
-                    onFocus={() => prefetchRoute(`/blog/${rel.slug}`)}
+                    to={`/writing/${rel.slug}`}
+                    onMouseEnter={() => prefetchRoute(`/writing/${rel.slug}`)}
+                    onFocus={() => prefetchRoute(`/writing/${rel.slug}`)}
                     className="hover-lift group surface p-4 hover:border-foreground/25"
                   >
                     <p className="font-mono text-xs text-muted-foreground/70">{rel.date}</p>
@@ -197,8 +227,8 @@ const BlogPostPage = () => {
               <div>
                 {prevPost && (
                   <Link
-                    to={`/blog/${prevPost.slug}`}
-                    onMouseEnter={() => prefetchRoute(`/blog/${prevPost.slug}`)}
+                    to={`/writing/${prevPost.slug}`}
+                    onMouseEnter={() => prefetchRoute(`/writing/${prevPost.slug}`)}
                     className="inline-flex items-center gap-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground"
                   >
                     <ArrowLeft className="h-4 w-4" />
@@ -209,8 +239,8 @@ const BlogPostPage = () => {
               <div className="sm:text-right">
                 {nextPost && (
                   <Link
-                    to={`/blog/${nextPost.slug}`}
-                    onMouseEnter={() => prefetchRoute(`/blog/${nextPost.slug}`)}
+                    to={`/writing/${nextPost.slug}`}
+                    onMouseEnter={() => prefetchRoute(`/writing/${nextPost.slug}`)}
                     className="inline-flex items-center gap-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground"
                   >
                     {nextPost.title}
