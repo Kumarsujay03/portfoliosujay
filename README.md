@@ -1,5 +1,7 @@
 # Sujay Kumar — Portfolio (v2.0)
 
+<p align="center"><img src="docs/banner.png" alt="Portfolio banner" width="100%"></p>
+
 Machine learning researcher & engineer. A minimal, monochrome portfolio built to
 present research interests, selected work, and writing.
 
